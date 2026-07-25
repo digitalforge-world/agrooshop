@@ -10,7 +10,7 @@
       <!-- Header Title -->
       <div class="text-center max-w-xl mx-auto mb-8">
         <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-lime-500/20 text-lime-400 text-xs font-bold uppercase tracking-wider mb-2 border border-lime-500/30">
-          <span>🧮</span> Outil d'Expertise Agronomique
+          <Calculator class="w-3.5 h-3.5" /> Outil d'Expertise Agronomique
         </span>
         <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
           Calculateur de Dosage Engrais & Semences
@@ -32,10 +32,10 @@
             v-model="selectedCrop"
             class="w-full bg-emerald-900/80 border border-emerald-600 rounded-xl px-4 py-3 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-lime-400 cursor-pointer"
           >
-            <option value="mais">🌽 Maïs (Culture vivrière)</option>
-            <option value="riz">🌾 Riz (Irrigué / Bas-fond)</option>
-            <option value="maraichage">🥬 Maraîchage (Tomate, Betterave, Piment)</option>
-            <option value="coton">☁️ Coton (Culture industrielle)</option>
+            <option value="mais">Maïs (Culture vivrière)</option>
+            <option value="riz">Riz (Irrigué / Bas-fond)</option>
+            <option value="maraichage">Maraîchage (Tomate, Betterave, Piment)</option>
+            <option value="coton">Coton (Culture industrielle)</option>
           </select>
         </div>
 
@@ -143,7 +143,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { ShoppingCart, Sparkles } from 'lucide-vue-next'
+import { ShoppingCart, Sparkles, Calculator } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'
 
 const cartStore = useCartStore()

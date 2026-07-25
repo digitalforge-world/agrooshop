@@ -89,10 +89,6 @@
             </span>
           </button>
 
-          <!-- Account -->
-          <button class="hidden sm:flex p-2 text-gray-500 hover:text-emerald-700 transition-colors cursor-pointer" aria-label="Mon compte">
-            <User class="w-5 h-5" />
-          </button>
         </div>
       </div>
     </div>
@@ -178,7 +174,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { 
-  Leaf, Search, ShoppingCart, Heart, User, Truck, ShieldCheck, Banknote,
+  Leaf, Search, ShoppingCart, Heart, Truck, ShieldCheck, Banknote,
   Menu, ChevronDown, Beaker, Bug, Droplets, Sprout, Tractor, Wrench
 } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'

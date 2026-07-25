@@ -1,16 +1,20 @@
 <template>
-  <div>
+  <div class="overflow-x-hidden">
 
     <!-- ═══ HERO ═══ -->
     <HeroSection />
 
 
     <!-- ═══ TRUST STRIP ═══ -->
-    <section class="border-b border-gray-200 bg-white">
+    <section class="border-b border-gray-200 bg-white reveal-down">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 lg:grid-cols-4 divide-x divide-gray-100">
-          <div v-for="(item, idx) in trustItems" :key="idx" class="flex items-center gap-3 py-6 px-4">
-            <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0">
+          <div 
+            v-for="(item, idx) in trustItems" 
+            :key="idx" 
+            :class="['flex items-center gap-3 py-6 px-4 reveal-up', `stagger-${(idx % 4) + 1}`]"
+          >
+            <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 transition-transform duration-300 hover:scale-110 hover:bg-emerald-100">
               <component :is="item.icon" class="w-5 h-5 text-emerald-700" />
             </div>
             <div>
@@ -24,14 +28,14 @@
 
 
     <!-- ═══ CATEGORIES ═══ -->
-    <section class="bg-white py-16">
+    <section class="bg-white py-16 reveal-left">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-baseline justify-between mb-10">
+        <div class="flex items-baseline justify-between mb-10 reveal-left">
           <div>
             <h2 class="text-xl font-bold text-gray-900">Nos catégories populaires</h2>
             <p class="mt-1 text-sm text-gray-500">Retrouvez tous les produits essentiels pour votre exploitation agricole.</p>
           </div>
-          <NuxtLink to="/produits" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          <NuxtLink to="/produits" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:translate-x-1">
             Voir toutes les catégories
             <ArrowRight class="w-4 h-4" />
           </NuxtLink>
@@ -39,11 +43,12 @@
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           <NuxtLink 
-            v-for="(cat, idx) in categoryCards" :key="idx"
+            v-for="(cat, idx) in categoryCards" 
+            :key="idx"
             :to="cat.link"
-            class="group flex flex-col items-center text-center p-5 rounded-xl border border-gray-200 hover:border-emerald-400 hover:shadow-md transition-all duration-200 bg-white"
+            :class="['group flex flex-col items-center text-center p-5 rounded-xl border border-gray-200 hover:border-emerald-400 hover:shadow-md transition-all duration-300 bg-white reveal-scale', `stagger-${(idx % 6) + 1}`]"
           >
-            <div class="w-14 h-14 rounded-full bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center mb-3 transition-colors">
+            <div class="w-14 h-14 rounded-full bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-110">
               <component :is="cat.icon" class="w-6 h-6 text-emerald-700" />
             </div>
             <h3 class="text-sm font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors">{{ cat.name }}</h3>
@@ -57,12 +62,12 @@
     <!-- ═══ FEATURED PRODUCTS ═══ -->
     <section class="bg-gray-50 py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-baseline justify-between mb-10">
+        <div class="flex items-baseline justify-between mb-10 reveal-right">
           <div>
             <h2 class="text-xl font-bold text-gray-900">Produits populaires</h2>
             <p class="mt-1 text-sm text-gray-500">Les produits les plus commandés par nos clients.</p>
           </div>
-          <NuxtLink to="/produits" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-600 transition-colors">
+          <NuxtLink to="/produits" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-600 transition-all duration-300 hover:translate-x-1">
             Voir tout
             <ArrowRight class="w-4 h-4" />
           </NuxtLink>
@@ -79,20 +84,22 @@
           </div>
         </div>
 
-        <!-- Products -->
+        <!-- Products Grid with bidirectional scroll reveal -->
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <ProductCard 
-            v-for="product in featuredProducts" 
-            :key="product.id" 
-            :product="product" 
-          />
+          <div 
+            v-for="(product, idx) in featuredProducts" 
+            :key="product.id"
+            :class="[idx % 2 === 0 ? 'reveal-left' : 'reveal-right', `stagger-${(idx % 4) + 1}`]"
+          >
+            <ProductCard :product="product" />
+          </div>
         </div>
       </div>
     </section>
 
 
     <!-- ═══ CALCULATOR ═══ -->
-    <section class="bg-white py-16">
+    <section class="bg-white py-16 reveal-scale">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FertilizerCalculator />
       </div>
@@ -100,7 +107,7 @@
 
 
     <!-- ═══ PARTNERS ═══ -->
-    <section class="bg-gray-50 py-16">
+    <section class="bg-gray-50 py-16 reveal-up">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-center text-sm font-semibold text-gray-500 uppercase tracking-wider mb-8">Nos partenaires de confiance</h2>
         <div class="overflow-hidden">
@@ -119,22 +126,27 @@
     <!-- ═══ TESTIMONIALS ═══ -->
     <section class="bg-white py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10">
+        <div class="text-center mb-10 reveal-down">
           <h2 class="text-xl font-bold text-gray-900">Ce que disent nos clients</h2>
           <p class="mt-1 text-sm text-gray-500">Plus de 2000 agriculteurs nous font confiance</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div 
-            v-for="(t, idx) in testimonials" :key="idx"
-            class="p-6 rounded-xl border border-gray-200 bg-white hover:shadow-md transition-shadow duration-200"
+            v-for="(t, idx) in testimonials" 
+            :key="idx"
+            :class="[
+              'p-6 rounded-xl border border-gray-200 bg-white hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+              idx === 0 ? 'reveal-left' : idx === 1 ? 'reveal-scale' : 'reveal-right',
+              `stagger-${idx + 1}`
+            ]"
           >
             <div class="flex gap-0.5 mb-3">
               <Star v-for="i in 5" :key="i" class="w-4 h-4 text-amber-400 fill-amber-400" />
             </div>
             <p class="text-sm text-gray-600 leading-relaxed mb-4">{{ t.text }}</p>
             <div class="flex items-center gap-3 pt-4 border-t border-gray-100">
-              <div class="w-9 h-9 rounded-full bg-emerald-700 flex items-center justify-center text-white text-xs font-bold">
+              <div class="w-9 h-9 rounded-full bg-emerald-700 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                 {{ t.initials }}
               </div>
               <div>
@@ -151,19 +163,27 @@
     <!-- ═══ GUIDES ═══ -->
     <section class="bg-gray-50 py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-baseline justify-between mb-10">
+        <div class="flex items-baseline justify-between mb-10 reveal-left">
           <div>
             <h2 class="text-xl font-bold text-gray-900">Fiches techniques & guides</h2>
             <p class="mt-1 text-sm text-gray-500">Téléchargez nos ressources gratuitement.</p>
           </div>
-          <NuxtLink to="/blog" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-600">
+          <NuxtLink to="/blog" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-600 transition-all duration-300 hover:translate-x-1">
             Tous les articles
             <ArrowRight class="w-4 h-4" />
           </NuxtLink>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <article v-for="(g, idx) in guides" :key="idx" class="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
+          <article 
+            v-for="(g, idx) in guides" 
+            :key="idx" 
+            :class="[
+              'bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
+              idx === 0 ? 'reveal-left' : idx === 1 ? 'reveal-up' : 'reveal-right',
+              `stagger-${idx + 1}`
+            ]"
+          >
             <div :class="['h-1', g.bar]"></div>
             <div class="p-5 space-y-3">
               <span :class="['inline-block px-2.5 py-1 text-[11px] font-medium rounded-md', g.tagClass]">{{ g.tag }}</span>
@@ -181,7 +201,7 @@
 
 
     <!-- ═══ NEWSLETTER ═══ -->
-    <section class="bg-emerald-800">
+    <section class="bg-emerald-800 reveal-scale">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
           <div class="text-center lg:text-left">
@@ -195,7 +215,7 @@
               placeholder="Votre email"
               class="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-emerald-300/50 text-sm focus:outline-none focus:ring-2 focus:ring-white/30"
             />
-            <button @click="subscribe" class="px-6 py-3 bg-white text-emerald-800 font-semibold text-sm rounded-lg hover:bg-emerald-50 transition-colors cursor-pointer">
+            <button @click="subscribe" class="px-6 py-3 bg-white text-emerald-800 font-semibold text-sm rounded-lg hover:bg-emerald-50 transition-colors cursor-pointer active:scale-95">
               S'inscrire
             </button>
           </div>
@@ -208,9 +228,9 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { 
-  Lock, MessageSquare, ArrowRight, Star, Download,
+  ArrowRight, Star, Download,
   Truck, ShieldCheck, Banknote, Headphones,
   Beaker, Bug, Droplets, Sprout, Tractor, Wrench
 } from 'lucide-vue-next'
@@ -263,6 +283,8 @@ const featuredProducts = ref([
   { id: 7, nom_commercial: 'Brouette Renforcée 90L', slug: 'brouette-de-chantier-renforcee-90l', composition: 'Bac acier galvanisé 1mm.', prix_unitaire: 32000, unite_mesure: 'unité', stock_disponible: 120, url_image: 'storage/produits/brouette.jpg', categories: [{ nom: 'Quincaillerie' }] },
 ])
 
+let observer = null
+
 onMounted(async () => {
   try {
     const data = await $fetch(`${config.public.apiBaseUrl}/produits?per_page=4`)
@@ -271,6 +293,31 @@ onMounted(async () => {
     console.warn('API offline, using fallback data', e)
   }
   isLoading.value = false
+
+  // Initialize Bidirectional Scroll-driven Intersection Observer
+  if (typeof IntersectionObserver !== 'undefined') {
+    observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+        } else {
+          // Re-trigger animation when scrolling back up or down!
+          entry.target.classList.remove('is-visible')
+        }
+      })
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' })
+
+    // Observe all directional reveal elements
+    setTimeout(() => {
+      document.querySelectorAll('.reveal-up, .reveal-down, .reveal-left, .reveal-right, .reveal-scale, .reveal-rotate').forEach(el => {
+        observer.observe(el)
+      })
+    }, 100)
+  }
+})
+
+onUnmounted(() => {
+  if (observer) observer.disconnect()
 })
 
 const subscribe = () => {

@@ -82,12 +82,12 @@
           Univers Produits
         </h4>
         <ul class="space-y-2 text-xs font-semibold text-emerald-200">
-          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">🌾 Engrais & Urée YARA</NuxtLink></li>
-          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">🐛 Produits Phytosanitaires</NuxtLink></li>
-          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">💧 Systèmes d'Irrigation</NuxtLink></li>
-          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">🌱 Semences Certifiées</NuxtLink></li>
-          <li><NuxtLink to="/quincaillerie" class="hover:text-lime-400 transition-colors">🛠️ Quincaillerie & Outillage Manuel</NuxtLink></li>
-          <li><NuxtLink to="/quincaillerie" class="hover:text-lime-400 transition-colors">🚜 Machines & Brouettes de Chantier</NuxtLink></li>
+          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">Engrais & Urée YARA</NuxtLink></li>
+          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">Produits Phytosanitaires</NuxtLink></li>
+          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">Systèmes d'Irrigation</NuxtLink></li>
+          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">Semences Certifiées</NuxtLink></li>
+          <li><NuxtLink to="/quincaillerie" class="hover:text-lime-400 transition-colors">Quincaillerie & Outillage Manuel</NuxtLink></li>
+          <li><NuxtLink to="/quincaillerie" class="hover:text-lime-400 transition-colors">Machines & Brouettes de Chantier</NuxtLink></li>
         </ul>
       </div>
 
@@ -97,10 +97,10 @@
           Espace Client & Aide
         </h4>
         <ul class="space-y-2 text-xs font-semibold text-emerald-200">
-          <li><NuxtLink to="/commande/suivi" class="hover:text-amber-400 transition-colors">📦 Suivre ma commande</NuxtLink></li>
-          <li><NuxtLink to="/blog" class="hover:text-amber-400 transition-colors">📖 Guides d'utilisation & Fiches PDF</NuxtLink></li>
-          <li><NuxtLink to="/faq" class="hover:text-amber-400 transition-colors">❓ Foire Aux Questions (FAQ)</NuxtLink></li>
-          <li><NuxtLink to="/contact" class="hover:text-amber-400 transition-colors">📍 Nos agences au Togo</NuxtLink></li>
+          <li><NuxtLink to="/commande/suivi" class="hover:text-amber-400 transition-colors">Suivre ma commande</NuxtLink></li>
+          <li><NuxtLink to="/blog" class="hover:text-amber-400 transition-colors">Guides d'utilisation & Fiches PDF</NuxtLink></li>
+          <li><NuxtLink to="/faq" class="hover:text-amber-400 transition-colors">Foire Aux Questions (FAQ)</NuxtLink></li>
+          <li><NuxtLink to="/contact" class="hover:text-amber-400 transition-colors">Nos agences au Togo</NuxtLink></li>
         </ul>
       </div>
 
