@@ -141,7 +141,6 @@
         </div>
       </article>
     </div>
-
   </div>
 </template>
 
