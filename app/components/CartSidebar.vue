@@ -4,18 +4,18 @@
     <div 
       v-if="cartStore.isOpen" 
       @click="cartStore.toggleCart(false)"
-      class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs transition-opacity"
+      class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm transition-opacity"
     ></div>
 
     <!-- Slide-in Drawer -->
     <div 
       :class="[
-        'fixed top-0 right-0 z-50 h-full w-full max-w-md bg-white shadow-2xl transition-transform duration-300 ease-in-out flex flex-col',
+        'fixed top-0 right-0 z-[100] h-full w-full max-w-md bg-white shadow-2xl transition-transform duration-300 ease-in-out flex flex-col',
         cartStore.isOpen ? 'translate-x-0' : 'translate-x-full'
       ]"
     >
       <!-- Header -->
-      <div class="p-5 bg-gradient-to-r from-emerald-900 to-forest-dark text-white flex items-center justify-between shadow-xs">
+      <div class="p-5 bg-gradient-to-r from-emerald-900 to-emerald-950 text-white flex items-center justify-between shadow-sm">
         <div class="flex items-center gap-2">
           <ShoppingCart class="w-6 h-6 text-lime-400" />
           <h2 class="text-lg font-bold">Votre Panier</h2>
