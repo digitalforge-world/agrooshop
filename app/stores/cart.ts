@@ -19,21 +19,28 @@ export const useCartStore = defineStore('cart', () => {
   const deliveryFee = ref(5000)
 
   const totalQuantity = computed(() => items.value.reduce((sum, item) => sum + item.quantite, 0))
-  const totalPriceHT = computed(() => items.value.reduce((sum, item) => sum + (item.prix_unitaire * item.quantite), 0))
-  const tvaAmount = computed(() => Math.round(totalPriceHT.value * 0.18))
-  const totalPriceTTC = computed(() => totalPriceHT.value + tvaAmount.value)
+  const totalPrice = computed(() => items.value.reduce((sum, item) => sum + (item.prix_unitaire * item.quantite), 0))
+  const totalPriceHT = totalPrice
+  const totalPriceTTC = totalPrice
+  const tvaAmount = computed(() => 0)
   const grandTotal = computed(() => {
     const fee = deliveryMode.value === 'domicile' ? deliveryFee.value : 0
-    return totalPriceTTC.value + fee
+    return totalPrice.value + fee
   })
+
+  const { getImageUrl } = useMedia()
 
   function addItem(product: { id: number; nom_commercial: string; slug: string; prix_unitaire: number; unite_mesure: string; image_principale?: { url_image: string }; url_image?: string; stock_disponible?: number }, quantity = 1) {
     const existing = items.value.find(item => item.id === product.id)
     const stock = product.stock_disponible ?? 999
-    const imageUrl = product.image_principale?.url_image || product.url_image || '/images/placeholder.jpg'
+    const rawImage = product.image_principale?.url_image || product.url_image || fallbackImage
+    const imageUrl = getImageUrl(rawImage)
 
     if (existing) {
       existing.quantite = Math.min(existing.quantite + quantity, stock)
+      if (!existing.url_image || existing.url_image === '/images/placeholder.jpg') {
+        existing.url_image = imageUrl
+      }
     } else {
       items.value.push({
         id: product.id,
@@ -41,7 +48,7 @@ export const useCartStore = defineStore('cart', () => {
         slug: product.slug,
         prix_unitaire: Number(product.prix_unitaire),
         unite_mesure: product.unite_mesure || 'unité',
-        url_image: imageUrl,
+        url_image: imageUrl || fallbackImage,
         quantite: Math.min(quantity, stock),
         stock_disponible: stock
       })
@@ -106,6 +113,7 @@ export const useCartStore = defineStore('cart', () => {
     deliveryMode,
     deliveryFee,
     totalQuantity,
+    totalPrice,
     totalPriceHT,
     tvaAmount,
     totalPriceTTC,

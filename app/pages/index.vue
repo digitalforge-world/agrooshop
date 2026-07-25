@@ -248,11 +248,8 @@ const featuredProducts = ref([
 // Blog Posts from DB
 const blogPosts = ref([])
 
-const getBlogImg = (img) => {
-  if (!img) return '/images/champ-agricole-bg.jpg'
-  if (img.startsWith('http') || img.startsWith('/')) return img
-  return `http://localhost:8000/${img}`
-}
+const { getImageUrl } = useMedia()
+const getBlogImg = (img) => getImageUrl(img, '/images/hero-produits-agroshop.png')
 
 const formatDate = (dateStr) => {
   if (!dateStr) return 'Récemment'
