@@ -12,7 +12,7 @@
           <div 
             v-for="(item, idx) in trustItems" 
             :key="idx" 
-            :class="['flex items-center gap-3 py-6 px-4 reveal-up', `stagger-${(idx % 4) + 1}`]"
+            :class="['flex items-center gap-3 py-6 px-4 reveal-up', `stagger-${idx + 1}`]"
           >
             <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center flex-shrink-0 transition-transform duration-300 hover:scale-110 hover:bg-emerald-100">
               <component :is="item.icon" class="w-5 h-5 text-emerald-700" />
@@ -28,7 +28,7 @@
 
 
     <!-- ═══ CATEGORIES ═══ -->
-    <section class="bg-white py-16 reveal-left">
+    <section class="bg-white py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-baseline justify-between mb-10 reveal-left">
           <div>
@@ -46,7 +46,11 @@
             v-for="(cat, idx) in categoryCards" 
             :key="idx"
             :to="cat.link"
-            :class="['group flex flex-col items-center text-center p-5 rounded-xl border border-gray-200 hover:border-emerald-400 hover:shadow-md transition-all duration-300 bg-white reveal-scale', `stagger-${(idx % 6) + 1}`]"
+            :class="[
+              'group flex flex-col items-center text-center p-5 rounded-xl border border-gray-200 hover:border-emerald-400 hover:shadow-md transition-all duration-300 bg-white',
+              idx % 2 === 0 ? 'reveal-left' : 'reveal-right',
+              `stagger-${(idx % 4) + 1}`
+            ]"
           >
             <div class="w-14 h-14 rounded-full bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-110">
               <component :is="cat.icon" class="w-6 h-6 text-emerald-700" />
@@ -84,12 +88,15 @@
           </div>
         </div>
 
-        <!-- Products Grid with bidirectional scroll reveal -->
+        <!-- Products Grid -->
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <div 
             v-for="(product, idx) in featuredProducts" 
             :key="product.id"
-            :class="[idx % 2 === 0 ? 'reveal-left' : 'reveal-right', `stagger-${(idx % 4) + 1}`]"
+            :class="[
+              idx % 2 === 0 ? 'reveal-left' : 'reveal-right',
+              `stagger-${(idx % 4) + 1}`
+            ]"
           >
             <ProductCard :product="product" />
           </div>
@@ -106,8 +113,88 @@
     </section>
 
 
+    <!-- ═══ BLOG (4 Articles issus de la Base de Données) ═══ -->
+    <section class="bg-gray-50 py-16 border-t border-gray-200/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4 reveal-up">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900">
+              Conseils & Guides Agronomiques
+            </h2>
+          </div>
+          <NuxtLink 
+            to="/blog" 
+            class="inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:text-emerald-800 transition-colors"
+          >
+            <span>Voir tous les articles</span>
+            <ArrowRight class="w-4 h-4" />
+          </NuxtLink>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <article 
+            v-for="(article, idx) in blogPosts" 
+            :key="article.id"
+            :class="[
+              'bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-emerald-300 hover:shadow-lg transition-all duration-300 flex flex-col group',
+              idx % 2 === 0 ? 'reveal-left' : 'reveal-right',
+              `stagger-${idx + 1}`
+            ]"
+          >
+            <!-- Image -->
+            <NuxtLink :to="`/blog/${article.slug}`" class="relative block w-full h-44 overflow-hidden bg-gray-100">
+              <img 
+                :src="getBlogImg(article.image_principale)" 
+                :alt="article.titre"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                @error="(e) => e.target.src = '/images/champ-agricole-bg.jpg'"
+              />
+              <span 
+                v-if="article.tags && article.tags[0]" 
+                class="absolute top-3 left-3 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md text-white shadow-xs"
+                :style="{ backgroundColor: article.tags[0].couleur || '#10B981' }"
+              >
+                {{ article.tags[0].nom }}
+              </span>
+            </NuxtLink>
+
+            <!-- Body -->
+            <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+              <div>
+                <p class="text-[11px] text-gray-400 font-medium mb-1">
+                  {{ formatDate(article.date_publication) }}
+                </p>
+                <NuxtLink :to="`/blog/${article.slug}`">
+                  <h3 class="text-sm font-bold text-gray-900 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-snug">
+                    {{ article.titre }}
+                  </h3>
+                </NuxtLink>
+                <p class="text-xs text-gray-500 line-clamp-2 mt-2 leading-relaxed">
+                  {{ article.extrait }}
+                </p>
+              </div>
+
+              <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
+                <NuxtLink 
+                  :to="`/blog/${article.slug}`"
+                  class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors"
+                >
+                  <span>Lire l'article</span>
+                  <ArrowRight class="w-3.5 h-3.5" />
+                </NuxtLink>
+                <span class="text-[11px] text-gray-400 font-medium">👁️ {{ article.vues || 0 }}</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </section>
+
+
     <!-- ═══ PARTNERS ═══ -->
-    <section class="bg-gray-50 py-16 reveal-up">
+    <section class="bg-white py-16 reveal-up">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-center text-sm font-semibold text-gray-500 uppercase tracking-wider mb-8">Nos partenaires de confiance</h2>
         <div class="overflow-hidden">
@@ -124,7 +211,7 @@
 
 
     <!-- ═══ TESTIMONIALS ═══ -->
-    <section class="bg-white py-16">
+    <section class="bg-gray-50 py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-10 reveal-down">
           <h2 class="text-xl font-bold text-gray-900">Ce que disent nos clients</h2>
@@ -160,46 +247,6 @@
     </section>
 
 
-    <!-- ═══ GUIDES ═══ -->
-    <section class="bg-gray-50 py-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-baseline justify-between mb-10 reveal-left">
-          <div>
-            <h2 class="text-xl font-bold text-gray-900">Fiches techniques & guides</h2>
-            <p class="mt-1 text-sm text-gray-500">Téléchargez nos ressources gratuitement.</p>
-          </div>
-          <NuxtLink to="/blog" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-600 transition-all duration-300 hover:translate-x-1">
-            Tous les articles
-            <ArrowRight class="w-4 h-4" />
-          </NuxtLink>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <article 
-            v-for="(g, idx) in guides" 
-            :key="idx" 
-            :class="[
-              'bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300',
-              idx === 0 ? 'reveal-left' : idx === 1 ? 'reveal-up' : 'reveal-right',
-              `stagger-${idx + 1}`
-            ]"
-          >
-            <div :class="['h-1', g.bar]"></div>
-            <div class="p-5 space-y-3">
-              <span :class="['inline-block px-2.5 py-1 text-[11px] font-medium rounded-md', g.tagClass]">{{ g.tag }}</span>
-              <h3 class="text-sm font-semibold text-gray-900">{{ g.title }}</h3>
-              <p class="text-xs text-gray-500 leading-relaxed">{{ g.desc }}</p>
-              <a :href="g.url" target="_blank" class="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-600 transition-colors pt-1">
-                <Download class="w-4 h-4" />
-                {{ g.btn }}
-              </a>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-
     <!-- ═══ NEWSLETTER ═══ -->
     <section class="bg-emerald-800 reveal-scale">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
@@ -230,7 +277,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { 
-  ArrowRight, Star, Download,
+  ArrowRight, Star,
   Truck, ShieldCheck, Banknote, Headphones,
   Beaker, Bug, Droplets, Sprout, Tractor, Wrench
 } from 'lucide-vue-next'
@@ -267,15 +314,7 @@ const testimonials = [
   { text: "Qualité des outils de quincaillerie exceptionnelle. Bien meilleur que ce qu'on trouve au marché local.", name: 'Kofi D.', role: 'Entrepreneur BTP, Lomé', initials: 'KD' },
 ]
 
-// Guides
-const apiBase = config.public?.apiBaseUrl ? config.public.apiBaseUrl.replace('/api', '') : 'http://localhost:8000'
-const guides = [
-  { tag: 'Fiche technique', tagClass: 'bg-emerald-50 text-emerald-700', bar: 'bg-emerald-500', title: 'Urée YARA 46% N — Dosages par hectare', desc: "Fiche officielle : dosages, moments d'application et précautions.", url: `${apiBase}/storage/documents/ft_urea_yara.pdf`, btn: 'Télécharger (1.0 MB)' },
-  { tag: 'Sécurité', tagClass: 'bg-amber-50 text-amber-700', bar: 'bg-amber-500', title: 'Katana 50 EC — Notice de sécurité', desc: "Consignes d'utilisation sécurisée contre les ravageurs.", url: `${apiBase}/storage/documents/guide_katana_50ec.pdf`, btn: 'Télécharger (512 KB)' },
-  { tag: 'Manuel', tagClass: 'bg-blue-50 text-blue-700', bar: 'bg-blue-500', title: 'STIHL SR 450 — Manuel utilisateur', desc: "Utilisation, mélange carburant et entretien périodique.", url: `${apiBase}/storage/documents/manuel_stihl_sr450.pdf`, btn: 'Télécharger (2.0 MB)' },
-]
-
-// Products
+// Featured Products
 const featuredProducts = ref([
   { id: 1, nom_commercial: 'Urée YARA 46% N', slug: 'uree-yara-46-n', composition: 'Urée granulée 46% Azote total.', prix_unitaire: 15000, unite_mesure: 'sac 50kg', stock_disponible: 1000, featured: true, url_image: 'storage/produits/urea.jpg', categories: [{ nom: 'Urée' }] },
   { id: 2, nom_commercial: 'Engrais NPK 15-15-15', slug: 'engrais-npk-15-15-15-superfert', composition: '15% N, 15% P2O5, 15% K2O.', prix_unitaire: 18500, unite_mesure: 'sac 50kg', stock_disponible: 750, featured: true, url_image: 'storage/produits/npk.jpg', categories: [{ nom: 'Engrais NPK' }] },
@@ -283,37 +322,65 @@ const featuredProducts = ref([
   { id: 7, nom_commercial: 'Brouette Renforcée 90L', slug: 'brouette-de-chantier-renforcee-90l', composition: 'Bac acier galvanisé 1mm.', prix_unitaire: 32000, unite_mesure: 'unité', stock_disponible: 120, url_image: 'storage/produits/brouette.jpg', categories: [{ nom: 'Quincaillerie' }] },
 ])
 
+// Blog Posts from DB
+const blogPosts = ref([])
+
+const getBlogImg = (img) => {
+  if (!img) return '/images/champ-agricole-bg.jpg'
+  if (img.startsWith('http') || img.startsWith('/')) return img
+  return `http://localhost:8000/${img}`
+}
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return 'Récemment'
+  const date = new Date(dateStr)
+  return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
 let observer = null
+
+const initScrollObserver = () => {
+  const elements = document.querySelectorAll('.reveal-up, .reveal-down, .reveal-left, .reveal-right, .reveal-scale')
+  if (!elements.length) return
+
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible')
+      } else {
+        entry.target.classList.remove('is-visible')
+      }
+    })
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -40px 0px'
+  })
+
+  elements.forEach(el => observer.observe(el))
+}
 
 onMounted(async () => {
   try {
     const data = await $fetch(`${config.public.apiBaseUrl}/produits?per_page=4`)
     if (data?.data?.data?.length > 0) featuredProducts.value = data.data.data
   } catch (e) {
-    console.warn('API offline, using fallback data', e)
+    console.warn('API products offline', e)
   }
+
+  try {
+    const blogRes = await $fetch(`${config.public.apiBaseUrl}/blog?per_page=4`)
+    if (blogRes?.data?.articles?.data?.length > 0) {
+      blogPosts.value = blogRes.data.articles.data
+    }
+  } catch (e) {
+    console.warn('API blog offline', e)
+  }
+
   isLoading.value = false
 
-  // Initialize Bidirectional Scroll-driven Intersection Observer
-  if (typeof IntersectionObserver !== 'undefined') {
-    observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible')
-        } else {
-          // Re-trigger animation when scrolling back up or down!
-          entry.target.classList.remove('is-visible')
-        }
-      })
-    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' })
-
-    // Observe all directional reveal elements
-    setTimeout(() => {
-      document.querySelectorAll('.reveal-up, .reveal-down, .reveal-left, .reveal-right, .reveal-scale, .reveal-rotate').forEach(el => {
-        observer.observe(el)
-      })
-    }, 100)
-  }
+  setTimeout(() => {
+    initScrollObserver()
+  }, 100)
 })
 
 onUnmounted(() => {

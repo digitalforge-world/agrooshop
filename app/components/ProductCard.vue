@@ -2,16 +2,25 @@
   <div class="group bg-white rounded-xl border border-gray-200 hover:border-emerald-300 hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col">
     
     <!-- Image -->
-    <NuxtLink :to="`/produits/${product.slug}`" class="relative block w-full h-48 bg-gray-50 overflow-hidden">
+    <NuxtLink 
+      :to="`/produits/${product.slug}`" 
+      :class="['relative block w-full h-48 overflow-hidden', isFallback ? 'bg-gradient-to-b from-emerald-50/80 via-emerald-100/40 to-white' : 'bg-gray-50']"
+    >
       <img 
         :src="imageUrl" 
         :alt="product.nom_commercial"
-        class="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-        @error="(e) => e.target.src = fallbackImage"
+        :class="[
+          'w-full h-full group-hover:scale-105 transition-transform duration-300',
+          isFallback ? 'object-contain p-3' : 'object-cover'
+        ]"
+        @error="handleImageError"
       />
       
-      <!-- Stock Badge -->
-      <span :class="['absolute top-3 left-3 text-[10px] font-semibold px-2 py-0.5 rounded', stockBadge.class]">
+      <!-- Stock Badge (only shown if out of stock or low stock) -->
+      <span 
+        v-if="stockBadge.show" 
+        :class="['absolute top-3 left-3 text-[10px] font-semibold px-2 py-0.5 rounded shadow-sm', stockBadge.class]"
+      >
         {{ stockBadge.label }}
       </span>
     </NuxtLink>
@@ -71,19 +80,29 @@ const props = defineProps({
 
 const cartStore = useCartStore()
 const isAdded = ref(false)
+const isFallback = ref(false)
 
-const fallbackImage = 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&auto=format&fit=crop&q=80'
+const fallbackImage = '/images/Agroshopproduit .png'
 
 const imageUrl = computed(() => {
   if (props.product.image_principale?.url_image) {
     const url = props.product.image_principale.url_image
+    isFallback.value = false
     return url.startsWith('http') ? url : `http://localhost:8000/${url}`
   }
   if (props.product.url_image) {
-    return props.product.url_image.startsWith('http') ? props.product.url_image : `http://localhost:8000/${props.product.url_image}`
+    const url = props.product.url_image
+    isFallback.value = false
+    return url.startsWith('http') ? url : `http://localhost:8000/${url}`
   }
+  isFallback.value = true
   return fallbackImage
 })
+
+const handleImageError = (e) => {
+  isFallback.value = true
+  e.target.src = fallbackImage
+}
 
 const mainCategory = computed(() => {
   return props.product.categories?.[0]?.nom || 'Produit'
@@ -91,9 +110,9 @@ const mainCategory = computed(() => {
 
 const stockBadge = computed(() => {
   const stock = props.product.stock_disponible ?? 0
-  if (stock <= 0) return { label: 'Rupture de stock', class: 'bg-red-100 text-red-700' }
-  if (stock <= 10) return { label: `Plus que ${stock}`, class: 'bg-amber-100 text-amber-700' }
-  return { label: 'En stock', class: 'bg-emerald-100 text-emerald-700' }
+  if (stock <= 0) return { show: true, label: 'Rupture de stock', class: 'bg-red-100 text-red-700' }
+  if (stock <= 10) return { show: true, label: `Plus que ${stock}`, class: 'bg-amber-100 text-amber-700' }
+  return { show: false, label: '', class: '' }
 })
 
 const addToCart = () => {

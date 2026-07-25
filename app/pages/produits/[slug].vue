@@ -174,7 +174,7 @@ const selectedQuantity = ref(1)
 const isAdded = ref(false)
 const selectedImageIndex = ref(0)
 
-const fallbackImage = 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600&auto=format&fit=crop&q=80'
+const fallbackImage = '/images/Agroshopproduit .png'
 
 const product = ref({
   id: 1,
