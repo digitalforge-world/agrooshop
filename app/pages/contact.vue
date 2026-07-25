@@ -1,209 +1,168 @@
 <template>
-  <div class="bg-gray-50 min-h-screen pb-20">
+  <div class="min-h-screen bg-white">
     <!-- Hero Section -->
-    <div class="bg-emerald-800 text-white py-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 class="text-3xl sm:text-4xl font-bold mb-4">Contactez-nous</h1>
-        <p class="text-emerald-100 max-w-2xl mx-auto text-lg">Une question sur nos produits ? Besoin d'un conseil agronomique ? Notre équipe est là pour vous accompagner.</p>
+    <div 
+      class="relative h-[300px] md:h-[400px] w-full bg-cover bg-center flex flex-col justify-center"
+      style="background-image: url('https://images.unsplash.com/photo-1592982537447-6f23f5b721e7?w=1600&q=80');"
+    >
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-black/40"></div>
+      
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Contactez-nous</h1>
+        <p class="max-w-md text-sm md:text-base text-gray-200">
+          Commencez la conversation pour établir un partenariat solide et propulser vos projets agricoles vers le succès.
+        </p>
       </div>
     </div>
 
-    <!-- Contenu Principal -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
-      <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-2">
+    <!-- Middle Section (Form & Info) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+        
+        <!-- Left Side: Text and Socials -->
+        <div>
+          <div class="flex items-center gap-2 text-emerald-600 font-semibold mb-4 text-sm">
+            <span class="w-6 h-px bg-emerald-600"></span>
+            Entrer En Contact
+          </div>
+          <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">
+            Questions, idées ou projets ?<br>Nous sommes à votre écoute
+          </h2>
+          <p class="text-gray-500 mb-4 leading-relaxed text-sm">
+            Que vous ayez besoin de conseils agronomiques, d'équipements spécialisés ou de semences de qualité, notre équipe d'experts est là pour vous guider à chaque étape de votre production.
+          </p>
+          <p class="text-gray-500 mb-8 leading-relaxed text-sm">
+            N'hésitez pas à nous envoyer vos requêtes via le formulaire ou à nous contacter directement. Nous répondons généralement dans un délai de 24 heures.
+          </p>
           
-          <!-- Colonne Informations -->
-          <div class="bg-emerald-900 text-white p-10 sm:p-12 relative overflow-hidden">
-            <!-- Décoration de fond -->
-            <div class="absolute -bottom-24 -right-24 w-64 h-64 bg-emerald-800 rounded-full blur-3xl opacity-50"></div>
-            
-            <div class="relative z-10">
-              <h2 class="text-2xl font-bold mb-6 text-white">Nos Coordonnées</h2>
-              <p class="text-emerald-100 mb-10 leading-relaxed">
-                Passez nous voir en boutique, appelez-nous ou envoyez-nous un message sur WhatsApp pour une réponse encore plus rapide.
-              </p>
-              
-              <div class="space-y-8">
-                <!-- Adresse -->
-                <div class="flex items-start gap-4">
-                  <div class="w-12 h-12 rounded-xl bg-emerald-800 flex items-center justify-center flex-shrink-0">
-                    <MapPin class="w-6 h-6 text-emerald-300" />
-                  </div>
-                  <div>
-                    <h3 class="font-semibold text-lg">Boutique Principale</h3>
-                    <p class="text-emerald-200 mt-1">Quartier Totsi, en face de la pharmacie<br>Lomé, Togo</p>
-                  </div>
-                </div>
-                
-                <!-- Téléphone -->
-                <div class="flex items-start gap-4">
-                  <div class="w-12 h-12 rounded-xl bg-emerald-800 flex items-center justify-center flex-shrink-0">
-                    <Phone class="w-6 h-6 text-emerald-300" />
-                  </div>
-                  <div>
-                    <h3 class="font-semibold text-lg">Téléphone</h3>
-                    <p class="text-emerald-200 mt-1">+228 90 XX XX XX<br>+228 99 XX XX XX</p>
-                  </div>
-                </div>
-                
-                <!-- Email -->
-                <div class="flex items-start gap-4">
-                  <div class="w-12 h-12 rounded-xl bg-emerald-800 flex items-center justify-center flex-shrink-0">
-                    <Mail class="w-6 h-6 text-emerald-300" />
-                  </div>
-                  <div>
-                    <h3 class="font-semibold text-lg">Email</h3>
-                    <p class="text-emerald-200 mt-1">contact@agroshop.tg</p>
-                  </div>
-                </div>
-              </div>
+          <div class="flex items-center gap-3">
+            <a href="https://www.facebook.com/profile.php?id=100081426776950" target="_blank" class="w-10 h-10 rounded-full bg-emerald-800 flex items-center justify-center text-white hover:bg-emerald-700 transition-colors">
+              <Facebook class="w-4 h-4" />
+            </a>
+            <a href="https://www.instagram.com/agroshop_tg/" target="_blank" class="w-10 h-10 rounded-full bg-emerald-800 flex items-center justify-center text-white hover:bg-emerald-700 transition-colors">
+              <Instagram class="w-4 h-4" />
+            </a>
+            <a href="https://www.linkedin.com/in/agro-shop-04751a36b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" class="w-10 h-10 rounded-full bg-emerald-800 flex items-center justify-center text-white hover:bg-emerald-700 transition-colors">
+              <Linkedin class="w-4 h-4" />
+            </a>
+          </div>
+        </div>
 
-              <!-- WhatsApp CTA -->
-              <div class="mt-12 p-6 bg-emerald-800/50 rounded-2xl border border-emerald-700/50 backdrop-blur-sm">
-                <div class="flex items-center gap-4 mb-4">
-                  <MessageCircle class="w-8 h-8 text-green-400" />
-                  <h3 class="font-bold text-lg">Besoin d'aide immédiate ?</h3>
-                </div>
-                <p class="text-sm text-emerald-100 mb-4">Discutez en direct avec nos agronomes sur WhatsApp.</p>
-                <a href="https://wa.me/22890000000" target="_blank" class="inline-flex items-center justify-center w-full gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#22bf5b] text-white font-bold rounded-xl transition-colors shadow-lg shadow-green-900/20">
-                  <MessageCircle class="w-5 h-5" />
-                  Démarrer le chat WhatsApp
-                </a>
+        <!-- Right Side: Form -->
+        <div class="bg-white p-8 md:p-10 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-t-4 border-emerald-500 relative lg:mt-[-120px] z-20">
+          <form @submit.prevent="submitForm" class="space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-gray-800">Nom</label>
+                <input v-model="form.firstname" type="text" placeholder="Votre nom" class="w-full px-4 py-3 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50" required />
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-gray-800">Email</label>
+                <input v-model="form.email" type="email" placeholder="Votre email" class="w-full px-4 py-3 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50" required />
               </div>
             </div>
-          </div>
-          
-          <!-- Colonne Formulaire -->
-          <div class="p-10 sm:p-12 lg:p-16">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8">Envoyez-nous un message</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-gray-800">Téléphone</label>
+                <input v-model="form.phone" type="tel" placeholder="Numéro de téléphone" class="w-full px-4 py-3 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50" />
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-bold text-gray-800">Sujet</label>
+                <input v-model="form.subject" type="text" placeholder="Sujet" class="w-full px-4 py-3 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50" />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-sm font-bold text-gray-800">Message</label>
+              <textarea v-model="form.message" rows="5" placeholder="Votre message" class="w-full px-4 py-3 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 resize-none" required></textarea>
+            </div>
+
+            <button type="submit" :disabled="isSubmitting" class="px-8 py-3 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold text-sm rounded-full transition-colors disabled:opacity-70 inline-flex items-center gap-2 cursor-pointer">
+              <span v-if="!isSubmitting">Envoyer le Message</span>
+              <span v-else class="flex items-center gap-2">
+                <div class="w-4 h-4 border-2 border-gray-900/30 border-t-gray-900 rounded-full animate-spin"></div>
+                Envoi...
+              </span>
+            </button>
             
-            <form @submit.prevent="submitForm" class="space-y-6">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <!-- Prénom -->
-                <div class="space-y-2">
-                  <label for="firstname" class="block text-sm font-medium text-gray-700">Prénom</label>
-                  <input 
-                    type="text" 
-                    id="firstname" 
-                    v-model="form.firstname" 
-                    required
-                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
-                    placeholder="Votre prénom"
-                  />
-                </div>
-                
-                <!-- Nom -->
-                <div class="space-y-2">
-                  <label for="lastname" class="block text-sm font-medium text-gray-700">Nom</label>
-                  <input 
-                    type="text" 
-                    id="lastname" 
-                    v-model="form.lastname" 
-                    required
-                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
-                    placeholder="Votre nom"
-                  />
-                </div>
-              </div>
-              
-              <!-- Email / Tel -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                  <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                  <input 
-                    type="email" 
-                    id="email" 
-                    v-model="form.email" 
-                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
-                    placeholder="exemple@email.com"
-                  />
-                </div>
-                
-                <div class="space-y-2">
-                  <label for="phone" class="block text-sm font-medium text-gray-700">Téléphone (obligatoire)</label>
-                  <input 
-                    type="tel" 
-                    id="phone" 
-                    v-model="form.phone" 
-                    required
-                    class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all"
-                    placeholder="+228 XX XX XX XX"
-                  />
-                </div>
-              </div>
-              
-              <!-- Sujet -->
-              <div class="space-y-2">
-                <label for="subject" class="block text-sm font-medium text-gray-700">Sujet</label>
-                <select 
-                  id="subject" 
-                  v-model="form.subject" 
-                  required
-                  class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all bg-white"
-                >
-                  <option value="" disabled>Sélectionnez un sujet</option>
-                  <option value="produits">Question sur un produit / stock</option>
-                  <option value="commande">Suivi de commande</option>
-                  <option value="conseil">Besoin d'un conseil agricole</option>
-                  <option value="partenariat">Devenir partenaire</option>
-                  <option value="autre">Autre demande</option>
-                </select>
-              </div>
-              
-              <!-- Message -->
-              <div class="space-y-2">
-                <label for="message" class="block text-sm font-medium text-gray-700">Votre message</label>
-                <textarea 
-                  id="message" 
-                  v-model="form.message" 
-                  rows="4" 
-                  required
-                  class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none transition-all resize-none"
-                  placeholder="Comment pouvons-nous vous aider ?"
-                ></textarea>
-              </div>
-              
-              <!-- Submit -->
-              <button 
-                type="submit" 
-                :disabled="isSubmitting"
-                class="w-full flex items-center justify-center gap-2 px-6 py-4 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                <span v-if="!isSubmitting">Envoyer le message</span>
-                <span v-else class="flex items-center gap-2">
-                  <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Envoi en cours...
-                </span>
-                <Send v-if="!isSubmitting" class="w-5 h-5" />
-              </button>
-              
-              <!-- Message de succès -->
-              <div v-if="successMessage" class="mt-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl flex items-start gap-3 transition-all">
-                <CheckCircle class="w-6 h-6 flex-shrink-0 text-emerald-500" />
-                <p class="text-sm font-medium pt-0.5">{{ successMessage }}</p>
-              </div>
-            </form>
-          </div>
-          
+            <div v-if="successMessage" class="mt-4 p-3 bg-emerald-50 text-emerald-700 text-sm rounded-lg font-medium">
+              {{ successMessage }}
+            </div>
+          </form>
         </div>
+
       </div>
     </div>
 
-    <!-- Section Localisation / Carte -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-      <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 sm:p-6 overflow-hidden">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Retrouvez-nous en boutique</h2>
-        <div class="w-full h-[400px] sm:h-[450px] rounded-2xl overflow-hidden bg-gray-100 relative">
-          <!-- Iframe Google Maps (Lomé, Togo par défaut) -->
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126907.03923307525!2d1.1444059088663806!3d6.216343501726002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1023e1c113185419%3A0x3224b5422caf411d!2sLom%C3%A9%2C%20Togo!5e0!3m2!1sfr!2sfr!4v1700000000000!5m2!1sfr!2sfr" 
-            class="absolute top-0 left-0 w-full h-full" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
+    <!-- Bottom Section (Map & Info) -->
+    <div 
+      class="relative py-20 bg-cover bg-center"
+      style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1600&q=80');"
+    >
+      <div class="absolute inset-0 bg-black/70"></div>
+      
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          
+          <!-- Map -->
+          <div class="w-full h-[350px] md:h-[450px] bg-gray-200 overflow-hidden border border-white/10 shadow-2xl">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126907.03923307525!2d1.1444059088663806!3d6.216343501726002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1023e1c113185419%3A0x3224b5422caf411d!2sLom%C3%A9%2C%20Togo!5e0!3m2!1sfr!2sfr!4v1700000000000!5m2!1sfr!2sfr" 
+              class="w-full h-full" 
+              style="border:0;" 
+              allowfullscreen="" 
+              loading="lazy" 
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+
+          <!-- Info Blocks -->
+          <div class="space-y-10 text-white">
+            
+            <div class="flex items-start gap-6">
+              <div class="w-14 h-14 bg-amber-400 flex items-center justify-center flex-shrink-0 text-gray-900 shadow-[0_4px_20px_rgb(251,191,36,0.3)]">
+                <MapPin class="w-6 h-6" />
+              </div>
+              <div>
+                <h3 class="font-bold text-xl mb-1.5">Notre Position</h3>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                  Quartier Totsi, en face de la pharmacie<br>Lomé, Togo
+                </p>
+              </div>
+            </div>
+
+            <div class="w-full h-px bg-white/10"></div>
+
+            <div class="flex items-start gap-6">
+              <div class="w-14 h-14 bg-amber-400 flex items-center justify-center flex-shrink-0 text-gray-900 shadow-[0_4px_20px_rgb(251,191,36,0.3)]">
+                <Mail class="w-6 h-6" />
+              </div>
+              <div>
+                <h3 class="font-bold text-xl mb-1.5">Écrivez-nous</h3>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                  info@agroshop.tg<br>contact@agroshop.tg
+                </p>
+              </div>
+            </div>
+
+            <div class="w-full h-px bg-white/10"></div>
+
+            <div class="flex items-start gap-6">
+              <div class="w-14 h-14 bg-amber-400 flex items-center justify-center flex-shrink-0 text-gray-900 shadow-[0_4px_20px_rgb(251,191,36,0.3)]">
+                <Phone class="w-6 h-6" />
+              </div>
+              <div>
+                <h3 class="font-bold text-xl mb-1.5">Appelez-nous</h3>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                  Tél 1: +228 90 80 70 70<br>Tél 2: +228 99 80 70 70
+                </p>
+              </div>
+            </div>
+
+          </div>
+
         </div>
       </div>
     </div>
@@ -212,18 +171,17 @@
 
 <script setup>
 import { ref } from 'vue'
-import { MapPin, Phone, Mail, MessageCircle, Send, CheckCircle } from 'lucide-vue-next'
+import { MapPin, Phone, Mail, Facebook, Instagram, Linkedin } from 'lucide-vue-next'
 
 useHead({
   title: 'Contact - AgroShop',
   meta: [
-    { name: 'description', content: 'Contactez AgroShop pour toute question, conseil agronomique ou suivi de commande.' }
+    { name: 'description', content: 'Questions, idées ou projets ? Nous sommes prêts à vous aider.' }
   ]
 })
 
 const form = ref({
   firstname: '',
-  lastname: '',
   email: '',
   phone: '',
   subject: '',
@@ -237,23 +195,20 @@ const submitForm = async () => {
   isSubmitting.value = true
   successMessage.value = ''
   
-  // Simulation d'un appel API (ex: POST /api/contact)
+  // Simulation d'envoi d'API
   await new Promise(resolve => setTimeout(resolve, 1500))
   
-  successMessage.value = "Votre message a bien été envoyé ! Notre équipe vous contactera dans les plus brefs délais."
+  successMessage.value = "Votre message a été envoyé avec succès !"
   isSubmitting.value = false
   
-  // Réinitialiser le formulaire
   form.value = {
     firstname: '',
-    lastname: '',
     email: '',
     phone: '',
     subject: '',
     message: ''
   }
   
-  // Cacher le message après 5 secondes
   setTimeout(() => {
     successMessage.value = ''
   }, 5000)

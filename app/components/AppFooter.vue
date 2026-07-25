@@ -1,161 +1,150 @@
 <template>
-  <footer class="bg-gradient-to-b from-emerald-950 via-emerald-900 to-forest-dark text-white border-t border-emerald-800">
-    
-    <!-- Top Footer Bar: Trust & Guarantee -->
-    <div class="border-b border-emerald-800/60 py-8 bg-emerald-950/60">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-        
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-800/60 flex items-center justify-center text-lime-400 font-bold">
-            <Truck class="w-6 h-6" />
-          </div>
-          <div>
-            <h4 class="text-sm font-bold text-white">Livraison au Togo</h4>
-            <p class="text-xs text-emerald-200">Lomé, Tsévié, Atakpamé, Kara...</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-800/60 flex items-center justify-center text-amber-400 font-bold">
-            <ShieldCheck class="w-6 h-6" />
-          </div>
-          <div>
-            <h4 class="text-sm font-bold text-white">Produits Certifiés</h4>
-            <p class="text-xs text-emerald-200">Engrais & Phyto 100% Homologués</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-800/60 flex items-center justify-center text-lime-400 font-bold">
-            <Headphones class="w-6 h-6" />
-          </div>
-          <div>
-            <h4 class="text-sm font-bold text-white">Conseil Agronomique</h4>
-            <p class="text-xs text-emerald-200">Agronomes à votre écoute 7j/7</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-2xl bg-emerald-800/60 flex items-center justify-center text-amber-400 font-bold">
-            <CreditCard class="w-6 h-6" />
-          </div>
-          <div>
-            <h4 class="text-sm font-bold text-white">Paiement Flexible</h4>
-            <p class="text-xs text-emerald-200">T-Money, Flooz & Espèces</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Main Footer Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+  <footer 
+    class="relative text-gray-200 overflow-hidden font-sans bg-bottom bg-no-repeat bg-cover"
+    style="background-image: url('/images/footer-bg.png'); background-color: #062a15;"
+  >
+    <div class="relative z-10 w-full mx-auto px-6 lg:px-16 pt-12 pb-6">
       
-      <!-- Col 1: Brand & Bio -->
-      <div class="space-y-4">
-        <div class="flex items-center gap-2">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-lime-400 flex items-center justify-center text-slate-950 font-black">
-            <Sprout class="w-5 h-5" />
+      <!-- Top Grid: 6 Columns -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-x-6 gap-y-8 mb-8">
+        
+        <!-- Col 1: Logo & Tagline -->
+        <div class="lg:col-span-1 pr-4">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full border-2 border-[#8cc63f] flex items-center justify-center text-[#8cc63f]">
+              <Sprout class="w-6 h-6" />
+            </div>
+            <span class="text-2xl font-bold text-white tracking-wide">Agro<span class="text-[#8cc63f]">Shop</span></span>
           </div>
-          <span class="text-2xl font-extrabold tracking-tight text-white">
-            Agro<span class="text-amber-400">Shop</span>
-          </span>
-        </div>
-        <p class="text-xs text-emerald-200 leading-relaxed">
-          Plateforme leader au Togo pour l'approvisionnement en intrants agricoles certifiés (AgroDop) et matériel de quincaillerie & outillage de chantier.
-        </p>
-
-        <!-- Social Icons -->
-        <div class="flex items-center gap-3 pt-2">
-          <a href="#" class="w-9 h-9 rounded-full bg-emerald-800/60 hover:bg-emerald-700 flex items-center justify-center text-emerald-200 hover:text-white transition-colors">
-            <Facebook class="w-4 h-4" />
-          </a>
-          <a href="https://wa.me/22890123456" target="_blank" class="w-9 h-9 rounded-full bg-lime-500/20 hover:bg-lime-500 flex items-center justify-center text-lime-400 hover:text-slate-950 transition-colors">
-            <MessageSquare class="w-4 h-4" />
-          </a>
-        </div>
-      </div>
-
-      <!-- Col 2: Navigation Links -->
-      <div>
-        <h4 class="text-sm font-extrabold text-white uppercase tracking-wider mb-4 border-b border-emerald-800 pb-2">
-          Univers Produits
-        </h4>
-        <ul class="space-y-2 text-xs font-semibold text-emerald-200">
-          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">Engrais & Urée YARA</NuxtLink></li>
-          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">Produits Phytosanitaires</NuxtLink></li>
-          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">Systèmes d'Irrigation</NuxtLink></li>
-          <li><NuxtLink to="/agrodop" class="hover:text-lime-400 transition-colors">Semences Certifiées</NuxtLink></li>
-          <li><NuxtLink to="/quincaillerie" class="hover:text-lime-400 transition-colors">Quincaillerie & Outillage Manuel</NuxtLink></li>
-          <li><NuxtLink to="/quincaillerie" class="hover:text-lime-400 transition-colors">Machines & Brouettes de Chantier</NuxtLink></li>
-        </ul>
-      </div>
-
-      <!-- Col 3: Customer Care & Links -->
-      <div>
-        <h4 class="text-sm font-extrabold text-white uppercase tracking-wider mb-4 border-b border-emerald-800 pb-2">
-          Espace Client & Aide
-        </h4>
-        <ul class="space-y-2 text-xs font-semibold text-emerald-200">
-          <li><NuxtLink to="/commande/suivi" class="hover:text-amber-400 transition-colors">Suivre ma commande</NuxtLink></li>
-          <li><NuxtLink to="/blog" class="hover:text-amber-400 transition-colors">Guides d'utilisation & Fiches PDF</NuxtLink></li>
-          <li><NuxtLink to="/faq" class="hover:text-amber-400 transition-colors">Foire Aux Questions (FAQ)</NuxtLink></li>
-          <li><NuxtLink to="/contact" class="hover:text-amber-400 transition-colors">Nos agences au Togo</NuxtLink></li>
-        </ul>
-      </div>
-
-      <!-- Col 4: Contact & Mobile Money -->
-      <div class="space-y-4">
-        <h4 class="text-sm font-extrabold text-white uppercase tracking-wider border-b border-emerald-800 pb-2">
-          Contact & Siège
-        </h4>
-        <div class="space-y-2 text-xs text-emerald-200 font-medium">
-          <p class="flex items-center gap-2">
-            <MapPin class="w-4 h-4 text-lime-400 flex-shrink-0" />
-            <span>Boulevard du 13 Janvier, Lomé - Togo</span>
-          </p>
-          <p class="flex items-center gap-2">
-            <Phone class="w-4 h-4 text-lime-400 flex-shrink-0" />
-            <span>+228 90 12 34 56 / +228 91 98 76 54</span>
-          </p>
-          <p class="flex items-center gap-2">
-            <Mail class="w-4 h-4 text-lime-400 flex-shrink-0" />
-            <span>contact@agroshoptg.store</span>
+          <h3 class="text-white font-bold text-[17px] leading-snug mb-3">
+            Cultivons aujourd'hui<br>pour nourrir demain.
+          </h3>
+          <p class="text-sm text-gray-300/80 leading-relaxed">
+            Des solutions agricoles durables pour un avenir meilleur.
           </p>
         </div>
 
-        <div class="pt-2">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-300 block mb-2">Modes de Paiement Acceptés</span>
-          <div class="flex items-center gap-2">
-            <span class="px-2 py-1 bg-amber-500/20 text-amber-300 font-extrabold text-[11px] rounded-md border border-amber-500/30">T-Money</span>
-            <span class="px-2 py-1 bg-sky-500/20 text-sky-300 font-extrabold text-[11px] rounded-md border border-sky-500/30">Flooz</span>
-            <span class="px-2 py-1 bg-emerald-500/20 text-emerald-300 font-extrabold text-[11px] rounded-md border border-emerald-500/30">Espèces</span>
+        <!-- Col 2: Nos Services -->
+        <div>
+          <h4 class="text-white font-bold text-base mb-4">Nos Services</h4>
+          <ul class="space-y-2 text-[13px] text-gray-300/90 font-medium">
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Conseil Agricole</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Protection des Cultures</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Fertilisation</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Irrigation</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Formation</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Accompagnement</NuxtLink></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Cultures -->
+        <div>
+          <h4 class="text-white font-bold text-base mb-4">Cultures</h4>
+          <ul class="space-y-2 text-[13px] text-gray-300/90 font-medium">
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Céréales</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Légumineuses</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Oléagineux</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Fourragères</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Arbustiers</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Autres Cultures</NuxtLink></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: À Propos -->
+        <div>
+          <h4 class="text-white font-bold text-base mb-4">À Propos</h4>
+          <ul class="space-y-2 text-[13px] text-gray-300/90 font-medium">
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Qui sommes-nous ?</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Notre Vision</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Notre Mission</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Nos Valeurs</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Actualités</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Carrières</NuxtLink></li>
+          </ul>
+        </div>
+
+        <!-- Col 5: Contact -->
+        <div>
+          <h4 class="text-white font-bold text-base mb-4">Contact</h4>
+          <ul class="space-y-2 text-[13px] text-gray-300/90 font-medium">
+            <li><NuxtLink to="/contact" class="hover:text-white transition-colors">Nous contacter</NuxtLink></li>
+            <li><NuxtLink to="/contact" class="hover:text-white transition-colors">Formulaire de contact</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Points de vente</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">FAQ</NuxtLink></li>
+            <li><NuxtLink to="#" class="hover:text-white transition-colors">Mentions légales</NuxtLink></li>
+          </ul>
+        </div>
+
+        <!-- Col 6: Newsletter & Contact info -->
+        <div class="lg:col-span-1 lg:pl-8 lg:border-l border-white/10">
+          <div class="flex items-center gap-2.5 mb-3">
+            <Mail class="w-5 h-5 text-[#8cc63f]" />
+            <h4 class="text-white font-bold text-base">Newsletter</h4>
+          </div>
+          <p class="text-[12px] text-gray-300/90 mb-4 leading-relaxed">
+            Recevez nos conseils, actualités et nouveautés sur l'agriculture durable.
+          </p>
+          <form @submit.prevent class="mb-5">
+            <input 
+              type="email" 
+              placeholder="Votre adresse e-mail" 
+              class="w-full bg-[#03150a] border border-[#2a5a3a] text-sm text-white px-4 py-3 rounded mb-4 focus:outline-none focus:border-[#96c93d] placeholder-gray-400"
+              required
+            />
+            <button 
+              type="submit" 
+              class="w-full bg-[#96c93d] hover:bg-[#86b535] text-[#05170b] font-bold text-[14px] py-3 rounded transition-colors"
+            >
+              S'INSCRIRE
+            </button>
+          </form>
+
+          <div class="space-y-4 text-[13px] text-gray-200">
+            <div class="flex items-start gap-3">
+              <MapPin class="w-4 h-4 text-[#8cc63f] flex-shrink-0 mt-0.5" />
+              <span>Quartier Totsi,<br>Lomé, Togo</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <Phone class="w-4 h-4 text-[#8cc63f] flex-shrink-0" />
+              <span>+228 90 80 70 70</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <Mail class="w-4 h-4 text-[#8cc63f] flex-shrink-0" />
+              <span>contact@agroshop.tg</span>
+            </div>
           </div>
         </div>
+
+      </div>
+
+      <!-- Socials -->
+      <div class="flex justify-center items-center gap-5 mb-6 mt-4">
+        <a href="https://www.facebook.com/profile.php?id=100081426776950" target="_blank" class="w-11 h-11 rounded-full border border-[#96c93d] flex items-center justify-center hover:bg-[#96c93d] hover:text-[#05170b] transition-all text-white">
+          <Facebook class="w-5 h-5" />
+        </a>
+        <a href="https://www.linkedin.com/in/agro-shop-04751a36b?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" class="w-11 h-11 rounded-full border border-[#96c93d] flex items-center justify-center hover:bg-[#96c93d] hover:text-[#05170b] transition-all text-white">
+          <Linkedin class="w-5 h-5" />
+        </a>
+        <a href="https://www.instagram.com/agroshop_tg/" target="_blank" class="w-11 h-11 rounded-full border border-[#96c93d] flex items-center justify-center hover:bg-[#96c93d] hover:text-[#05170b] transition-all text-white">
+          <Instagram class="w-5 h-5" />
+        </a>
+        <a href="#" class="w-11 h-11 rounded-full border border-[#96c93d] flex items-center justify-center hover:bg-[#96c93d] hover:text-[#05170b] transition-all text-white">
+          <Youtube class="w-5 h-5" />
+        </a>
+        <a href="#" class="w-11 h-11 rounded-full border border-[#96c93d] flex items-center justify-center hover:bg-[#96c93d] hover:text-[#05170b] transition-all text-white">
+          <Twitter class="w-5 h-5" />
+        </a>
+      </div>
+
+      <!-- Copyright -->
+      <div class="border-t border-white/10 pt-4 text-center text-[12px] text-gray-400">
+        &copy; 2025 AgroShop. Tous droits réservés.
       </div>
 
     </div>
-
-    <!-- Bottom Bar Copyright -->
-    <div class="border-t border-emerald-800/80 py-4 bg-emerald-950">
-      <div class="max-w-7xl mx-auto px-4 text-center text-xs text-emerald-300">
-        &copy; 2026 AgroShop Togo. Tous droits réservés. V2 Next-Gen E-Commerce Architecture.
-      </div>
-    </div>
-
-    <!-- Floating WhatsApp Fixed Button (Bottom Right) -->
-    <a 
-      href="https://wa.me/22890123456?text=Bonjour%20AgroShop%2C%20j%27ai%20une%20question"
-      target="_blank"
-      class="fixed bottom-6 right-6 z-40 bg-lime-500 hover:bg-lime-400 text-slate-950 p-3.5 rounded-full shadow-2xl hover:scale-110 transition-all flex items-center gap-2 cursor-pointer group"
-      aria-label="Contacter sur WhatsApp"
-    >
-      <MessageSquare class="w-6 h-6 fill-slate-950" />
-      <span class="hidden group-hover:inline-block font-bold text-xs pr-1">Discuter sur WhatsApp</span>
-    </a>
   </footer>
 </template>
 
 <script setup>
-import { Sprout, Truck, ShieldCheck, Headphones, CreditCard, Facebook, MessageSquare, MapPin, Phone, Mail } from 'lucide-vue-next'
+import { Sprout, MapPin, Phone, Facebook, Linkedin, Instagram, Youtube, Twitter, Mail } from 'lucide-vue-next'
 </script>
