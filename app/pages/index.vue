@@ -148,7 +148,7 @@
                 :src="getBlogImg(article.image_principale)" 
                 :alt="article.titre"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                @error="(e) => e.target.src = '/images/champ-agricole-bg.jpg'"
+                @error="(e) => e.target.src = '/images/hero-produits-agroshop.png'"
               />
               <span 
                 v-if="article.tags && article.tags[0]" 
@@ -325,11 +325,8 @@ const featuredProducts = ref([
 // Blog Posts from DB
 const blogPosts = ref([])
 
-const getBlogImg = (img) => {
-  if (!img) return '/images/champ-agricole-bg.jpg'
-  if (img.startsWith('http') || img.startsWith('/')) return img
-  return `http://localhost:8000/${img}`
-}
+const { getImageUrl } = useMedia()
+const getBlogImg = (img) => getImageUrl(img, '/images/hero-produits-agroshop.png')
 
 const formatDate = (dateStr) => {
   if (!dateStr) return 'Récemment'

@@ -41,10 +41,10 @@
           <!-- Product Thumbnail -->
           <div class="w-16 h-16 rounded-lg bg-white p-1 border border-slate-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
             <img 
-              :src="item.url_image" 
+              :src="getItemImgUrl(item.url_image)" 
               :alt="item.nom_commercial" 
               class="w-full h-full object-contain"
-              @error="(e) => e.target.src = 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=200&auto=format&fit=crop&q=60'"
+              @error="(e) => e.target.src = fallbackImage"
             />
           </div>
 
@@ -103,17 +103,9 @@
 
       <!-- Footer Summary & Checkout Button -->
       <div v-if="cartStore.items.length > 0" class="p-5 border-t border-slate-200 bg-slate-50 space-y-3">
-        <div class="flex justify-between text-xs text-slate-600">
-          <span>Sous-total HT</span>
-          <span>{{ cartStore.totalPriceHT.toLocaleString('fr-FR') }} FCFA</span>
-        </div>
-        <div class="flex justify-between text-xs text-slate-600">
-          <span>TVA (18%)</span>
-          <span>{{ cartStore.tvaAmount.toLocaleString('fr-FR') }} FCFA</span>
-        </div>
-        <div class="flex justify-between text-base font-extrabold text-slate-900 pt-2 border-t border-slate-200">
-          <span>Total TTC</span>
-          <span class="text-emerald-700">{{ cartStore.totalPriceTTC.toLocaleString('fr-FR') }} FCFA</span>
+        <div class="flex justify-between text-base font-extrabold text-slate-900">
+          <span>Total</span>
+          <span class="text-emerald-700">{{ cartStore.totalPrice.toLocaleString('fr-FR') }} FCFA</span>
         </div>
 
         <div class="grid grid-cols-2 gap-2 pt-2">
@@ -147,12 +139,17 @@ import { useCartStore } from '~/stores/cart'
 
 const cartStore = useCartStore()
 
+const fallbackImage = '/images/Agroshopproduit .png'
+
+const { getImageUrl } = useMedia()
+const getItemImgUrl = (img) => getImageUrl(img)
+
 const whatsappCheckoutUrl = computed(() => {
   const itemList = cartStore.items
     .map(i => `- ${i.nom_commercial} (${i.quantite}x) : ${(i.prix_unitaire * i.quantite).toLocaleString('fr-FR')} FCFA`)
     .join('%0A')
   
-  const text = `Bonjour AgroShop,%0AJesouhaite passer la commande suivante :%0A${itemList}%0A%0ATotal TTC : ${cartStore.totalPriceTTC.toLocaleString('fr-FR')} FCFA`
+  const text = `Bonjour AgroShop,%0AJesouhaite passer la commande suivante :%0A${itemList}%0A%0ATotal : ${cartStore.totalPrice.toLocaleString('fr-FR')} FCFA`
   return `https://wa.me/22890123456?text=${text}`
 })
 </script>

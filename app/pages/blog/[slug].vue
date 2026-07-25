@@ -71,7 +71,7 @@
           :src="getImgUrl(article.image_principale)" 
           :alt="article.titre"
           class="w-full h-full object-cover"
-          @error="(e) => e.target.src = '/images/champ-agricole-bg.jpg'"
+          @error="(e) => e.target.src = '/images/hero-produits-agroshop.png'"
         />
       </div>
 
@@ -157,11 +157,8 @@ const article = ref({})
 const recommendedProducts = ref([])
 const suggestedArticles = ref([])
 
-const getImgUrl = (img) => {
-  if (!img) return '/images/champ-agricole-bg.jpg'
-  if (img.startsWith('http') || img.startsWith('/')) return img
-  return `http://localhost:8000/${img}`
-}
+const { getImageUrl } = useMedia()
+const getImgUrl = (img) => getImageUrl(img, '/images/hero-produits-agroshop.png')
 
 const formatDate = (dateStr) => {
   if (!dateStr) return 'Récemment'

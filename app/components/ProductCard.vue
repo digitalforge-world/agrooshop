@@ -1,10 +1,11 @@
 <template>
-  <div class="group bg-white rounded-xl border border-gray-200 hover:border-emerald-300 hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col">
+  <div class="group bg-white rounded-xl border border-gray-200 hover:border-emerald-400 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col relative">
     
-    <!-- Image -->
-    <NuxtLink 
-      :to="`/produits/${product.slug}`" 
-      :class="['relative block w-full h-48 overflow-hidden', isFallback ? 'bg-gradient-to-b from-emerald-50/80 via-emerald-100/40 to-white' : 'bg-gray-50']"
+    <!-- Image with Clickable Modal Trigger -->
+    <div 
+      @click="openModal" 
+      :class="['relative block w-full h-48 overflow-hidden cursor-pointer', isFallback ? 'bg-gradient-to-b from-emerald-50/80 via-emerald-100/40 to-white' : 'bg-gray-50']"
+      title="Cliquez pour voir la fiche produit détaillée"
     >
       <img 
         :src="imageUrl" 
@@ -15,64 +16,82 @@
         ]"
         @error="handleImageError"
       />
+
+      <!-- Hover Overlay Indicator -->
+      <div class="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+        <span class="px-3.5 py-1.5 bg-white/95 text-emerald-800 text-xs font-extrabold rounded-full shadow-md flex items-center gap-1.5 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-200">
+          <Eye class="w-3.5 h-3.5 text-emerald-600" />
+          <span>Voir la fiche</span>
+        </span>
+      </div>
       
-      <!-- Stock Badge (only shown if out of stock or low stock) -->
+      <!-- Stock Badge -->
       <span 
         v-if="stockBadge.show" 
-        :class="['absolute top-3 left-3 text-[10px] font-semibold px-2 py-0.5 rounded shadow-sm', stockBadge.class]"
+        :class="['absolute top-3 left-3 text-[10px] font-bold px-2.5 py-0.5 rounded-md shadow-xs', stockBadge.class]"
       >
         {{ stockBadge.label }}
       </span>
-    </NuxtLink>
+    </div>
 
     <!-- Body -->
     <div class="p-4 flex-1 flex flex-col">
       <!-- Category -->
-      <span class="text-[11px] font-medium text-emerald-700 uppercase tracking-wide mb-1">
+      <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wider mb-1">
         {{ mainCategory }}
       </span>
 
-      <!-- Name -->
-      <NuxtLink :to="`/produits/${product.slug}`">
-        <h3 class="text-sm font-semibold text-gray-900 line-clamp-2 hover:text-emerald-700 transition-colors leading-snug mb-2">
+      <!-- Name (Modal Trigger) -->
+      <div @click="openModal" class="cursor-pointer" title="Voir les détails de ce produit">
+        <h3 class="text-sm font-bold text-gray-900 line-clamp-2 group-hover:text-emerald-700 transition-colors leading-snug mb-1">
           {{ product.nom_commercial }}
         </h3>
-      </NuxtLink>
+      </div>
 
       <!-- Specs -->
-      <p v-if="product.composition" class="text-xs text-gray-400 line-clamp-1 mb-auto">
+      <p v-if="product.composition" class="text-xs text-gray-500 line-clamp-1 mb-auto">
         {{ product.composition }}
       </p>
 
       <!-- Price + Actions -->
-      <div class="mt-4 pt-3 border-t border-gray-100">
-        <div class="flex items-baseline justify-between mb-3">
-          <span class="text-lg font-bold text-gray-900">
-            {{ Number(product.prix_unitaire).toLocaleString('fr-FR') }} <span class="text-xs font-medium text-gray-500">FCFA</span>
+      <div class="mt-3 pt-3 border-t border-gray-100 space-y-2.5">
+        <div class="flex items-baseline justify-between">
+          <span class="text-lg font-extrabold text-gray-900">
+            {{ Number(product.prix_unitaire).toLocaleString('fr-FR') }} <span class="text-xs font-semibold text-gray-500">FCFA</span>
           </span>
-          <span class="text-[11px] text-gray-400">/ {{ product.unite_mesure || 'unité' }}</span>
+          <span class="text-[11px] text-gray-400 font-medium">/ {{ product.unite_mesure || 'unité' }}</span>
         </div>
         
         <button
-          @click="addToCart"
+          @click.stop="addToCart"
           :disabled="product.stock_disponible <= 0"
           :class="[
-            'w-full py-2.5 rounded-lg text-sm font-medium transition-colors cursor-pointer',
+            'w-full py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-2',
             product.stock_disponible > 0 
-              ? 'bg-emerald-700 hover:bg-emerald-600 text-white' 
+              ? 'bg-emerald-800 hover:bg-emerald-700 text-white' 
               : 'bg-gray-100 text-gray-400 cursor-not-allowed'
           ]"
         >
-          {{ isAdded ? 'Ajouté au panier !' : 'Ajouter au panier' }}
+          <ShoppingCart class="w-3.5 h-3.5" />
+          <span>{{ isAdded ? 'Ajouté au panier !' : 'Ajouter au panier' }}</span>
         </button>
       </div>
     </div>
+
+    <!-- Product Detail Interactive Modal -->
+    <ProductDetailModal 
+      :is-open="showModal" 
+      :product="product" 
+      @close="showModal = false" 
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
+import { Eye, ShoppingCart } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'
+import ProductDetailModal from '~/components/ProductDetailModal.vue'
 
 const props = defineProps({
   product: { type: Object, required: true }
@@ -81,19 +100,21 @@ const props = defineProps({
 const cartStore = useCartStore()
 const isAdded = ref(false)
 const isFallback = ref(false)
+const showModal = ref(false)
 
 const fallbackImage = '/images/Agroshopproduit .png'
 
+const openModal = () => {
+  showModal.value = true
+}
+
+const { getImageUrl } = useMedia()
+
 const imageUrl = computed(() => {
-  if (props.product.image_principale?.url_image) {
-    const url = props.product.image_principale.url_image
+  const raw = props.product.image_principale?.url_image || props.product.url_image
+  if (raw) {
     isFallback.value = false
-    return url.startsWith('http') ? url : `http://localhost:8000/${url}`
-  }
-  if (props.product.url_image) {
-    const url = props.product.url_image
-    isFallback.value = false
-    return url.startsWith('http') ? url : `http://localhost:8000/${url}`
+    return getImageUrl(raw)
   }
   isFallback.value = true
   return fallbackImage
@@ -110,8 +131,8 @@ const mainCategory = computed(() => {
 
 const stockBadge = computed(() => {
   const stock = props.product.stock_disponible ?? 0
-  if (stock <= 0) return { show: true, label: 'Rupture de stock', class: 'bg-red-100 text-red-700' }
-  if (stock <= 10) return { show: true, label: `Plus que ${stock}`, class: 'bg-amber-100 text-amber-700' }
+  if (stock <= 0) return { show: true, label: 'Rupture de stock', class: 'bg-red-100 text-red-700 border border-red-200' }
+  if (stock <= 10) return { show: true, label: `Plus que ${stock}`, class: 'bg-amber-100 text-amber-800 border border-amber-200' }
   return { show: false, label: '', class: '' }
 })
 

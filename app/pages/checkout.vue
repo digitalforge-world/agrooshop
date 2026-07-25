@@ -142,19 +142,15 @@
 
         <div class="space-y-2 pt-4 border-t border-slate-200 text-xs">
           <div class="flex justify-between text-slate-600">
-            <span>Sous-total HT</span>
-            <span>{{ cartStore.totalPriceHT.toLocaleString('fr-FR') }} FCFA</span>
-          </div>
-          <div class="flex justify-between text-slate-600">
-            <span>TVA (18%)</span>
-            <span>{{ cartStore.tvaAmount.toLocaleString('fr-FR') }} FCFA</span>
+            <span>Sous-total articles</span>
+            <span>{{ cartStore.totalPrice.toLocaleString('fr-FR') }} FCFA</span>
           </div>
           <div class="flex justify-between text-slate-600">
             <span>Frais de livraison</span>
             <span>{{ form.mode_livraison === 'domicile' ? '5 000 FCFA' : '0 FCFA' }}</span>
           </div>
           <div class="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-200">
-            <span>Total Général</span>
+            <span>Total</span>
             <span class="text-emerald-700">{{ calculatedGrandTotal.toLocaleString('fr-FR') }} FCFA</span>
           </div>
         </div>
@@ -204,7 +200,7 @@ const form = ref({
 
 const calculatedGrandTotal = computed(() => {
   const fee = form.value.mode_livraison === 'domicile' ? 5000 : 0
-  return cartStore.totalPriceTTC + fee
+  return cartStore.totalPrice + fee
 })
 
 const submitOrder = async () => {

@@ -194,10 +194,11 @@ const product = ref({
   categories: [{ nom: 'Intrants Agricoles / Urée' }]
 })
 
+const { getImageUrl } = useMedia()
+
 const getImgUrl = (img) => {
   const url = typeof img === 'string' ? img : img?.url_image
-  if (!url) return fallbackImage
-  return url.startsWith('http') ? url : `http://localhost:8000/${url}`
+  return getImageUrl(url, fallbackImage)
 }
 
 const productImages = computed(() => {
