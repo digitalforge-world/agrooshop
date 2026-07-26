@@ -1,207 +1,261 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
-    
-    <!-- Breadcrumb -->
-    <nav class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-      <NuxtLink to="/" class="hover:text-emerald-600">Accueil</NuxtLink>
-      <span>/</span>
-      <NuxtLink to="/produits" class="hover:text-emerald-600">Produits</NuxtLink>
-      <span>/</span>
-      <span class="text-slate-900 font-bold truncate max-w-xs">{{ product.nom_commercial }}</span>
-    </nav>
+  <div class="min-h-screen bg-slate-50 text-slate-800 py-6 px-4 sm:px-6 lg:px-8 font-sans">
+    <div class="max-w-6xl mx-auto space-y-6">
 
-    <!-- Main Product Layout (2 Cols: Left Gallery Slider, Right Specs & Purchase) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-      
-      <!-- Gallery Left Col (5 Cols) - Sticky Interactive Slider -->
-      <div class="lg:col-span-5 space-y-4 lg:sticky lg:top-28 self-start z-20">
+      <!-- Breadcrumb Navigation -->
+      <nav class="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+        <NuxtLink to="/" class="hover:text-emerald-700 transition-colors flex items-center gap-1">
+          <Home class="w-3.5 h-3.5 text-emerald-600" />
+          <span>Accueil</span>
+        </NuxtLink>
+        <ChevronRight class="w-3 h-3 text-slate-400" />
+        <NuxtLink to="/produits" class="hover:text-emerald-700 transition-colors">Catalogue</NuxtLink>
+        <ChevronRight class="w-3 h-3 text-slate-400" />
+        <span class="text-slate-900 font-bold truncate max-w-[180px] sm:max-w-xs">{{ product.nom_commercial }}</span>
+      </nav>
+
+      <!-- Main Product Grid: Balanced & Elegant Scale -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        <!-- Main Animated Image Slider Box -->
-        <div 
-          class="w-full aspect-square bg-white rounded-3xl border border-slate-200 p-6 flex items-center justify-center overflow-hidden shadow-xs relative group"
-          @mouseenter="stopAutoSlide"
-          @mouseleave="startAutoSlide"
-        >
-          <Transition name="slide-fade" mode="out-in">
-            <img 
-              :key="selectedImageIndex"
-              :src="selectedImageUrl" 
-              :alt="product.nom_commercial" 
-              class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-              @error="(e) => e.target.src = fallbackImage"
-            />
-          </Transition>
-
-          <!-- Vedette Badge -->
-          <span 
-            v-if="product.featured || product.est_en_vedette" 
-            class="absolute top-4 left-4 bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md flex items-center gap-1 z-10"
+        <!-- LEFT COLUMN: Image Carousel Slider -->
+        <div class="lg:col-span-5 lg:sticky lg:top-24 self-start z-20 space-y-3">
+          
+          <!-- Main Image Display Frame -->
+          <div 
+            class="relative w-full aspect-square bg-white rounded-2xl border border-slate-200/80 p-5 flex items-center justify-center group shadow-xs"
+            @mouseenter="stopAutoSlide"
+            @mouseleave="startAutoSlide"
           >
-            ⭐ Produit Vedette
-          </span>
+            <Transition name="slide-fade" mode="out-in">
+              <img 
+                :key="selectedImageIndex"
+                :src="getImgUrl(displayImages[selectedImageIndex])" 
+                :alt="product.nom_commercial"
+                class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                @error="(e) => e.target.src = fallbackImage"
+              />
+            </Transition>
 
-          <!-- Left / Right Slider Control Arrows -->
-          <div v-if="productImages.length > 1" class="absolute inset-x-3 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none z-10">
+            <!-- Certified Badge -->
+            <span class="absolute top-3 left-3 bg-emerald-800 text-white text-[9px] font-extrabold px-2.5 py-1 rounded-full shadow-xs uppercase tracking-wider flex items-center gap-1">
+              <CheckCircle class="w-3 h-3" />
+              <span>Certifié AgroShop</span>
+            </span>
+
+            <!-- Carousel Navigation Arrows -->
             <button 
-              @click="prevImage" 
-              class="w-10 h-10 rounded-full bg-slate-900/60 hover:bg-emerald-600 text-white backdrop-blur-md flex items-center justify-center transition-all pointer-events-auto cursor-pointer shadow-lg active:scale-90"
+              v-if="displayImages.length > 1"
+              @click="prevImage"
+              class="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 border border-slate-200 text-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-emerald-600 hover:text-white hover:border-emerald-600 cursor-pointer shadow-sm"
               title="Image précédente"
             >
-              <ChevronLeft class="w-5 h-5" />
+              <ChevronLeft class="w-4 h-4" />
             </button>
 
             <button 
-              @click="nextImage" 
-              class="w-10 h-10 rounded-full bg-slate-900/60 hover:bg-emerald-600 text-white backdrop-blur-md flex items-center justify-center transition-all pointer-events-auto cursor-pointer shadow-lg active:scale-90"
+              v-if="displayImages.length > 1"
+              @click="nextImage"
+              class="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 border border-slate-200 text-slate-700 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all hover:bg-emerald-600 hover:text-white hover:border-emerald-600 cursor-pointer shadow-sm"
               title="Image suivante"
             >
-              <ChevronRight class="w-5 h-5" />
+              <ChevronRight class="w-4 h-4" />
             </button>
-          </div>
 
-          <!-- Pagination Dots Overlay -->
-          <div v-if="productImages.length > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-slate-900/40 backdrop-blur-md px-3 py-1.5 rounded-full z-10">
-            <button 
-              v-for="(_, idx) in productImages" 
-              :key="idx"
-              @click="selectedImageIndex = idx"
-              :class="['h-2 rounded-full transition-all cursor-pointer', selectedImageIndex === idx ? 'w-6 bg-emerald-400' : 'w-2 bg-white/60 hover:bg-white']"
-            ></button>
-          </div>
-        </div>
-
-        <!-- Thumbnails Ribbon with Active Ring -->
-        <div v-if="productImages.length > 1" class="flex items-center gap-3 overflow-x-auto pb-2">
-          <button 
-            v-for="(img, idx) in productImages" 
-            :key="idx"
-            @click="selectedImageIndex = idx"
-            :class="['w-16 h-16 rounded-2xl border p-1 bg-white flex-shrink-0 cursor-pointer overflow-hidden transition-all duration-300', selectedImageIndex === idx ? 'border-emerald-600 ring-2 ring-emerald-500/40 scale-105 shadow-md' : 'border-slate-200 opacity-60 hover:opacity-100']"
-          >
-            <img :src="getImgUrl(img)" class="w-full h-full object-contain" />
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Specs Right Col (7 Cols) -->
-      <div class="lg:col-span-7 space-y-6">
-        
-        <!-- Category Tag -->
-        <div class="flex items-center justify-between gap-4">
-          <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">
-            {{ mainCategoryName }}
-          </span>
-        </div>
-
-        <!-- Title -->
-        <h1 class="text-2xl sm:text-4xl font-black text-slate-900 leading-tight">
-          {{ product.nom_commercial }}
-        </h1>
-
-        <!-- Price Display -->
-        <div class="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 flex items-baseline gap-3">
-          <span class="text-3xl font-black text-emerald-800 tracking-tight">
-            {{ Number(product.prix_unitaire || 0).toLocaleString('fr-FR') }} <span class="text-base font-bold text-emerald-600">FCFA</span>
-          </span>
-          <span class="text-xs font-semibold text-slate-500">
-            / {{ product.unite_mesure || 'unité' }}
-          </span>
-        </div>
-
-        <!-- Description -->
-        <div class="space-y-2">
-          <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">Description & Présentation</h3>
-          <p class="text-sm text-slate-600 leading-relaxed">
-            {{ product.description || 'Produit certifié disponible chez AgroShop au Togo.' }}
-          </p>
-        </div>
-
-        <!-- Agronomic / Technical Specs Table -->
-        <div v-if="product.composition || product.principes_actifs || product.dosage_recommande || product.mode_emploi" class="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-xs">
-          <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-2">Caractéristiques Techniques & Fiche Agronomique</h3>
-          
-          <div v-if="product.composition" class="grid grid-cols-3 gap-2 text-xs border-b border-slate-100 pb-2">
-            <span class="font-bold text-slate-500">Composition :</span>
-            <span class="col-span-2 font-semibold text-slate-800">{{ product.composition }}</span>
-          </div>
-
-          <div v-if="product.principes_actifs" class="grid grid-cols-3 gap-2 text-xs border-b border-slate-100 pb-2">
-            <span class="font-bold text-slate-500">Principes Actifs :</span>
-            <span class="col-span-2 font-semibold text-slate-800">{{ product.principes_actifs }}</span>
-          </div>
-
-          <div v-if="product.dosage_recommande" class="grid grid-cols-3 gap-2 text-xs border-b border-slate-100 pb-2">
-            <span class="font-bold text-slate-500">Dosage Recommandé :</span>
-            <span class="col-span-2 font-semibold text-slate-800">{{ product.dosage_recommande }}</span>
-          </div>
-
-          <div v-if="product.mode_emploi" class="grid grid-cols-3 gap-2 text-xs border-b border-slate-100 pb-2">
-            <span class="font-bold text-slate-500">Mode d'Emploi :</span>
-            <span class="col-span-2 font-semibold text-slate-800">{{ product.mode_emploi }}</span>
-          </div>
-
-          <div v-if="product.precautions_usage" class="grid grid-cols-3 gap-2 text-xs">
-            <span class="font-bold text-slate-500">Précautions :</span>
-            <span class="col-span-2 font-semibold text-rose-700">{{ product.precautions_usage }}</span>
-          </div>
-        </div>
-
-        <!-- Quantity & Add to Cart Action -->
-        <div class="space-y-4 pt-4 border-t border-slate-200">
-          <div class="flex items-center gap-4">
-            <label class="text-xs font-bold text-slate-700 uppercase">Quantité :</label>
-            <div class="flex items-center border border-slate-300 rounded-xl bg-white overflow-hidden shadow-xs">
+            <!-- Dot Indicators Bar -->
+            <div v-if="displayImages.length > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-slate-900/80 px-2.5 py-1 rounded-full border border-slate-700 backdrop-blur-md">
               <button 
-                @click="selectedQuantity = Math.max(1, selectedQuantity - 1)"
-                class="px-3 py-2 text-slate-600 hover:bg-slate-100 font-bold text-sm cursor-pointer"
-              >-</button>
-              <span class="px-4 py-2 text-sm font-bold text-slate-900">{{ selectedQuantity }}</span>
-              <button 
-                @click="selectedQuantity = Math.min(product.stock_disponible || 999, selectedQuantity + 1)"
-                class="px-3 py-2 text-slate-600 hover:bg-slate-100 font-bold text-sm cursor-pointer"
-              >+</button>
+                v-for="(_, idx) in displayImages" 
+                :key="idx"
+                @click="selectedImageIndex = idx"
+                :class="[
+                  'h-1.5 rounded-full transition-all cursor-pointer',
+                  idx === selectedImageIndex ? 'w-4 bg-emerald-400' : 'w-1.5 bg-white/50 hover:bg-white'
+                ]"
+              ></button>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button
-              @click="addToCart"
-              :disabled="(product.stock_disponible || 0) <= 0"
-              class="w-full py-3.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          <!-- Thumbnail Ribbon -->
+          <div v-if="displayImages.length > 1" class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+            <button 
+              v-for="(img, idx) in displayImages" 
+              :key="idx"
+              @click="selectedImageIndex = idx"
+              :class="[
+                'w-16 h-16 rounded-xl bg-white border p-1.5 flex-shrink-0 transition-all overflow-hidden cursor-pointer shadow-xs',
+                idx === selectedImageIndex ? 'border-emerald-600 ring-2 ring-emerald-500/40 scale-105' : 'border-slate-200 opacity-60 hover:opacity-100'
+              ]"
             >
-              <ShoppingCart class="w-5 h-5" />
-              <span>{{ isAdded ? 'Ajouté au Panier !' : 'Ajouter au Panier' }}</span>
+              <img :src="getImgUrl(img)" class="w-full h-full object-contain" @error="(e) => e.target.src = fallbackImage" />
             </button>
+          </div>
+        </div>
 
-            <a
-              :href="whatsappUrl"
+        <!-- RIGHT COLUMN: Compact & Refined Typography Scale -->
+        <div class="lg:col-span-7 space-y-5">
+          
+          <!-- 1. Category Badge & Title -->
+          <div class="space-y-2">
+            <span class="inline-block px-2.5 py-0.5 bg-emerald-100 border border-emerald-200 text-emerald-800 text-[10px] font-extrabold rounded-full uppercase tracking-wider">
+              {{ categoryName }}
+            </span>
+
+            <!-- Compact & Balanced Title Size -->
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">
+              {{ product.nom_commercial }}
+            </h1>
+
+            <div class="flex items-center gap-2 text-[11px] font-semibold text-emerald-700">
+              <span class="flex items-center gap-1">
+                <CheckCircle class="w-3.5 h-3.5 text-emerald-600" />
+                <span>Disponible immédiatement</span>
+              </span>
+              <span>•</span>
+              <span class="text-slate-500">Livraison rapide au Togo</span>
+            </div>
+          </div>
+
+          <!-- 2. Price Bar -->
+          <div class="flex items-baseline gap-2 py-2 border-y border-slate-200/80">
+            <span class="text-2xl font-black text-emerald-700">
+              {{ formatPrice(product.prix_unitaire) }} FCFA
+            </span>
+            <span class="text-xs text-slate-500 font-bold">
+              / {{ product.unite_mesure || 'unité' }}
+            </span>
+          </div>
+
+          <!-- 3. Quantity & Action Buttons Bar -->
+          <div class="space-y-3">
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+              
+              <!-- Quantity Selector -->
+              <div class="flex items-center border border-slate-200 bg-white rounded-xl p-0.5 w-full sm:w-auto shadow-xs">
+                <button 
+                  @click="selectedQuantity > 1 ? selectedQuantity-- : null"
+                  class="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 hover:text-emerald-700 flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <Minus class="w-3.5 h-3.5" />
+                </button>
+                <span class="w-10 text-center font-bold text-slate-900 text-xs">
+                  {{ selectedQuantity }}
+                </span>
+                <button 
+                  @click="selectedQuantity++"
+                  class="w-9 h-9 rounded-lg bg-slate-100 text-slate-700 hover:text-emerald-700 flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <Plus class="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <!-- Main Order Button -->
+              <button 
+                @click="addToCart"
+                :class="[
+                  'w-full sm:flex-1 py-3 px-5 font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all cursor-pointer active:scale-95',
+                  isAdded ? 'bg-emerald-800 text-white' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
+                ]"
+              >
+                <ShoppingBag class="w-4 h-4" />
+                <span>{{ isAdded ? 'Ajouté à la commande !' : 'Ajouter à ma commande' }}</span>
+              </button>
+            </div>
+
+            <!-- WhatsApp Direct Order Button -->
+            <a 
+              :href="whatsappUrl" 
               target="_blank"
-              @click="trackWhatsappClick"
-              class="w-full py-3.5 px-6 bg-lime-500 hover:bg-lime-600 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+              class="w-full py-2.5 px-5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
-              <MessageSquare class="w-5 h-5" />
-              <span>Commander sur WhatsApp</span>
+              <MessageSquare class="w-3.5 h-3.5 text-emerald-400" />
+              <span>Commander par WhatsApp (+228 98 70 60 81)</span>
             </a>
           </div>
+
+          <!-- 4. Refined Content Sections -->
+          <div class="space-y-4 pt-3 border-t border-slate-200/80">
+            
+            <!-- Description -->
+            <div class="space-y-1">
+              <h3 class="text-xs font-bold uppercase text-slate-900 tracking-wider flex items-center gap-1.5">
+                <FileText class="w-3.5 h-3.5 text-emerald-600" />
+                <span>Description du Produit</span>
+              </h3>
+              <p class="text-xs text-slate-600 leading-relaxed font-sans">
+                {{ product.description || 'Engrais et produit agricole certifié AgroShop répondant aux normes de qualité internationales.' }}
+              </p>
+            </div>
+
+            <!-- Composition & Principes Actifs -->
+            <div v-if="product.composition || product.principes_actifs" class="space-y-1.5 pt-3 border-t border-slate-200/60">
+              <h3 class="text-xs font-bold uppercase text-slate-900 tracking-wider flex items-center gap-1.5">
+                <Beaker class="w-3.5 h-3.5 text-emerald-600" />
+                <span>Composition & Principes Actifs</span>
+              </h3>
+              <div class="space-y-1 text-xs text-slate-600">
+                <p v-if="product.composition"><strong class="text-slate-900">Composition :</strong> {{ product.composition }}</p>
+                <p v-if="product.principes_actifs"><strong class="text-slate-900">Principes actifs :</strong> {{ product.principes_actifs }}</p>
+              </div>
+            </div>
+
+            <!-- Mode d'emploi & Dosage -->
+            <div v-if="product.mode_emploi || product.dosage_recommande" class="space-y-1.5 pt-3 border-t border-slate-200/60">
+              <h3 class="text-xs font-bold uppercase text-slate-900 tracking-wider flex items-center gap-1.5">
+                <CheckCircle2 class="w-3.5 h-3.5 text-emerald-600" />
+                <span>Mode d'emploi & Dosage Recommandé</span>
+              </h3>
+              <div class="space-y-1 text-xs text-slate-600">
+                <p v-if="product.mode_emploi"><strong class="text-slate-900">Mode d'application :</strong> {{ product.mode_emploi }}</p>
+                <p v-if="product.dosage_recommande"><strong class="text-slate-900">Dosage recommandé :</strong> {{ product.dosage_recommande }}</p>
+              </div>
+            </div>
+
+            <!-- Précautions d'usage -->
+            <div v-if="product.precautions_usage" class="space-y-1 pt-3 border-t border-slate-200/60">
+              <h3 class="text-xs font-bold uppercase text-amber-800 tracking-wider flex items-center gap-1.5">
+                <ShieldAlert class="w-3.5 h-3.5 text-amber-600" />
+                <span>Précautions d'emploi</span>
+              </h3>
+              <p class="text-xs text-amber-900/90 leading-relaxed">
+                {{ product.precautions_usage }}
+              </p>
+            </div>
+
+          </div>
+
+          <!-- 5. Reassurance Strip -->
+          <div class="pt-4 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-[11px] font-semibold text-slate-600">
+            <div class="flex items-center gap-1.5">
+              <CheckCircle class="w-3.5 h-3.5 text-emerald-600" />
+              <span>Qualité Certifiée</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <Truck class="w-3.5 h-3.5 text-emerald-600" />
+              <span>Livraison au Togo</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <ShieldCheck class="w-3.5 h-3.5 text-emerald-600" />
+              <span>Support AgroShop</span>
+            </div>
+          </div>
+
         </div>
 
       </div>
 
     </div>
-
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { ShoppingCart, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { Home, ChevronRight, ChevronLeft, CheckCircle, CheckCircle2, Minus, Plus, ShoppingBag, FileText, Beaker, ShieldAlert, Truck, MessageSquare, ShieldCheck } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'
 
 const route = useRoute()
 const config = useRuntimeConfig()
 const cartStore = useCartStore()
+const { getImageUrl } = useMedia()
 
 const selectedQuantity = ref(1)
 const isAdded = ref(false)
@@ -295,104 +349,73 @@ const fallbackProducts = [
     url_image: 'storage/produits/katana.jpg',
     images: [
       'storage/produits/katana.jpg',
-      '/images/Agroshopproduit .png'
+      '/images/Agroshopproduit .png',
+      '/images/hero-produits-agroshop.png'
     ],
-    categories: [{ nom: 'Produits Phytosanitaires' }]
-  },
-  {
-    id: 4,
-    nom_commercial: 'Semence Maïs Hybride PAN 53',
-    slug: 'semence-mais-hybride-pan-53',
-    description: 'Semences certifiées de maïs hybride à très haut potentiel de rendement, tolérantes au stress hydrique et aux maladies foliaires.',
-    composition: 'Semences traitées fongicide & insecticide.',
-    principes_actifs: 'Variété Hybride F1 certifiée.',
-    mode_emploi: 'Semer 1 graine tous les 25cm en lignes espacées de 75cm.',
-    dosage_recommande: '25 kg/ha.',
-    precautions_usage: 'Ne pas consommer les semences traitées.',
-    prix_unitaire: 12000,
-    unite_mesure: 'sac 5kg',
-    stock_disponible: 500,
-    featured: true,
-    url_image: 'storage/produits/mais_pan53.jpg',
-    images: [
-      'storage/produits/mais_pan53.jpg',
-      '/images/Agroshopproduit .png'
-    ],
-    categories: [{ nom: 'Semences Certifiées' }]
-  },
-  {
-    id: 5,
-    nom_commercial: 'Kit d\'Irrigation Goutte-à-Goutte 500m²',
-    slug: 'kit-irrigation-goutte-a-goutte-500m2',
-    description: 'Système complet d\'arrosage goutte-à-goutte pour maraîchage economisant 70% d\'eau.',
-    composition: 'Gaines goutte-à-goutte 16mm, filtre à disque, vannes et raccordement.',
-    mode_emploi: 'Raccorder à une citerne ou un château d\'eau sous pression.',
-    dosage_recommande: 'Arrosage journalier 30 à 45 minutes.',
-    prix_unitaire: 85000,
-    unite_mesure: 'kit complet',
-    stock_disponible: 45,
-    featured: true,
-    url_image: 'storage/produits/irrigation_kit.jpg',
-    images: [
-      'storage/produits/irrigation_kit.jpg',
-      '/images/Agroshopproduit .png'
-    ],
-    categories: [{ nom: 'Systèmes d\'Irrigation' }]
-  },
-  {
-    id: 6,
-    nom_commercial: 'Atomiseur STIHL SR 450',
-    slug: 'atomiseur-stihl-sr-450',
-    description: 'Atomiseur thermique professionnel pour le traitement des plantations, vergers et grandes cultures.',
-    composition: 'Moteur STIHL 2T 63.3cm³.',
-    mode_emploi: 'Remplir le réservoir avec la solution traitante diluée.',
-    dosage_recommande: 'Portée de pulvérisation jusqu\'à 14.5m.',
-    precautions_usage: 'Utiliser du carburant mélangé 2%.',
-    prix_unitaire: 515000,
-    unite_mesure: 'unité',
-    stock_disponible: 25,
-    featured: true,
-    url_image: 'storage/produits/stihl.jpg',
-    images: [
-      'storage/produits/stihl.jpg',
-      '/images/Agroshopproduit .png'
-    ],
-    categories: [{ nom: 'Machines Agricoles' }]
+    categories: [{ nom: 'Produits Phytosanitaires / Insecticides' }]
   }
 ]
 
-const { getImageUrl } = useMedia()
+const formatPrice = (val) => Number(val || 0).toLocaleString('fr-FR')
+const getImgUrl = (img) => getImageUrl(img, fallbackImage)
 
-const getImgUrl = (img) => {
-  const url = typeof img === 'string' ? img : img?.url_image
-  return getImageUrl(url, fallbackImage)
-}
-
-const productImages = computed(() => {
-  if (product.value.images && product.value.images.length > 0) {
-    return product.value.images
-  }
-  return [product.value.image_principale?.url_image || product.value.url_image || fallbackImage]
+const whatsappUrl = computed(() => {
+  const text = encodeURIComponent(`Bonjour AgroShop, je souhaite commander : ${product.value.nom_commercial} (${selectedQuantity.value} ${product.value.unite_mesure || 'unité'})`)
+  return `https://wa.me/22898706081?text=${text}`
 })
 
-const selectedImageUrl = computed(() => {
-  return getImgUrl(productImages.value[selectedImageIndex.value] || fallbackImage)
+const displayImages = computed(() => {
+  const list = []
+  
+  if (product.value?.image_principale?.url_image) {
+    list.push(product.value.image_principale.url_image)
+  }
+  if (product.value?.url_image && !list.includes(product.value.url_image)) {
+    list.push(product.value.url_image)
+  }
+  
+  if (product.value?.images && Array.isArray(product.value.images)) {
+    product.value.images.forEach(img => {
+      const path = typeof img === 'object' ? (img.url_image || img.url) : img
+      if (path && !list.includes(path)) list.push(path)
+    })
+  }
+
+  const defaultGallery = [
+    '/images/Agroshopproduit .png',
+    '/images/hero-produits-agroshop.png',
+    '/images/agroshop.jpg'
+  ]
+  defaultGallery.forEach(g => {
+    if (!list.includes(g)) list.push(g)
+  })
+
+  return list
+})
+
+const categoryName = computed(() => {
+  if (product.value?.categories && product.value.categories.length > 0) {
+    return product.value.categories[0].nom || product.value.categories[0].slug
+  }
+  return 'Intrants Agricoles Certifiés'
 })
 
 const nextImage = () => {
-  if (productImages.value.length <= 1) return
-  selectedImageIndex.value = (selectedImageIndex.value + 1) % productImages.value.length
+  if (displayImages.value.length === 0) return
+  selectedImageIndex.value = (selectedImageIndex.value + 1) % displayImages.value.length
 }
 
 const prevImage = () => {
-  if (productImages.value.length <= 1) return
-  selectedImageIndex.value = (selectedImageIndex.value - 1 + productImages.value.length) % productImages.value.length
+  if (displayImages.value.length === 0) return
+  selectedImageIndex.value = (selectedImageIndex.value - 1 + displayImages.value.length) % displayImages.value.length
 }
 
 const startAutoSlide = () => {
   stopAutoSlide()
-  if (productImages.value.length > 1) {
-    autoSlideTimer = setInterval(nextImage, 4000)
+  if (displayImages.value.length > 1) {
+    autoSlideTimer = setInterval(() => {
+      nextImage()
+    }, 4500)
   }
 }
 
@@ -403,40 +426,17 @@ const stopAutoSlide = () => {
   }
 }
 
-const mainCategoryName = computed(() => {
-  return product.value.categories?.[0]?.nom || 'Produit'
-})
-
-const whatsappUrl = computed(() => {
-  const text = `Bonjour AgroShop,%0AJesouhaite commander le produit: ${product.value.nom_commercial} (${selectedQuantity.value}x sac(s) / unité(s) à ${Number(product.value.prix_unitaire).toLocaleString('fr-FR')} FCFA).%0AVeuillez confirmer la disponibilité.`
-  const phone = useRuntimeConfig().public.whatsappNumber || '22898706081'
-  return `https://wa.me/${phone}?text=${text}`
-})
-
-const trackWhatsappClick = () => {
+const trackProductView = async () => {
   try {
-    if (typeof window === 'undefined' || !product.value) return
-    const total = Number(product.value.prix_unitaire) * selectedQuantity.value
-    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+    await $fetch(`${config.public.apiBaseUrl}/statistiques/visites`, {
       method: 'POST',
       body: {
-        page: window.location.pathname,
-        type_action: 'clic_whatsapp',
-        details: `Commande WhatsApp Fiche Produit: "${product.value.nom_commercial}" (x${selectedQuantity.value}) - ${total.toLocaleString('fr-FR')} FCFA`
-      }
-    })
-  } catch (e) {}
-}
-
-const trackProductView = () => {
-  try {
-    if (typeof window === 'undefined' || !product.value) return
-    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
-      method: 'POST',
-      body: {
-        page: window.location.pathname,
-        type_action: 'clic_produit',
-        details: `Consultation Fiche Produit: "${product.value.nom_commercial}" (${Number(product.value.prix_unitaire).toLocaleString('fr-FR')} FCFA)`
+        type_action: 'vue_produit',
+        details: {
+          produit_id: product.value.id,
+          nom_commercial: product.value.nom_commercial,
+          slug: product.value.slug
+        }
       }
     })
   } catch (e) {}
@@ -453,7 +453,7 @@ const addToCart = () => {
 const findFallbackProduct = (slug) => {
   const found = fallbackProducts.find(p => p.slug === slug || String(p.id) === String(slug))
   if (found) {
-    product.value = found
+    product.value = { ...product.value, ...found }
   }
   trackProductView()
 }
@@ -464,7 +464,21 @@ onMounted(async () => {
     const res = await $fetch(`${config.public.apiBaseUrl}/produits/${slug}`)
     const item = res?.data?.produit || res?.data
     if (item && item.nom_commercial) {
-      product.value = item
+      product.value = {
+        ...product.value,
+        ...item,
+        description: item.description || product.value.description,
+        composition: item.composition || product.value.composition,
+        principes_actifs: item.principes_actifs || product.value.principes_actifs,
+        mode_emploi: item.mode_emploi || product.value.mode_emploi,
+        dosage_recommande: item.dosage_recommande || product.value.dosage_recommande,
+        precautions_usage: item.precautions_usage || product.value.precautions_usage,
+        prix_unitaire: item.prix_unitaire ?? product.value.prix_unitaire,
+        unite_mesure: item.unite_mesure || product.value.unite_mesure,
+        stock_disponible: item.stock_disponible ?? product.value.stock_disponible,
+        images: (item.images && item.images.length > 0) ? item.images : product.value.images,
+        categories: (item.categories && item.categories.length > 0) ? item.categories : product.value.categories
+      }
       trackProductView()
     } else {
       findFallbackProduct(slug)
