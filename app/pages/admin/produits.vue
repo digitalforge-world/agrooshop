@@ -431,7 +431,7 @@
               <label 
                 v-for="cat in availableCategories" 
                 :key="cat.slug"
-                class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-2 text-xs font-bold text-slate-200 cursor-pointer hover:border-emerald-500 transition-colors"
+                class="p-3 bg-slate-950 rounded-xl border border-slate-800 flex items-center gap-2.5 text-xs font-bold text-slate-200 cursor-pointer hover:border-emerald-500 transition-colors"
               >
                 <input 
                   type="checkbox" 
@@ -439,6 +439,7 @@
                   v-model="form.selectedCategories" 
                   class="w-4 h-4 accent-emerald-500 rounded"
                 />
+                <i v-if="cat.icon" :class="[cat.icon, 'text-emerald-400 text-sm flex-shrink-0']"></i>
                 <span>{{ cat.nom }}</span>
               </label>
             </div>
@@ -602,19 +603,19 @@ const searchQuery = ref('')
 const imagesList = ref([])
 
 const availableCategories = ref([
-  { slug: 'intrants-agricoles', nom: 'Intrants Agricoles' },
-  { slug: 'produits-phytosanitaires', nom: 'Produits Phytosanitaires' },
-  { slug: 'systemes-irrigation', nom: 'Systèmes d\'Irrigation' },
-  { slug: 'semences', nom: 'Semences' },
-  { slug: 'machines-agricoles', nom: 'Machines Agricoles' },
-  { slug: 'quincaillerie', nom: 'Quincaillerie' },
-  { slug: 'engrais-npk', nom: 'Engrais NPK (Sous-catégorie)' },
-  { slug: 'uree', nom: 'Urée (Sous-catégorie)' },
-  { slug: 'engrais-organiques', nom: 'Engrais Organiques (Sous-catégorie)' },
-  { slug: 'insecticides', nom: 'Insecticides (Sous-catégorie)' },
-  { slug: 'fongicides', nom: 'Fongicides (Sous-catégorie)' },
-  { slug: 'herbicides', nom: 'Herbicides (Sous-catégorie)' },
-  { slug: 'nematicides', nom: 'Nématicides (Sous-catégorie)' }
+  { slug: 'intrants-agricoles', nom: 'Intrants Agricoles (Engrais)', icon: 'fa-solid fa-wheat-awn' },
+  { slug: 'produits-phytosanitaires', nom: 'Produits Phytosanitaires', icon: 'fa-solid fa-bug' },
+  { slug: 'systemes-irrigation', nom: "Systèmes d'Irrigation", icon: 'fa-solid fa-droplet' },
+  { slug: 'semences', nom: 'Semences Certifiées', icon: 'fa-solid fa-seedling' },
+  { slug: 'machines-agricoles', nom: 'Machines Agricoles', icon: 'fa-solid fa-tractor' },
+  { slug: 'quincaillerie', nom: 'Quincaillerie & Outillage', icon: 'fa-solid fa-wrench' },
+  { slug: 'engrais-npk', nom: 'Engrais NPK (Sous-catégorie)', icon: 'fa-solid fa-flask' },
+  { slug: 'uree', nom: 'Urée (Sous-catégorie)', icon: 'fa-solid fa-vial' },
+  { slug: 'engrais-organiques', nom: 'Engrais Organiques (Sous-catégorie)', icon: 'fa-solid fa-leaf' },
+  { slug: 'insecticides', nom: 'Insecticides (Sous-catégorie)', icon: 'fa-solid fa-spray-can' },
+  { slug: 'fongicides', nom: 'Fongicides (Sous-catégorie)', icon: 'fa-solid fa-shield-halved' },
+  { slug: 'herbicides', nom: 'Herbicides (Sous-catégorie)', icon: 'fa-solid fa-scissors' },
+  { slug: 'nematicides', nom: 'Nématicides (Sous-catégorie)', icon: 'fa-solid fa-virus' }
 ])
 
 const form = ref({

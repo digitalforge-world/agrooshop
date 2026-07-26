@@ -59,7 +59,7 @@ export const useCartStore = defineStore('cart', () => {
   function openCheckout() {
     isOpen.value = false
     isCheckoutOpen.value = true
-    trackAction('acces_checkout', `Passage en caisse (${totalCount.value} article(s) - Total: ${totalAmount.value} FCFA)`)
+    trackAction('acces_checkout', `Passage en caisse (${totalQuantity.value} article(s) - Total: ${totalPrice.value.toLocaleString('fr-FR')} FCFA)`)
   }
 
   function closeCheckout() {

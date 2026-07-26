@@ -81,12 +81,15 @@
           <tbody class="divide-y divide-slate-800/60 font-medium">
             <tr v-for="cat in filteredCategories" :key="cat.id" class="hover:bg-slate-800/40 transition-colors">
               <td class="px-6 py-4 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-emerald-400 font-bold">
-                  {{ cat.nom[0] }}
+                <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-emerald-400 font-bold text-sm">
+                  <i v-if="cat.icon" :class="cat.icon"></i>
+                  <span v-else>{{ cat.nom[0] }}</span>
                 </div>
                 <div>
-                  <p class="font-bold text-white text-sm">{{ cat.nom }}</p>
-                  <p class="text-[11px] text-slate-500">{{ cat.description || 'Aucune description' }}</p>
+                  <p class="font-bold text-white text-sm flex items-center gap-2">
+                    <span>{{ cat.nom }}</span>
+                  </p>
+                  <p class="text-[11px] text-slate-500">{{ cat.description || 'Famille certifiée AgroShop' }}</p>
                 </div>
               </td>
               <td class="px-6 py-4 font-mono text-slate-400">/categories/{{ cat.slug }}</td>
@@ -138,13 +141,31 @@ const categories = ref([])
 const fetchCategories = async () => {
   try {
     const res = await $fetch(`${config.public.apiBaseUrl}/categories`)
-    if (res?.data) {
+    if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
       categories.value = res.data
+    } else {
+      categories.value = fallbackCategoriesList
     }
   } catch (e) {
-    console.error(e)
+    categories.value = fallbackCategoriesList
   }
 }
+
+const fallbackCategoriesList = [
+  { id: 1, slug: 'intrants-agricoles', nom: 'Intrants Agricoles (Engrais)', icon: 'fa-solid fa-wheat-awn', parent_id: null },
+  { id: 2, slug: 'produits-phytosanitaires', nom: 'Produits Phytosanitaires', icon: 'fa-solid fa-bug', parent_id: null },
+  { id: 3, slug: 'systemes-irrigation', nom: "Systèmes d'Irrigation", icon: 'fa-solid fa-droplet', parent_id: null },
+  { id: 4, slug: 'semences', nom: 'Semences Certifiées', icon: 'fa-solid fa-seedling', parent_id: null },
+  { id: 5, slug: 'machines-agricoles', nom: 'Machines Agricoles', icon: 'fa-solid fa-tractor', parent_id: null },
+  { id: 6, slug: 'quincaillerie', nom: 'Quincaillerie & Outillage', icon: 'fa-solid fa-wrench', parent_id: null },
+  { id: 7, slug: 'engrais-npk', nom: 'Engrais NPK', icon: 'fa-solid fa-flask', parent_id: 1 },
+  { id: 8, slug: 'uree', nom: 'Urée', icon: 'fa-solid fa-vial', parent_id: 1 },
+  { id: 9, slug: 'engrais-organiques', nom: 'Engrais Organiques', icon: 'fa-solid fa-leaf', parent_id: 1 },
+  { id: 10, slug: 'insecticides', nom: 'Insecticides', icon: 'fa-solid fa-spray-can', parent_id: 2 },
+  { id: 11, slug: 'fongicides', nom: 'Fongicides', icon: 'fa-solid fa-shield-halved', parent_id: 2 },
+  { id: 12, slug: 'herbicides', nom: 'Herbicides', icon: 'fa-solid fa-scissors', parent_id: 2 },
+  { id: 13, slug: 'nematicides', nom: 'Nématicides', icon: 'fa-solid fa-virus', parent_id: 2 }
+]
 
 onMounted(() => {
   fetchCategories()

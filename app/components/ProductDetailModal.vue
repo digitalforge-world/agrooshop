@@ -28,22 +28,48 @@
               <span class="px-3 py-1 bg-emerald-800 text-white text-[11px] font-extrabold rounded-full uppercase tracking-wider shadow-xs">
                 {{ mainCategory }}
               </span>
-
-              <span 
-                :class="['text-[11px] font-bold px-3 py-1 rounded-full shadow-xs', stockBadge.class]"
-              >
-                {{ stockBadge.label }}
-              </span>
             </div>
 
-            <!-- Main Image -->
-            <div class="w-full h-64 sm:h-80 flex items-center justify-center p-4 my-auto relative">
-              <img 
-                :src="activeImage" 
-                :alt="product.nom_commercial"
-                class="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105 filter drop-shadow-md"
-                @error="handleImageError"
-              />
+            <!-- Main Image Slider -->
+            <div class="w-full h-64 sm:h-80 flex items-center justify-center p-4 my-auto relative group">
+              <Transition name="slide-fade" mode="out-in">
+                <img 
+                  :key="selectedImageIndex"
+                  :src="modalImages[selectedImageIndex] || fallbackImage" 
+                  :alt="product.nom_commercial"
+                  class="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105 filter drop-shadow-md"
+                  @error="handleImageError"
+                />
+              </Transition>
+
+              <!-- Slider Navigation Arrows -->
+              <div v-if="modalImages.length > 1" class="absolute inset-x-1 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none z-10">
+                <button 
+                  @click="selectedImageIndex = (selectedImageIndex - 1 + modalImages.length) % modalImages.length" 
+                  class="w-8 h-8 rounded-full bg-slate-900/60 hover:bg-emerald-600 text-white backdrop-blur-md flex items-center justify-center transition-all pointer-events-auto cursor-pointer shadow-md"
+                  title="Précédent"
+                >
+                  <ChevronLeft class="w-4 h-4" />
+                </button>
+
+                <button 
+                  @click="selectedImageIndex = (selectedImageIndex + 1) % modalImages.length" 
+                  class="w-8 h-8 rounded-full bg-slate-900/60 hover:bg-emerald-600 text-white backdrop-blur-md flex items-center justify-center transition-all pointer-events-auto cursor-pointer shadow-md"
+                  title="Suivant"
+                >
+                  <ChevronRight class="w-4 h-4" />
+                </button>
+              </div>
+
+              <!-- Dot Indicators -->
+              <div v-if="modalImages.length > 1" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-slate-900/40 backdrop-blur-md px-2.5 py-1 rounded-full z-10">
+                <button 
+                  v-for="(_, idx) in modalImages" 
+                  :key="idx"
+                  @click="selectedImageIndex = idx"
+                  :class="['h-1.5 rounded-full transition-all cursor-pointer', selectedImageIndex === idx ? 'w-5 bg-emerald-400' : 'w-1.5 bg-white/60 hover:bg-white']"
+                ></button>
+              </div>
             </div>
 
             <!-- Trust Indicator below image -->
@@ -210,7 +236,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { X, ShoppingCart, Check, ShieldCheck, Truck, Leaf, Star, MessageSquare, Zap } from 'lucide-vue-next'
+import { X, ShoppingCart, Check, ShieldCheck, Truck, Leaf, Star, MessageSquare, Zap, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'
 
 const props = defineProps({
@@ -225,6 +251,7 @@ const quantity = ref(1)
 const isAdded = ref(false)
 const activeTab = ref('description')
 const isFallback = ref(false)
+const selectedImageIndex = ref(0)
 
 const fallbackImage = '/images/Agroshopproduit .png'
 
@@ -232,14 +259,18 @@ watch(() => props.product, () => {
   quantity.value = 1
   isAdded.value = false
   isFallback.value = false
+  selectedImageIndex.value = 0
 })
 
 const { getImageUrl } = useMedia()
 
-const activeImage = computed(() => {
-  if (!props.product || isFallback.value) return fallbackImage
+const modalImages = computed(() => {
+  if (!props.product) return [fallbackImage]
+  if (props.product.images && props.product.images.length > 0) {
+    return props.product.images.map(img => getImageUrl(typeof img === 'string' ? img : img?.url_image))
+  }
   const raw = props.product.image_principale?.url_image || props.product.url_image
-  return getImageUrl(raw)
+  return [getImageUrl(raw, fallbackImage), '/images/Agroshopproduit .png']
 })
 
 const handleImageError = () => {
@@ -324,5 +355,18 @@ const close = () => {
 
 .animate-modal-in {
   animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.95) translateX(12px);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95) translateX(-12px);
 }
 </style>

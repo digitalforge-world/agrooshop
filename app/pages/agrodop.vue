@@ -5,7 +5,7 @@
     <div class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-forest-dark text-white py-14 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       <div class="max-w-7xl mx-auto space-y-4 text-center sm:text-left relative z-10">
         <span class="inline-block px-3.5 py-1 bg-lime-500/20 text-lime-400 font-bold text-xs uppercase tracking-wider rounded-full border border-lime-500/30">
-          🌾 Univers AgroDop & Production Agricole
+          Univers AgroDop & Production Agricole
         </span>
         <h1 class="text-3xl sm:text-5xl font-black tracking-tight">
           Intrants, Phytosanitaires & Semences Certifiées

@@ -10,55 +10,87 @@
       <span class="text-slate-900 font-bold truncate max-w-xs">{{ product.nom_commercial }}</span>
     </nav>
 
-    <!-- Main Product Layout (2 Cols: Left Gallery, Right Specs & Purchase) -->
+    <!-- Main Product Layout (2 Cols: Left Gallery Slider, Right Specs & Purchase) -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
       
-      <!-- Gallery Left Col (5 Cols) -->
-      <div class="lg:col-span-5 space-y-4">
-        <div class="w-full aspect-square bg-white rounded-3xl border border-slate-200 p-6 flex items-center justify-center overflow-hidden shadow-xs relative">
-          <img 
-            :src="selectedImageUrl" 
-            :alt="product.nom_commercial" 
-            class="w-full h-full object-contain"
-            @error="(e) => e.target.src = fallbackImage"
-          />
+      <!-- Gallery Left Col (5 Cols) - Sticky Interactive Slider -->
+      <div class="lg:col-span-5 space-y-4 lg:sticky lg:top-28 self-start z-20">
+        
+        <!-- Main Animated Image Slider Box -->
+        <div 
+          class="w-full aspect-square bg-white rounded-3xl border border-slate-200 p-6 flex items-center justify-center overflow-hidden shadow-xs relative group"
+          @mouseenter="stopAutoSlide"
+          @mouseleave="startAutoSlide"
+        >
+          <Transition name="slide-fade" mode="out-in">
+            <img 
+              :key="selectedImageIndex"
+              :src="selectedImageUrl" 
+              :alt="product.nom_commercial" 
+              class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+              @error="(e) => e.target.src = fallbackImage"
+            />
+          </Transition>
+
+          <!-- Vedette Badge -->
           <span 
-            v-if="product.featured" 
-            class="absolute top-4 left-4 bg-amber-500 text-slate-950 font-bold text-xs px-3 py-1 rounded-full shadow-xs"
+            v-if="product.featured || product.est_en_vedette" 
+            class="absolute top-4 left-4 bg-amber-500 text-slate-950 font-black text-xs px-3 py-1 rounded-full shadow-md flex items-center gap-1 z-10"
           >
             ⭐ Produit Vedette
           </span>
+
+          <!-- Left / Right Slider Control Arrows -->
+          <div v-if="productImages.length > 1" class="absolute inset-x-3 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none z-10">
+            <button 
+              @click="prevImage" 
+              class="w-10 h-10 rounded-full bg-slate-900/60 hover:bg-emerald-600 text-white backdrop-blur-md flex items-center justify-center transition-all pointer-events-auto cursor-pointer shadow-lg active:scale-90"
+              title="Image précédente"
+            >
+              <ChevronLeft class="w-5 h-5" />
+            </button>
+
+            <button 
+              @click="nextImage" 
+              class="w-10 h-10 rounded-full bg-slate-900/60 hover:bg-emerald-600 text-white backdrop-blur-md flex items-center justify-center transition-all pointer-events-auto cursor-pointer shadow-lg active:scale-90"
+              title="Image suivante"
+            >
+              <ChevronRight class="w-5 h-5" />
+            </button>
+          </div>
+
+          <!-- Pagination Dots Overlay -->
+          <div v-if="productImages.length > 1" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-slate-900/40 backdrop-blur-md px-3 py-1.5 rounded-full z-10">
+            <button 
+              v-for="(_, idx) in productImages" 
+              :key="idx"
+              @click="selectedImageIndex = idx"
+              :class="['h-2 rounded-full transition-all cursor-pointer', selectedImageIndex === idx ? 'w-6 bg-emerald-400' : 'w-2 bg-white/60 hover:bg-white']"
+            ></button>
+          </div>
         </div>
 
-        <!-- Thumbnails List -->
+        <!-- Thumbnails Ribbon with Active Ring -->
         <div v-if="productImages.length > 1" class="flex items-center gap-3 overflow-x-auto pb-2">
           <button 
             v-for="(img, idx) in productImages" 
             :key="idx"
             @click="selectedImageIndex = idx"
-            :class="['w-16 h-16 rounded-xl border p-1 bg-white flex-shrink-0 cursor-pointer overflow-hidden transition-all', selectedImageIndex === idx ? 'border-emerald-600 ring-2 ring-emerald-500/20' : 'border-slate-200 opacity-70 hover:opacity-100']"
+            :class="['w-16 h-16 rounded-2xl border p-1 bg-white flex-shrink-0 cursor-pointer overflow-hidden transition-all duration-300', selectedImageIndex === idx ? 'border-emerald-600 ring-2 ring-emerald-500/40 scale-105 shadow-md' : 'border-slate-200 opacity-60 hover:opacity-100']"
           >
             <img :src="getImgUrl(img)" class="w-full h-full object-contain" />
           </button>
         </div>
+
       </div>
 
       <!-- Specs Right Col (7 Cols) -->
       <div class="lg:col-span-7 space-y-6">
         
-        <!-- Category & Stock Status -->
+        <!-- Category Tag -->
         <div class="flex items-center justify-between gap-4">
           <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">
             {{ mainCategoryName }}
-          </span>
-          
-          <span 
-            :class="[
-              'text-xs font-bold px-3 py-1 rounded-full',
-              product.stock_disponible > 10 ? 'bg-emerald-100 text-emerald-800' : product.stock_disponible > 0 ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'
-            ]"
-          >
-            {{ product.stock_disponible > 0 ? `En Stock (${product.stock_disponible})` : 'Rupture de Stock' }}
           </span>
         </div>
 
@@ -70,7 +102,7 @@
         <!-- Price Display -->
         <div class="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 flex items-baseline gap-3">
           <span class="text-3xl font-black text-emerald-800 tracking-tight">
-            {{ Number(product.prix_unitaire).toLocaleString('fr-FR') }} <span class="text-base font-bold text-emerald-600">FCFA</span>
+            {{ Number(product.prix_unitaire || 0).toLocaleString('fr-FR') }} <span class="text-base font-bold text-emerald-600">FCFA</span>
           </span>
           <span class="text-xs font-semibold text-slate-500">
             / {{ product.unite_mesure || 'unité' }}
@@ -86,7 +118,7 @@
         </div>
 
         <!-- Agronomic / Technical Specs Table -->
-        <div v-if="product.composition || product.principes_actifs || product.dosage_recommande || product.mode_emploi" class="bg-white rounded-2xl border border-slate-200 p-5 space-y-3">
+        <div v-if="product.composition || product.principes_actifs || product.dosage_recommande || product.mode_emploi" class="bg-white rounded-2xl border border-slate-200 p-5 space-y-3 shadow-xs">
           <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider mb-2">Caractéristiques Techniques & Fiche Agronomique</h3>
           
           <div v-if="product.composition" class="grid grid-cols-3 gap-2 text-xs border-b border-slate-100 pb-2">
@@ -119,15 +151,15 @@
         <div class="space-y-4 pt-4 border-t border-slate-200">
           <div class="flex items-center gap-4">
             <label class="text-xs font-bold text-slate-700 uppercase">Quantité :</label>
-            <div class="flex items-center border border-slate-300 rounded-xl bg-white overflow-hidden">
+            <div class="flex items-center border border-slate-300 rounded-xl bg-white overflow-hidden shadow-xs">
               <button 
                 @click="selectedQuantity = Math.max(1, selectedQuantity - 1)"
-                class="px-3 py-2 text-slate-600 hover:bg-slate-100 font-bold text-sm"
+                class="px-3 py-2 text-slate-600 hover:bg-slate-100 font-bold text-sm cursor-pointer"
               >-</button>
               <span class="px-4 py-2 text-sm font-bold text-slate-900">{{ selectedQuantity }}</span>
               <button 
                 @click="selectedQuantity = Math.min(product.stock_disponible || 999, selectedQuantity + 1)"
-                class="px-3 py-2 text-slate-600 hover:bg-slate-100 font-bold text-sm"
+                class="px-3 py-2 text-slate-600 hover:bg-slate-100 font-bold text-sm cursor-pointer"
               >+</button>
             </div>
           </div>
@@ -135,8 +167,8 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button
               @click="addToCart"
-              :disabled="product.stock_disponible <= 0"
-              class="w-full py-3.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+              :disabled="(product.stock_disponible || 0) <= 0"
+              class="w-full py-3.5 px-6 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               <ShoppingCart class="w-5 h-5" />
               <span>{{ isAdded ? 'Ajouté au Panier !' : 'Ajouter au Panier' }}</span>
@@ -162,9 +194,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ShoppingCart, MessageSquare } from 'lucide-vue-next'
+import { ShoppingCart, MessageSquare, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'
 
 const route = useRoute()
@@ -174,6 +206,7 @@ const cartStore = useCartStore()
 const selectedQuantity = ref(1)
 const isAdded = ref(false)
 const selectedImageIndex = ref(0)
+let autoSlideTimer = null
 
 const fallbackImage = '/images/Agroshopproduit .png'
 
@@ -192,8 +225,141 @@ const product = ref({
   stock_disponible: 1000,
   featured: true,
   url_image: 'storage/produits/urea.jpg',
+  images: [
+    'storage/produits/urea.jpg',
+    '/images/Agroshopproduit .png',
+    '/images/hero-produits-agroshop.png'
+  ],
   categories: [{ nom: 'Intrants Agricoles / Urée' }]
 })
+
+const fallbackProducts = [
+  {
+    id: 1,
+    nom_commercial: 'Urée YARA 46% N',
+    slug: 'uree-yara-46-n',
+    description: 'Engrais azoté concentré contenant 46 % d’azote, idéal pour stimuler la croissance végétative des cultures de maïs, riz et maraîchage.',
+    composition: 'Urée granulée contenant 46 % d\'Azote total (N).',
+    principes_actifs: 'Azote (N) = 46 %.',
+    mode_emploi: 'Appliquer au sol avant ou après semis, puis arroser pour faciliter la dissolution.',
+    dosage_recommande: '50 à 100 kg/ha selon le type de culture.',
+    precautions_usage: 'Conserver dans un endroit sec. Porter des gants.',
+    prix_unitaire: 15000,
+    unite_mesure: 'sac 50kg',
+    stock_disponible: 1000,
+    featured: true,
+    url_image: 'storage/produits/urea.jpg',
+    images: [
+      'storage/produits/urea.jpg',
+      '/images/Agroshopproduit .png',
+      '/images/hero-produits-agroshop.png'
+    ],
+    categories: [{ nom: 'Intrants Agricoles / Urée' }]
+  },
+  {
+    id: 2,
+    nom_commercial: 'Engrais NPK 15-15-15 SuperFert',
+    slug: 'engrais-npk-15-15-15-superfert',
+    description: 'Engrais universel équilibré assurant un apport complet en Azote (N), Phosphore (P) et Potassium (K) pour toutes les cultures vivrières et maraîchères.',
+    composition: '15% N, 15% P2O5, 15% K2O.',
+    principes_actifs: 'Azote (15%), Phosphore (15%), Potassium (15%).',
+    mode_emploi: 'Épandre régulièrement autour de la zone racinaire lors de la préparation des sols ou en entretien.',
+    dosage_recommande: '150 à 200 kg/ha.',
+    precautions_usage: 'Conserver à l\'abri de l\'humidité.',
+    prix_unitaire: 18500,
+    unite_mesure: 'sac 50kg',
+    stock_disponible: 750,
+    featured: true,
+    url_image: 'storage/produits/npk.jpg',
+    images: [
+      'storage/produits/npk.jpg',
+      '/images/Agroshopproduit .png',
+      '/images/hero-produits-agroshop.png'
+    ],
+    categories: [{ nom: 'Intrants Agricoles / NPK' }]
+  },
+  {
+    id: 3,
+    nom_commercial: 'Insecticide Katana 50 EC',
+    slug: 'insecticide-katana-50-ec',
+    description: 'Insecticide à large spectre d\'action pour la protection des cultures contre les chenilles, pucerons et insectes piqueurs.',
+    composition: 'Cyperméthrine 50 g/L.',
+    principes_actifs: 'Cyperméthrine (Pyréthrinoïde de synthèse).',
+    mode_emploi: 'Diluer dans l\'eau et pulvériser le feuillage tôt le matin ou en fin d\'après-midi.',
+    dosage_recommande: '1L par hectare.',
+    precautions_usage: 'Porter un masque et des gants lors de la manipulation.',
+    prix_unitaire: 7500,
+    unite_mesure: 'flacon 1L',
+    stock_disponible: 300,
+    featured: false,
+    url_image: 'storage/produits/katana.jpg',
+    images: [
+      'storage/produits/katana.jpg',
+      '/images/Agroshopproduit .png'
+    ],
+    categories: [{ nom: 'Produits Phytosanitaires' }]
+  },
+  {
+    id: 4,
+    nom_commercial: 'Semence Maïs Hybride PAN 53',
+    slug: 'semence-mais-hybride-pan-53',
+    description: 'Semences certifiées de maïs hybride à très haut potentiel de rendement, tolérantes au stress hydrique et aux maladies foliaires.',
+    composition: 'Semences traitées fongicide & insecticide.',
+    principes_actifs: 'Variété Hybride F1 certifiée.',
+    mode_emploi: 'Semer 1 graine tous les 25cm en lignes espacées de 75cm.',
+    dosage_recommande: '25 kg/ha.',
+    precautions_usage: 'Ne pas consommer les semences traitées.',
+    prix_unitaire: 12000,
+    unite_mesure: 'sac 5kg',
+    stock_disponible: 500,
+    featured: true,
+    url_image: 'storage/produits/mais_pan53.jpg',
+    images: [
+      'storage/produits/mais_pan53.jpg',
+      '/images/Agroshopproduit .png'
+    ],
+    categories: [{ nom: 'Semences Certifiées' }]
+  },
+  {
+    id: 5,
+    nom_commercial: 'Kit d\'Irrigation Goutte-à-Goutte 500m²',
+    slug: 'kit-irrigation-goutte-a-goutte-500m2',
+    description: 'Système complet d\'arrosage goutte-à-goutte pour maraîchage economisant 70% d\'eau.',
+    composition: 'Gaines goutte-à-goutte 16mm, filtre à disque, vannes et raccordement.',
+    mode_emploi: 'Raccorder à une citerne ou un château d\'eau sous pression.',
+    dosage_recommande: 'Arrosage journalier 30 à 45 minutes.',
+    prix_unitaire: 85000,
+    unite_mesure: 'kit complet',
+    stock_disponible: 45,
+    featured: true,
+    url_image: 'storage/produits/irrigation_kit.jpg',
+    images: [
+      'storage/produits/irrigation_kit.jpg',
+      '/images/Agroshopproduit .png'
+    ],
+    categories: [{ nom: 'Systèmes d\'Irrigation' }]
+  },
+  {
+    id: 6,
+    nom_commercial: 'Atomiseur STIHL SR 450',
+    slug: 'atomiseur-stihl-sr-450',
+    description: 'Atomiseur thermique professionnel pour le traitement des plantations, vergers et grandes cultures.',
+    composition: 'Moteur STIHL 2T 63.3cm³.',
+    mode_emploi: 'Remplir le réservoir avec la solution traitante diluée.',
+    dosage_recommande: 'Portée de pulvérisation jusqu\'à 14.5m.',
+    precautions_usage: 'Utiliser du carburant mélangé 2%.',
+    prix_unitaire: 515000,
+    unite_mesure: 'unité',
+    stock_disponible: 25,
+    featured: true,
+    url_image: 'storage/produits/stihl.jpg',
+    images: [
+      'storage/produits/stihl.jpg',
+      '/images/Agroshopproduit .png'
+    ],
+    categories: [{ nom: 'Machines Agricoles' }]
+  }
+]
 
 const { getImageUrl } = useMedia()
 
@@ -212,6 +378,30 @@ const productImages = computed(() => {
 const selectedImageUrl = computed(() => {
   return getImgUrl(productImages.value[selectedImageIndex.value] || fallbackImage)
 })
+
+const nextImage = () => {
+  if (productImages.value.length <= 1) return
+  selectedImageIndex.value = (selectedImageIndex.value + 1) % productImages.value.length
+}
+
+const prevImage = () => {
+  if (productImages.value.length <= 1) return
+  selectedImageIndex.value = (selectedImageIndex.value - 1 + productImages.value.length) % productImages.value.length
+}
+
+const startAutoSlide = () => {
+  stopAutoSlide()
+  if (productImages.value.length > 1) {
+    autoSlideTimer = setInterval(nextImage, 4000)
+  }
+}
+
+const stopAutoSlide = () => {
+  if (autoSlideTimer) {
+    clearInterval(autoSlideTimer)
+    autoSlideTimer = null
+  }
+}
 
 const mainCategoryName = computed(() => {
   return product.value.categories?.[0]?.nom || 'Produit'
@@ -260,16 +450,47 @@ const addToCart = () => {
   }, 1500)
 }
 
+const findFallbackProduct = (slug) => {
+  const found = fallbackProducts.find(p => p.slug === slug || String(p.id) === String(slug))
+  if (found) {
+    product.value = found
+  }
+  trackProductView()
+}
+
 onMounted(async () => {
   try {
     const slug = route.params.slug
     const res = await $fetch(`${config.public.apiBaseUrl}/produits/${slug}`)
-    if (res && res.data) {
-      product.value = res.data
+    const item = res?.data?.produit || res?.data
+    if (item && item.nom_commercial) {
+      product.value = item
       trackProductView()
+    } else {
+      findFallbackProduct(slug)
     }
   } catch (e) {
-    console.warn('API detail fetch error, using test product data', e)
+    findFallbackProduct(route.params.slug)
   }
+  startAutoSlide()
+})
+
+onUnmounted(() => {
+  stopAutoSlide()
 })
 </script>
+
+<style scoped>
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.95) translateX(12px);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95) translateX(-12px);
+}
+</style>
