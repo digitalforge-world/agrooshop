@@ -218,7 +218,8 @@ const mainCategoryName = computed(() => {
 
 const whatsappUrl = computed(() => {
   const text = `Bonjour AgroShop,%0AJesouhaite commander le produit: ${product.value.nom_commercial} (${selectedQuantity.value}x sac(s) / unité(s) à ${Number(product.value.prix_unitaire).toLocaleString('fr-FR')} FCFA).%0AVeuillez confirmer la disponibilité.`
-  return `https://wa.me/22890123456?text=${text}`
+  const phone = useRuntimeConfig().public.whatsappNumber || '22898706081'
+  return `https://wa.me/${phone}?text=${text}`
 })
 
 const addToCart = () => {

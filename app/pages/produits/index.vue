@@ -1,20 +1,30 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-10 space-y-6 sm:space-y-8">
     
     <!-- Page Header & Title -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-200 pb-4 sm:pb-6">
       <div>
-        <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider block">Boutique en ligne</span>
-        <h1 class="text-2xl sm:text-4xl font-black text-slate-900">Catalogue des Produits</h1>
+        <span class="text-[10px] sm:text-xs font-extrabold text-emerald-700 uppercase tracking-wider block">Boutique en ligne AgroShop Togo</span>
+        <h1 class="text-xl sm:text-3xl lg:text-4xl font-black text-slate-900 leading-tight">Catalogue des Produits & Matériel</h1>
       </div>
 
-      <!-- Sorting Select -->
+      <!-- Sorting Select & Mobile Category Trigger Button -->
       <div class="flex items-center gap-2">
-        <label class="text-xs font-bold text-slate-500 uppercase">Trier par :</label>
+        <!-- Mobile Category Modal Trigger Button -->
+        <button 
+          type="button"
+          @click="openCategoryModal"
+          class="lg:hidden flex items-center gap-1.5 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs transition-colors cursor-pointer"
+          title="Filtrer par catégorie"
+        >
+          <span>Catégories</span>
+        </button>
+
+        <label class="hidden sm:inline text-xs font-bold text-slate-500 uppercase">Trier par :</label>
         <select 
           v-model="catalogStore.sort"
           @change="fetchProducts"
-          class="bg-white border border-slate-300 text-slate-700 text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
+          class="bg-white border border-slate-300 text-slate-700 text-xs font-semibold rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer"
         >
           <option value="latest">Plus récents</option>
           <option value="price_asc">Prix : Croissant</option>
@@ -25,10 +35,10 @@
     </div>
 
     <!-- Main Content: Sidebar Filters + Products Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start min-h-[500px] lg:min-h-[850px]">
       
-      <!-- Left Sidebar Filters -->
-      <aside class="lg:col-span-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+      <!-- Left Sidebar Filters (Hidden on Mobile, Sticky on Desktop) -->
+      <aside class="hidden lg:block lg:col-span-3 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-6 lg:sticky lg:top-24">
         
         <!-- Category Filter -->
         <div>
@@ -36,45 +46,20 @@
           <div class="space-y-1.5 text-xs font-semibold">
             <button 
               @click="filterCategory('')"
-              :class="['w-full text-left px-3 py-2 rounded-xl transition-colors cursor-pointer', !catalogStore.selectedCategory ? 'bg-emerald-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-100']"
+              :class="['w-full text-left px-3.5 py-2.5 rounded-xl transition-colors cursor-pointer', !catalogStore.selectedCategory ? 'bg-emerald-800 text-white font-bold shadow-xs' : 'text-slate-600 hover:bg-slate-100']"
             >
               Toutes les catégories
             </button>
+
+            <!-- Dynamic or Static Category List -->
             <button 
-              @click="filterCategory('intrants-agricoles')"
-              :class="['w-full text-left px-3 py-2 rounded-xl transition-colors cursor-pointer', catalogStore.selectedCategory === 'intrants-agricoles' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-100']"
+              v-for="cat in availableCategories"
+              :key="cat.slug"
+              @click="filterCategory(cat.slug)"
+              :class="['w-full text-left px-3.5 py-2.5 rounded-xl transition-colors cursor-pointer flex items-center justify-between', catalogStore.selectedCategory === cat.slug ? 'bg-emerald-800 text-white font-bold shadow-xs' : 'text-slate-600 hover:bg-slate-100']"
             >
-              🌾 Intrants Agricoles (Engrais)
-            </button>
-            <button 
-              @click="filterCategory('produits-phytosanitaires')"
-              :class="['w-full text-left px-3 py-2 rounded-xl transition-colors cursor-pointer', catalogStore.selectedCategory === 'produits-phytosanitaires' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-100']"
-            >
-              🐛 Produits Phytosanitaires
-            </button>
-            <button 
-              @click="filterCategory('systemes-irrigation')"
-              :class="['w-full text-left px-3 py-2 rounded-xl transition-colors cursor-pointer', catalogStore.selectedCategory === 'systemes-irrigation' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-100']"
-            >
-              💧 Systèmes d'Irrigation
-            </button>
-            <button 
-              @click="filterCategory('semences')"
-              :class="['w-full text-left px-3 py-2 rounded-xl transition-colors cursor-pointer', catalogStore.selectedCategory === 'semences' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-100']"
-            >
-              🌱 Semences Certifiées
-            </button>
-            <button 
-              @click="filterCategory('machines-agricoles')"
-              :class="['w-full text-left px-3 py-2 rounded-xl transition-colors cursor-pointer', catalogStore.selectedCategory === 'machines-agricoles' ? 'bg-emerald-600 text-white font-bold' : 'text-slate-600 hover:bg-slate-100']"
-            >
-              🚜 Machines Agricoles
-            </button>
-            <button 
-              @click="filterCategory('quincaillerie')"
-              :class="['w-full text-left px-3 py-2 rounded-xl transition-colors cursor-pointer', catalogStore.selectedCategory === 'quincaillerie' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-100']"
-            >
-              🛠️ Quincaillerie & Outillage
+              <span>{{ cat.icon || '📦' }} {{ cat.nom }}</span>
+              <span v-if="cat.count" class="text-[10px] opacity-75">({{ cat.count }})</span>
             </button>
           </div>
         </div>
@@ -85,23 +70,19 @@
           <div class="grid grid-cols-2 gap-2">
             <input 
               v-model.number="catalogStore.minPrice"
+              @input="applyFiltersAndSort"
               type="number"
               placeholder="Min"
               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
             />
             <input 
               v-model.number="catalogStore.maxPrice"
+              @input="applyFiltersAndSort"
               type="number"
               placeholder="Max"
               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
             />
           </div>
-          <button 
-            @click="fetchProducts"
-            class="w-full mt-3 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
-          >
-            Filtrer
-          </button>
         </div>
 
         <!-- Reset Button -->
@@ -115,50 +96,55 @@
       </aside>
 
       <!-- Right Products Grid -->
-      <main class="lg:col-span-9 space-y-6">
+      <main class="lg:col-span-9 space-y-6 min-h-[750px]">
         
         <!-- Active Filter Pills Bar -->
-        <div v-if="catalogStore.selectedCategory || catalogStore.searchQuery" class="flex flex-wrap items-center gap-2 bg-emerald-50/60 p-3 rounded-2xl border border-emerald-100">
+        <div v-if="catalogStore.selectedCategory || catalogStore.searchQuery || catalogStore.minPrice || catalogStore.maxPrice" class="flex flex-wrap items-center gap-2 bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200/80">
           <span class="text-xs font-bold text-emerald-800">Filtres actifs :</span>
           
-          <span v-if="catalogStore.selectedCategory" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded-full flex items-center gap-1.5">
-            Catégorie: {{ catalogStore.selectedCategory }}
-            <button @click="filterCategory('')" class="font-bold">✕</button>
+          <span v-if="catalogStore.selectedCategory" class="px-3 py-1 bg-emerald-700 text-white text-xs font-bold rounded-full flex items-center gap-1.5 shadow-xs">
+            Catégorie: {{ getCategoryLabel(catalogStore.selectedCategory) }}
+            <button @click="filterCategory('')" class="font-bold cursor-pointer hover:text-emerald-200">✕</button>
           </span>
 
-          <span v-if="catalogStore.searchQuery" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded-full flex items-center gap-1.5">
+          <span v-if="catalogStore.minPrice || catalogStore.maxPrice" class="px-3 py-1 bg-emerald-700 text-white text-xs font-bold rounded-full flex items-center gap-1.5 shadow-xs">
+            Prix: {{ catalogStore.minPrice || 0 }} - {{ catalogStore.maxPrice || '∞' }} FCFA
+            <button @click="catalogStore.minPrice = null; catalogStore.maxPrice = null; applyFiltersAndSort()" class="font-bold cursor-pointer hover:text-emerald-200">✕</button>
+          </span>
+
+          <span v-if="catalogStore.searchQuery" class="px-3 py-1 bg-emerald-700 text-white text-xs font-bold rounded-full flex items-center gap-1.5 shadow-xs">
             Recherche: "{{ catalogStore.searchQuery }}"
-            <button @click="catalogStore.setSearch(''); fetchProducts()" class="font-bold">✕</button>
+            <button @click="catalogStore.setSearch(''); applyFiltersAndSort()" class="font-bold cursor-pointer hover:text-emerald-200">✕</button>
           </span>
         </div>
 
         <!-- Loading / Grid State -->
-        <div v-if="loading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div v-for="n in 6" :key="n" class="h-80 bg-slate-200/60 rounded-2xl animate-pulse"></div>
+        <div v-if="loading" class="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
+          <div v-for="n in 6" :key="n" class="h-64 sm:h-80 bg-slate-200/60 rounded-xl sm:rounded-2xl animate-pulse"></div>
         </div>
 
-        <div v-else-if="products.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div v-else-if="filteredProductsList.length > 0" class="grid grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6">
           <ProductCard 
-            v-for="product in products" 
+            v-for="product in filteredProductsList" 
             :key="product.id" 
             :product="product" 
           />
         </div>
 
         <!-- Empty Products View -->
-        <div v-else class="bg-white p-12 rounded-3xl border border-slate-200 text-center space-y-3">
+        <div v-else class="bg-white p-12 rounded-3xl border border-slate-200 text-center space-y-3 shadow-xs">
           <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mx-auto text-2xl">
             🔍
           </div>
-          <h3 class="text-lg font-bold text-slate-800">Aucun produit ne correspond à vos critères</h3>
+          <h3 class="text-lg font-bold text-slate-800">Aucun produit ne correspond à ce filtre</h3>
           <p class="text-xs text-slate-500 max-w-sm mx-auto">
-            Essayez de modifier vos filtres ou de réinitialiser la recherche.
+            Essayez de modifier vos critères de recherche ou de sélectionner une autre catégorie.
           </p>
           <button 
             @click="resetAllFilters"
-            class="px-5 py-2.5 bg-emerald-600 text-white font-bold text-xs rounded-full shadow-md hover:bg-emerald-700 transition-colors cursor-pointer"
+            class="px-6 py-2.5 bg-emerald-800 text-white font-bold text-xs rounded-full shadow-md hover:bg-emerald-700 transition-colors cursor-pointer"
           >
-            Réinitialiser
+            Voir tous les produits
           </button>
         </div>
 
@@ -166,53 +152,230 @@
 
     </div>
 
+    <!-- Mobile Categories & Filters Modal (Teleported cleanly on client side) -->
+    <ClientOnly>
+      <Teleport to="body">
+        <div 
+          v-if="showMobileCategoryModal" 
+          class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
+          @click.self="showMobileCategoryModal = false"
+        >
+          <div class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 space-y-5 animate-in slide-in-from-bottom duration-300 max-h-[85vh] overflow-y-auto">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
+              <div class="flex items-center gap-2">
+                <span class="text-lg">🏷️</span>
+                <h3 class="text-base font-extrabold text-slate-900">Catégories & Filtres</h3>
+              </div>
+              <button 
+                type="button"
+                @click="showMobileCategoryModal = false" 
+                class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center transition-colors cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <!-- Category List -->
+            <div class="space-y-2">
+              <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider block">Catégorie</label>
+              <div class="space-y-1.5 text-xs font-semibold">
+                <button 
+                  type="button"
+                  @click="filterCategory(''); showMobileCategoryModal = false"
+                  :class="['w-full text-left px-3.5 py-2.5 rounded-xl transition-colors cursor-pointer flex items-center justify-between', !catalogStore.selectedCategory ? 'bg-emerald-800 text-white font-bold shadow-xs' : 'text-slate-700 bg-slate-50 hover:bg-slate-100']"
+                >
+                  <span>📦 Toutes les catégories</span>
+                  <span v-if="!catalogStore.selectedCategory" class="text-emerald-200">✓</span>
+                </button>
+                <button 
+                  type="button"
+                  v-for="cat in availableCategories"
+                  :key="cat.slug"
+                  @click="filterCategory(cat.slug); showMobileCategoryModal = false"
+                  :class="['w-full text-left px-3.5 py-2.5 rounded-xl transition-colors cursor-pointer flex items-center justify-between', catalogStore.selectedCategory === cat.slug ? 'bg-emerald-800 text-white font-bold shadow-xs' : 'text-slate-700 bg-slate-50 hover:bg-slate-100']"
+                >
+                  <span>{{ cat.icon || '📦' }} {{ cat.nom }}</span>
+                  <span v-if="catalogStore.selectedCategory === cat.slug" class="text-emerald-200">✓</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Price Range Filter -->
+            <div class="pt-3 border-t border-slate-100 space-y-2">
+              <label class="text-xs font-extrabold text-slate-500 uppercase tracking-wider block">Filtrer par Prix (FCFA)</label>
+              <div class="grid grid-cols-2 gap-2">
+                <input 
+                  v-model.number="catalogStore.minPrice"
+                  @input="applyFiltersAndSort"
+                  type="number"
+                  placeholder="Prix Min"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                />
+                <input 
+                  v-model.number="catalogStore.maxPrice"
+                  @input="applyFiltersAndSort"
+                  type="number"
+                  placeholder="Prix Max"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                />
+              </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="pt-3 border-t border-slate-100 flex items-center gap-3">
+              <button 
+                type="button"
+                @click="resetAllFilters()"
+                class="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-colors cursor-pointer"
+              >
+                Réinitialiser
+              </button>
+              <button 
+                type="button"
+                @click="showMobileCategoryModal = false"
+                class="flex-1 py-2.5 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer shadow-md text-center"
+              >
+                Voir les {{ filteredProductsList.length }} produits
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </Teleport>
+    </ClientOnly>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useCatalogStore } from '~/stores/catalog'
+import ProductCard from '~/components/ProductCard.vue'
 
+const route = useRoute()
 const config = useRuntimeConfig()
 const catalogStore = useCatalogStore()
 
+const showMobileCategoryModal = ref(false)
+
+const openCategoryModal = () => {
+  showMobileCategoryModal.value = true
+}
+
 const loading = ref(false)
-const products = ref([])
+const rawProducts = ref([])
+const filteredProductsList = ref([])
+
+const availableCategories = ref([
+  { slug: 'intrants-agricoles', nom: 'Intrants Agricoles (Engrais)', icon: '🌾' },
+  { slug: 'produits-phytosanitaires', nom: 'Produits Phytosanitaires', icon: '🐛' },
+  { slug: 'systemes-irrigation', nom: "Systèmes d'Irrigation", icon: '💧' },
+  { slug: 'semences', nom: 'Semences Certifiées', icon: '🌱' },
+  { slug: 'machines-agricoles', nom: 'Machines Agricoles', icon: '🚜' },
+  { slug: 'quincaillerie', nom: 'Quincaillerie & Outillage', icon: '🛠️' }
+])
+
+const getCategoryLabel = (slug) => {
+  const found = availableCategories.value.find(c => c.slug === slug)
+  return found ? found.nom : slug
+}
+
+const extractProductList = (res) => {
+  if (!res) return []
+  if (Array.isArray(res)) return res
+  if (Array.isArray(res.data)) return res.data
+  if (res.data && Array.isArray(res.data.data)) return res.data.data
+  if (Array.isArray(res.produits)) return res.produits
+  return []
+}
+
+const syncCategoryFromQuery = () => {
+  if (route.query.category) {
+    catalogStore.setCategory(String(route.query.category))
+  } else if (route.query.search) {
+    catalogStore.setSearch(String(route.query.search))
+  }
+}
+
+const applyFiltersAndSort = () => {
+  let list = [...rawProducts.value]
+  const cat = catalogStore.selectedCategory?.toLowerCase()
+
+  if (cat) {
+    list = list.filter(p => {
+      const pCats = p.categories || []
+      const catNames = pCats.map(c => (c.slug || c.nom || '').toLowerCase()).join(' ')
+      if (cat === 'intrants-agricoles' || cat === 'intrants') return catNames.includes('intrant') || catNames.includes('urée') || catNames.includes('npk') || catNames.includes('engrais')
+      if (cat === 'produits-phytosanitaires' || cat === 'phytosanitaires') return catNames.includes('phyto') || catNames.includes('insecticide') || catNames.includes('herbicide')
+      if (cat === 'systemes-irrigation' || cat === 'irrigation') return catNames.includes('irrigation') || catNames.includes('goutte')
+      if (cat === 'semences') return catNames.includes('semence') || catNames.includes('maïs')
+      if (cat === 'machines-agricoles' || cat === 'machines') return catNames.includes('machine') || catNames.includes('atomiseur') || catNames.includes('motoculteur')
+      if (cat === 'quincaillerie') return catNames.includes('quincaillerie') || catNames.includes('outillage') || catNames.includes('brouette') || catNames.includes('machette')
+      return catNames.includes(cat)
+    })
+  }
+
+  if (catalogStore.searchQuery) {
+    const q = catalogStore.searchQuery.toLowerCase()
+    list = list.filter(p => 
+      p.nom_commercial?.toLowerCase().includes(q) || 
+      p.description?.toLowerCase().includes(q) ||
+      p.composition?.toLowerCase().includes(q)
+    )
+  }
+
+  if (catalogStore.minPrice) {
+    list = list.filter(p => Number(p.prix_unitaire) >= catalogStore.minPrice)
+  }
+  if (catalogStore.maxPrice) {
+    list = list.filter(p => Number(p.prix_unitaire) <= catalogStore.maxPrice)
+  }
+
+  // Sorting
+  if (catalogStore.sort === 'price_asc') {
+    list.sort((a, b) => Number(a.prix_unitaire) - Number(b.prix_unitaire))
+  } else if (catalogStore.sort === 'price_desc') {
+    list.sort((a, b) => Number(b.prix_unitaire) - Number(a.prix_unitaire))
+  } else if (catalogStore.sort === 'name_asc') {
+    list.sort((a, b) => a.nom_commercial.localeCompare(b.nom_commercial))
+  }
+
+  filteredProductsList.value = list
+}
 
 const fetchProducts = async () => {
   loading.value = true
   try {
-    let url = `${config.public.apiBaseUrl}/produits?sort=${catalogStore.sort}`
+    let url = `${config.public.apiBaseUrl}/produits?sort=${catalogStore.sort}&per_page=50`
     if (catalogStore.selectedCategory) {
       url += `&category=${catalogStore.selectedCategory}`
     }
     if (catalogStore.searchQuery) {
       url += `&search=${encodeURIComponent(catalogStore.searchQuery)}`
     }
-    if (catalogStore.minPrice) {
-      url += `&min_price=${catalogStore.minPrice}`
-    }
-    if (catalogStore.maxPrice) {
-      url += `&max_price=${catalogStore.maxPrice}`
-    }
 
     const res = await $fetch(url)
-    if (res && res.data && res.data.data) {
-      products.value = res.data.data
+    const list = extractProductList(res)
+
+    if (list && list.length > 0) {
+      rawProducts.value = list
     } else {
-      products.value = fallbackProducts
+      rawProducts.value = fallbackProducts
     }
   } catch (e) {
-    console.warn('API connection offline, displaying fallback test products', e)
-    products.value = fallbackProducts
+    console.warn('API connection offline, displaying fallback products', e)
+    rawProducts.value = fallbackProducts
   } finally {
+    applyFiltersAndSort()
     loading.value = false
   }
 }
 
 const filterCategory = (slug) => {
   catalogStore.setCategory(slug)
-  fetchProducts()
+  applyFiltersAndSort()
 }
 
 const resetAllFilters = () => {
@@ -221,11 +384,23 @@ const resetAllFilters = () => {
 }
 
 onMounted(() => {
+  syncCategoryFromQuery()
   fetchProducts()
 })
 
+watch(() => route.query.category, (newCat) => {
+  if (newCat) {
+    catalogStore.setCategory(String(newCat))
+    applyFiltersAndSort()
+  }
+})
+
 watch(() => catalogStore.searchQuery, () => {
-  fetchProducts()
+  applyFiltersAndSort()
+})
+
+watch([() => catalogStore.minPrice, () => catalogStore.maxPrice], () => {
+  applyFiltersAndSort()
 })
 
 // Fallback seed items
@@ -241,7 +416,7 @@ const fallbackProducts = [
     stock_disponible: 1000,
     featured: true,
     url_image: 'storage/produits/urea.jpg',
-    categories: [{ nom: 'Intrants / Urée' }]
+    categories: [{ nom: 'Intrants / Urée', slug: 'intrants-agricoles' }]
   },
   {
     id: 2,
@@ -254,7 +429,7 @@ const fallbackProducts = [
     stock_disponible: 750,
     featured: true,
     url_image: 'storage/produits/npk.jpg',
-    categories: [{ nom: 'Intrants / NPK' }]
+    categories: [{ nom: 'Intrants / NPK', slug: 'intrants-agricoles' }]
   },
   {
     id: 3,
@@ -267,7 +442,7 @@ const fallbackProducts = [
     stock_disponible: 300,
     featured: false,
     url_image: 'storage/produits/katana.jpg',
-    categories: [{ nom: 'Phytosanitaire' }]
+    categories: [{ nom: 'Phytosanitaire', slug: 'produits-phytosanitaires' }]
   },
   {
     id: 4,
@@ -280,7 +455,7 @@ const fallbackProducts = [
     stock_disponible: 500,
     featured: true,
     url_image: 'storage/produits/mais_pan53.jpg',
-    categories: [{ nom: 'Semences' }]
+    categories: [{ nom: 'Semences', slug: 'semences' }]
   },
   {
     id: 5,
@@ -293,7 +468,7 @@ const fallbackProducts = [
     stock_disponible: 45,
     featured: true,
     url_image: 'storage/produits/irrigation_kit.jpg',
-    categories: [{ nom: 'Irrigation' }]
+    categories: [{ nom: 'Irrigation', slug: 'systemes-irrigation' }]
   },
   {
     id: 6,
@@ -306,7 +481,7 @@ const fallbackProducts = [
     stock_disponible: 25,
     featured: true,
     url_image: 'storage/produits/stihl.jpg',
-    categories: [{ nom: 'Machines Agricoles' }]
+    categories: [{ nom: 'Machines Agricoles', slug: 'machines-agricoles' }]
   },
   {
     id: 7,
@@ -319,7 +494,7 @@ const fallbackProducts = [
     stock_disponible: 120,
     featured: false,
     url_image: 'storage/produits/brouette.jpg',
-    categories: [{ nom: 'Quincaillerie' }]
+    categories: [{ nom: 'Quincaillerie', slug: 'quincaillerie' }]
   },
   {
     id: 8,
@@ -332,7 +507,21 @@ const fallbackProducts = [
     stock_disponible: 250,
     featured: true,
     url_image: 'storage/produits/machette.jpg',
-    categories: [{ nom: 'Quincaillerie / Outillage' }]
+    categories: [{ nom: 'Quincaillerie / Outillage', slug: 'quincaillerie' }]
   }
 ]
 </script>
+
+<style scoped>
+.grid-fade-move,
+.grid-fade-enter-active,
+.grid-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.grid-fade-enter-from,
+.grid-fade-leave-to {
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+}
+</style>

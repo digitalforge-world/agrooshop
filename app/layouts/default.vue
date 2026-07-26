@@ -11,6 +11,9 @@
     <!-- Slide-in Cart Sidebar Drawer -->
     <CartSidebar />
 
+    <!-- Checkout Modal Component -->
+    <CheckoutModal />
+
     <!-- Footer Component -->
     <AppFooter />
   </div>
@@ -19,6 +22,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useCartStore } from '~/stores/cart'
+import CheckoutModal from '~/components/CheckoutModal.vue'
 
 const cartStore = useCartStore()
 

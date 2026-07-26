@@ -6,8 +6,29 @@
 
 
     <!-- ═══ TRUST STRIP ═══ -->
-    <section class="border-b border-gray-200 bg-white reveal-down">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section class="border-b border-gray-200 bg-white overflow-hidden py-3 sm:py-0">
+      
+      <!-- Mobile: Interactive Auto & Swipeable Horizontal Scroll -->
+      <div class="sm:hidden relative w-full overflow-x-auto scrollbar-none scroll-smooth py-1">
+        <div class="flex animate-marquee items-center gap-3">
+          <div 
+            v-for="(item, idx) in [...trustItems, ...trustItems]" 
+            :key="idx" 
+            class="flex items-center gap-2.5 py-2 px-3.5 bg-emerald-50/80 rounded-full border border-emerald-100/80 flex-shrink-0 whitespace-nowrap shadow-xs"
+          >
+            <div class="w-7 h-7 rounded-full bg-emerald-800 text-white flex items-center justify-center flex-shrink-0">
+              <component :is="item.icon" class="w-3.5 h-3.5" />
+            </div>
+            <div class="pr-1">
+              <p class="text-xs font-extrabold text-gray-900 leading-tight">{{ item.title }}</p>
+              <p class="text-[10px] text-emerald-800 font-semibold leading-tight">{{ item.desc }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop / Tablet Grid -->
+      <div class="hidden sm:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-2 lg:grid-cols-4 divide-x divide-gray-100">
           <div 
             v-for="(item, idx) in trustItems" 
@@ -24,16 +45,17 @@
           </div>
         </div>
       </div>
+
     </section>
 
 
     <!-- ═══ CATEGORIES ═══ -->
-    <section class="bg-white py-16">
+    <section class="bg-white pt-4 pb-6 sm:py-16 overflow-hidden">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-baseline justify-between mb-10 reveal-left">
+        <div class="flex items-center justify-between mb-3 sm:mb-10">
           <div>
-            <h2 class="text-xl font-bold text-gray-900">Nos catégories populaires</h2>
-            <p class="mt-1 text-sm text-gray-500">Retrouvez tous les produits essentiels pour votre exploitation agricole.</p>
+            <h2 class="text-base sm:text-xl font-black text-slate-900">Nos catégories populaires</h2>
+            <p class="mt-0.5 text-xs sm:text-sm text-slate-500">Retrouvez tous les produits essentiels pour votre exploitation agricole.</p>
           </div>
           <NuxtLink to="/produits" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all duration-300 hover:translate-x-1">
             Voir toutes les catégories
@@ -41,7 +63,28 @@
           </NuxtLink>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <!-- Mobile: Interactive Auto & Swipeable Horizontal Scroll -->
+        <div class="sm:hidden relative w-full overflow-x-auto scrollbar-none scroll-smooth py-1">
+          <div class="flex animate-marquee-categories items-center gap-3">
+            <NuxtLink 
+              v-for="(cat, idx) in [...categoryCards, ...categoryCards]" 
+              :key="idx"
+              :to="cat.link"
+              class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 bg-white shadow-xs flex-shrink-0 whitespace-nowrap min-w-[200px]"
+            >
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                <component :is="cat.icon" class="w-5 h-5 text-emerald-700" />
+              </div>
+              <div>
+                <h3 class="text-xs font-extrabold text-gray-900 leading-tight">{{ cat.name }}</h3>
+                <p class="text-[10px] text-gray-400 leading-tight mt-0.5">{{ cat.sub }}</p>
+              </div>
+            </NuxtLink>
+          </div>
+        </div>
+
+        <!-- Desktop / Tablet Grid -->
+        <div class="hidden sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-4">
           <NuxtLink 
             v-for="(cat, idx) in categoryCards" 
             :key="idx"
@@ -64,42 +107,37 @@
 
 
     <!-- ═══ FEATURED PRODUCTS ═══ -->
-    <section class="bg-gray-50 py-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-baseline justify-between mb-10 reveal-right">
+    <section class="bg-gray-50 py-8 sm:py-16">
+      <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between mb-6 sm:mb-10">
           <div>
-            <h2 class="text-xl font-bold text-gray-900">Produits populaires</h2>
-            <p class="mt-1 text-sm text-gray-500">Les produits les plus commandés par nos clients.</p>
+            <h2 class="text-base sm:text-xl font-black text-slate-900">Produits populaires</h2>
+            <p class="mt-0.5 text-xs sm:text-sm text-slate-500">Les produits les plus commandés par nos clients.</p>
           </div>
-          <NuxtLink to="/produits" class="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-600 transition-all duration-300 hover:translate-x-1">
-            Voir tout
-            <ArrowRight class="w-4 h-4" />
+          <NuxtLink to="/produits" class="flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-700 transition-all duration-300">
+            <span>Voir tout</span>
+            <ArrowRight class="w-3.5 h-3.5" />
           </NuxtLink>
         </div>
 
         <!-- Loading -->
-        <div v-if="isLoading" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div v-for="i in 4" :key="i" class="animate-pulse bg-white rounded-xl p-4 space-y-4">
-            <div class="h-48 bg-gray-200 rounded-lg"></div>
-            <div class="h-3 w-24 bg-gray-200 rounded"></div>
+        <div v-if="isLoading" class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
+          <div v-for="i in 4" :key="i" class="animate-pulse bg-white rounded-xl p-3 sm:p-4 space-y-3 sm:space-y-4">
+            <div class="h-36 sm:h-48 bg-gray-200 rounded-lg"></div>
+            <div class="h-3 w-20 bg-gray-200 rounded"></div>
             <div class="h-4 w-full bg-gray-200 rounded"></div>
             <div class="h-4 w-2/3 bg-gray-200 rounded"></div>
-            <div class="h-10 w-full bg-gray-200 rounded-lg"></div>
+            <div class="h-9 w-full bg-gray-200 rounded-lg"></div>
           </div>
         </div>
 
         <!-- Products Grid -->
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div 
-            v-for="(product, idx) in featuredProducts" 
+        <div v-else class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
+          <ProductCard 
+            v-for="product in featuredProducts" 
             :key="product.id"
-            :class="[
-              idx % 2 === 0 ? 'reveal-left' : 'reveal-right',
-              `stagger-${(idx % 4) + 1}`
-            ]"
-          >
-            <ProductCard :product="product" />
-          </div>
+            :product="product"
+          />
         </div>
       </div>
     </section>
@@ -134,14 +172,40 @@
 
 
     <!-- ═══ TESTIMONIALS ═══ -->
-    <section class="bg-gray-50 py-16">
+    <section class="bg-gray-50 py-8 sm:py-16 overflow-hidden">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-10 reveal-down">
-          <h2 class="text-xl font-bold text-gray-900">Ce que disent nos clients</h2>
-          <p class="mt-1 text-sm text-gray-500">Plus de 2000 agriculteurs nous font confiance</p>
+        <div class="text-center mb-6 sm:mb-10">
+          <h2 class="text-base sm:text-xl font-black text-slate-900">Ce que disent nos clients</h2>
+          <p class="mt-0.5 text-xs sm:text-sm text-slate-500">Plus de 2000 agriculteurs nous font confiance</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Mobile: Interactive Auto & Swipeable Horizontal Scroll -->
+        <div class="sm:hidden relative w-full overflow-x-auto scrollbar-none scroll-smooth py-1">
+          <div class="flex animate-marquee-testimonials items-center gap-4">
+            <div 
+              v-for="(t, idx) in [...testimonials, ...testimonials, ...testimonials]" 
+              :key="idx"
+              class="p-4 rounded-2xl border border-slate-200 bg-white shadow-xs flex-shrink-0 w-[280px] space-y-3"
+            >
+              <div class="flex gap-0.5">
+                <Star v-for="i in 5" :key="i" class="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+              </div>
+              <p class="text-xs text-slate-600 leading-relaxed italic line-clamp-3">"{{ t.text }}"</p>
+              <div class="flex items-center gap-2.5 pt-2 border-t border-slate-100">
+                <div class="w-8 h-8 rounded-full bg-emerald-800 flex items-center justify-center text-white text-xs font-bold shadow-xs">
+                  {{ t.initials }}
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-900 leading-tight">{{ t.name }}</p>
+                  <p class="text-[10px] text-slate-500 leading-tight">{{ t.role }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Desktop / Tablet Grid -->
+        <div class="hidden sm:grid sm:grid-cols-3 gap-6">
           <div 
             v-for="(t, idx) in testimonials" 
             :key="idx"
@@ -313,3 +377,46 @@ const subscribe = () => {
   email.value = ''
 }
 </script>
+
+<style scoped>
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 16s linear infinite;
+}
+
+.animate-marquee-categories {
+  display: flex;
+  width: max-content;
+  animation: marquee 22s linear infinite;
+}
+
+.animate-marquee-testimonials {
+  display: flex;
+  width: max-content;
+  animation: marquee 24s linear infinite;
+}
+
+.animate-marquee:hover,
+.animate-marquee-categories:hover,
+.animate-marquee-testimonials:hover {
+  animation-play-state: paused;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

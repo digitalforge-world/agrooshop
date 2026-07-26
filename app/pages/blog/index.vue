@@ -1,20 +1,11 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
 
-    <!-- Breadcrumb & Header -->
+    <!-- Header -->
     <div class="space-y-4">
-      <nav class="flex items-center gap-2 text-xs font-semibold text-gray-500">
-        <NuxtLink to="/" class="hover:text-emerald-700">Accueil</NuxtLink>
-        <span>/</span>
-        <span class="text-gray-900 font-bold">Blog & Conseils Agronomiques</span>
-      </nav>
-
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-gray-200">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-            Centre de Ressources AgroShop
-          </span>
-          <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mt-2">
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900">
             Conseils Agronomiques & Guides Pratiques
           </h1>
           <p class="text-sm text-gray-500 mt-1 max-w-2xl">

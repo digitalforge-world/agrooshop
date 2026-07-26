@@ -109,14 +109,13 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2 pt-2">
-          <NuxtLink 
-            to="/checkout"
-            @click="cartStore.toggleCart(false)"
-            class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm text-center rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
+          <button 
+            @click="cartStore.openCheckout()"
+            class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm text-center rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95"
           >
-            <span>Commander</span>
+            <span>Valider & Payer</span>
             <ArrowRight class="w-4 h-4" />
-          </NuxtLink>
+          </button>
 
           <a 
             :href="whatsappCheckoutUrl"
@@ -139,6 +138,11 @@ import { useCartStore } from '~/stores/cart'
 
 const cartStore = useCartStore()
 
+const handleCheckout = () => {
+  cartStore.isOpen = false
+  cartStore.isCheckoutOpen = true
+}
+
 const fallbackImage = '/images/Agroshopproduit .png'
 
 const { getImageUrl } = useMedia()
@@ -150,6 +154,7 @@ const whatsappCheckoutUrl = computed(() => {
     .join('%0A')
   
   const text = `Bonjour AgroShop,%0AJesouhaite passer la commande suivante :%0A${itemList}%0A%0ATotal : ${cartStore.totalPrice.toLocaleString('fr-FR')} FCFA`
-  return `https://wa.me/22890123456?text=${text}`
+  const phone = useRuntimeConfig().public.whatsappNumber || '22898706081'
+  return `https://wa.me/${phone}?text=${text}`
 })
 </script>

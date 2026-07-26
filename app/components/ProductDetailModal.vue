@@ -251,16 +251,17 @@ const mainCategory = computed(() => {
 
 const stockBadge = computed(() => {
   const stock = props.product?.stock_disponible ?? 0
-  if (stock <= 0) return { label: 'Rupture de stock', class: 'bg-red-100 text-red-700 border border-red-200' }
-  if (stock <= 10) return { label: `Plus que ${stock} dispo`, class: 'bg-amber-100 text-amber-800 border border-amber-200' }
-  return { label: 'En Stock - 24h Lomé', class: 'bg-emerald-100 text-emerald-800 border border-emerald-200' }
+  if (stock <= 0) return { label: 'Sur commande', class: 'bg-amber-100 text-amber-800 border border-amber-200' }
+  if (stock <= 10) return { label: `Dernières unités (${stock})`, class: 'bg-amber-100 text-amber-800 border border-amber-200' }
+  return { label: 'Disponible - Expédition 24h', class: 'bg-emerald-100 text-emerald-800 border border-emerald-200' }
 })
 
 const whatsappOrderUrl = computed(() => {
   if (!props.product) return '#'
   const total = Number(props.product.prix_unitaire) * quantity.value
   const text = `Bonjour AgroShop,%0AJesouhaite commander le produit suivant :%0A- ${props.product.nom_commercial} (x${quantity.value}) : ${total.toLocaleString('fr-FR')} FCFA`
-  return `https://wa.me/22890123456?text=${text}`
+  const phone = useRuntimeConfig().public.whatsappNumber || '22898706081'
+  return `https://wa.me/${phone}?text=${text}`
 })
 
 const handleAddToCart = () => {
@@ -274,7 +275,7 @@ const handleBuyNow = () => {
   if (!props.product) return
   cartStore.addItem(props.product, quantity.value)
   close()
-  navigateTo('/checkout')
+  cartStore.openCheckout()
 }
 
 const close = () => {

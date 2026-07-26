@@ -12,9 +12,13 @@ export interface CartItem {
   stock_disponible: number
 }
 
+const fallbackImage = '/images/Agroshopproduit .png'
+
 export const useCartStore = defineStore('cart', () => {
   const items = ref<CartItem[]>([])
   const isOpen = ref(false)
+  const isCheckoutOpen = ref(false)
+  const isBouncing = ref(false)
   const deliveryMode = ref<'domicile' | 'retrait'>('domicile')
   const deliveryFee = ref(5000)
 
@@ -29,6 +33,22 @@ export const useCartStore = defineStore('cart', () => {
   })
 
   const { getImageUrl } = useMedia()
+
+  function triggerCartAnimation() {
+    isBouncing.value = true
+    setTimeout(() => {
+      isBouncing.value = false
+    }, 800)
+  }
+
+  function openCheckout() {
+    isOpen.value = false
+    isCheckoutOpen.value = true
+  }
+
+  function closeCheckout() {
+    isCheckoutOpen.value = false
+  }
 
   function addItem(product: { id: number; nom_commercial: string; slug: string; prix_unitaire: number; unite_mesure: string; image_principale?: { url_image: string }; url_image?: string; stock_disponible?: number }, quantity = 1) {
     const existing = items.value.find(item => item.id === product.id)
@@ -53,7 +73,9 @@ export const useCartStore = defineStore('cart', () => {
         stock_disponible: stock
       })
     }
-    isOpen.value = true
+    
+    // Do NOT open cart automatically, trigger wiggle animation on navbar cart icon
+    triggerCartAnimation()
     saveToStorage()
   }
 
@@ -110,6 +132,8 @@ export const useCartStore = defineStore('cart', () => {
   return {
     items,
     isOpen,
+    isCheckoutOpen,
+    isBouncing,
     deliveryMode,
     deliveryFee,
     totalQuantity,
@@ -119,6 +143,9 @@ export const useCartStore = defineStore('cart', () => {
     totalPriceTTC,
     grandTotal,
     addItem,
+    openCheckout,
+    closeCheckout,
+    triggerCartAnimation,
     updateQuantity,
     removeItem,
     clearCart,
