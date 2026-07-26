@@ -10,11 +10,13 @@
     <!-- Main Floating White Login Card (Pixel-Perfect Match to User Screenshot) -->
     <div class="relative z-10 w-full max-w-[440px] bg-white rounded-3xl p-6 sm:p-10 shadow-[0_25px_70px_rgba(0,0,0,0.35)] space-y-6 text-slate-900 border border-slate-100/80">
       
-      <!-- Top Avatar Circle -->
+      <!-- Logo AgroShop -->
       <div class="flex justify-center pt-1">
-        <div class="w-16 h-16 rounded-full bg-[#0066ff] flex items-center justify-center text-white shadow-md shadow-blue-500/30">
-          <User class="w-8 h-8 text-white" />
-        </div>
+        <img 
+          src="/logo.png" 
+          alt="AgroShop Togo" 
+          class="h-14 w-auto object-contain"
+        />
       </div>
 
       <!-- Header Titles -->

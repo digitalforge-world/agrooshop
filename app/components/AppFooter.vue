@@ -13,11 +13,12 @@
         
         <!-- Col 1: Brand Logo & Tagline -->
         <div class="lg:col-span-1 pr-2 space-y-4">
-          <NuxtLink to="/" class="flex items-center gap-3 group">
-            <div class="w-11 h-11 rounded-full border-2 border-[#8cc63f] flex items-center justify-center text-[#8cc63f] group-hover:scale-105 transition-transform bg-black/20">
-              <Sprout class="w-6 h-6" />
-            </div>
-            <span class="text-2xl font-black text-white tracking-wide">Agro<span class="text-[#8cc63f]">Shop</span></span>
+          <NuxtLink to="/" class="flex items-center group">
+            <img 
+              src="/logo.png" 
+              alt="AgroShop Togo" 
+              class="h-14 w-auto object-contain brightness-0 invert group-hover:scale-105 transition-transform"
+            />
           </NuxtLink>
 
           <div>

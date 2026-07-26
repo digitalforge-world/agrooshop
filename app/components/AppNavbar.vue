@@ -24,16 +24,12 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
         
         <!-- Logo -->
-        <NuxtLink to="/" class="flex items-center gap-2.5 flex-shrink-0">
-          <div class="w-10 h-10 rounded-xl bg-emerald-800 flex items-center justify-center text-white shadow-xs">
-            <Leaf class="w-5 h-5" />
-          </div>
-          <div class="flex flex-col">
-            <span class="text-xl font-black text-gray-900 tracking-tight leading-none">
-              AGRO<span class="text-emerald-700">SHOP</span>
-            </span>
-            <span class="text-[10px] text-gray-500 font-medium">Cultivons l'avenir ensemble</span>
-          </div>
+        <NuxtLink to="/" class="flex items-center flex-shrink-0">
+          <img 
+            src="/logo.png" 
+            alt="AgroShop Togo" 
+            class="h-12 w-auto object-contain"
+          />
         </NuxtLink>
 
         <!-- Modern Clean Desktop Search Bar -->
