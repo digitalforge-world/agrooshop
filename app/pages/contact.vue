@@ -2,11 +2,11 @@
   <div class="min-h-screen bg-white">
     <!-- Hero Section -->
     <div 
-      class="relative h-[340px] md:h-[480px] w-full bg-cover bg-center flex flex-col justify-center pb-12"
-      style="background-image: url('https://images.unsplash.com/photo-1592982537447-6f23f5b721e7?w=1600&q=80');"
+      class="relative h-[340px] md:h-[480px] w-full bg-cover bg-center flex flex-col justify-center pb-12 shadow-inner"
+      style="background-image: url('/images/contact-hero-bg.png');"
     >
       <!-- Overlay -->
-      <div class="absolute inset-0 bg-emerald-950/75"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-emerald-950/90 via-emerald-950/75 to-emerald-900/60 backdrop-brightness-95"></div>
       
       <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-white space-y-2">
         <span class="text-xs font-black text-amber-400 uppercase tracking-widest block">Support & Accompagnement Agricole</span>
