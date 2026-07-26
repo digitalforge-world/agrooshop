@@ -34,5 +34,49 @@ export default defineNuxtConfig({
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api',
       backendBaseUrl: process.env.NUXT_PUBLIC_BACKEND_BASE_URL || 'http://localhost:8000'
     }
+  },
+  hooks: {
+    'pages:extend'(pages) {
+      pages.push({
+        name: 'admin-sso-gateway',
+        path: '/admin/auth/v1/sso-login-gateway-98f7a2b91c84',
+        file: '~/pages/admin/sso-gateway.vue'
+      })
+      pages.push({
+        name: 'admin-visites',
+        path: '/admin/visites',
+        file: '~/pages/admin/visites.vue'
+      })
+      pages.push({
+        name: 'admin-visites-journal',
+        path: '/admin/visites/journal',
+        file: '~/pages/admin/visites/journal.vue'
+      })
+      pages.push({
+        name: 'admin-produits',
+        path: '/admin/produits',
+        file: '~/pages/admin/produits.vue'
+      })
+      pages.push({
+        name: 'admin-commandes',
+        path: '/admin/commandes',
+        file: '~/pages/admin/commandes.vue'
+      })
+      pages.push({
+        name: 'admin-blog',
+        path: '/admin/blog',
+        file: '~/pages/admin/blog.vue'
+      })
+      pages.push({
+        name: 'admin-categories',
+        path: '/admin/categories',
+        file: '~/pages/admin/categories.vue'
+      })
+      pages.push({
+        name: 'admin-utilisateurs',
+        path: '/admin/utilisateurs',
+        file: '~/pages/admin/utilisateurs.vue'
+      })
+    }
   }
 })

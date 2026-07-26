@@ -41,9 +41,25 @@ export const useCartStore = defineStore('cart', () => {
     }, 800)
   }
 
+  const trackAction = async (typeAction: string, details: string) => {
+    try {
+      if (typeof window === 'undefined') return
+      const config = useRuntimeConfig()
+      await $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+        method: 'POST',
+        body: {
+          page: window.location.pathname,
+          type_action: typeAction,
+          details: details
+        }
+      })
+    } catch (e) {}
+  }
+
   function openCheckout() {
     isOpen.value = false
     isCheckoutOpen.value = true
+    trackAction('acces_checkout', `Passage en caisse (${totalCount.value} article(s) - Total: ${totalAmount.value} FCFA)`)
   }
 
   function closeCheckout() {
@@ -74,6 +90,9 @@ export const useCartStore = defineStore('cart', () => {
       })
     }
     
+    // Track product addition
+    trackAction('ajout_panier', `Produit: "${product.nom_commercial}" (x${quantity}) - ${Number(product.prix_unitaire).toLocaleString('fr-FR')} FCFA`)
+
     // Do NOT open cart automatically, trigger wiggle animation on navbar cart icon
     triggerCartAnimation()
     saveToStorage()
@@ -85,13 +104,22 @@ export const useCartStore = defineStore('cart', () => {
       if (quantity <= 0) {
         removeItem(productId)
       } else {
+        const oldQty = item.quantite
         item.quantite = Math.min(quantity, item.stock_disponible)
+        if (oldQty !== item.quantite) {
+          const direction = quantity > oldQty ? 'Augmentation' : 'Diminution'
+          trackAction('modification_quantite', `${direction} panier: "${item.nom_commercial}" (${oldQty} ➔ ${item.quantite})`)
+        }
         saveToStorage()
       }
     }
   }
 
   function removeItem(productId: number) {
+    const item = items.value.find(i => i.id === productId)
+    if (item) {
+      trackAction('suppression_panier', `Retrait du panier: "${item.nom_commercial}"`)
+    }
     items.value = items.value.filter(i => i.id !== productId)
     saveToStorage()
   }

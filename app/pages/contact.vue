@@ -270,6 +270,18 @@ const submitForm = async () => {
   isSubmitting.value = true
   successMessage.value = ''
   
+  try {
+    const config = useRuntimeConfig()
+    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+      method: 'POST',
+      body: {
+        page: '/contact',
+        type_action: 'demande_contact',
+        details: `Formulaire de contact envoyé par ${form.value.firstname} (${form.value.email}) - Sujet: ${form.value.subject || 'Demande générale'}`
+      }
+    })
+  } catch (e) {}
+
   await new Promise(resolve => setTimeout(resolve, 1200))
   
   successMessage.value = "Votre message a été envoyé avec succès ! Notre équipe vous répondra dans les plus brefs délais."

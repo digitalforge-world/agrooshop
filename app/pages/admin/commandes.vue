@@ -110,6 +110,7 @@ import { Search, RefreshCw } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 definePageMeta({
+  path: '/admin/commandes',
   layout: 'admin',
   middleware: 'admin-auth'
 })

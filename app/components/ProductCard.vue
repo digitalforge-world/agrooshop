@@ -107,6 +107,18 @@ const fallbackImage = '/images/Agroshopproduit .png'
 
 const openModal = () => {
   showModal.value = true
+  try {
+    if (typeof window === 'undefined' || !props.product) return
+    const config = useRuntimeConfig()
+    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+      method: 'POST',
+      body: {
+        page: window.location.pathname,
+        type_action: 'clic_produit',
+        details: `Ouverture Fiche Produit: "${props.product.nom_commercial}" (${Number(props.product.prix_unitaire).toLocaleString('fr-FR')} FCFA)`
+      }
+    })
+  } catch (e) {}
 }
 
 const { getImageUrl } = useMedia()

@@ -26,23 +26,27 @@ export const useAdminAuthStore = defineStore('adminAuth', () => {
     authError.value = null
 
     try {
-      const res = await $fetch<{ success: boolean; data: { token: string; user: AdminUser } }>(
+      const res = await $fetch<any>(
         `${config.public.apiBaseUrl}/admin/login`,
         {
           method: 'POST',
           body: {
             email: emailVal,
+            password: passwordVal,
             mot_de_passe: passwordVal
           }
         }
       )
 
-      if (res?.success && res.data?.token) {
-        token.value = res.data.token
-        admin.value = res.data.user
+      const tokenVal = res?.data?.token || res?.token
+      const adminVal = res?.data?.admin || res?.data?.user || res?.user
+
+      if (tokenVal) {
+        token.value = tokenVal
+        admin.value = adminVal
         return true
       } else {
-        authError.value = "Identifiants administrateur incorrects."
+        authError.value = res?.message || "Identifiants administrateur incorrects."
         return false
       }
     } catch (err: any) {

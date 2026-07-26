@@ -173,6 +173,20 @@ const getInitials = (auteur) => {
   return `${p}${n}`.toUpperCase() || 'AG'
 }
 
+const trackArticleView = () => {
+  try {
+    if (typeof window === 'undefined' || !article.value?.titre) return
+    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+      method: 'POST',
+      body: {
+        page: window.location.pathname,
+        type_action: 'lecture_article',
+        details: `Lecture Article Blog: "${article.value.titre}"`
+      }
+    })
+  } catch (e) {}
+}
+
 const fetchArticleDetail = async () => {
   isLoading.value = true
   try {
@@ -182,6 +196,7 @@ const fetchArticleDetail = async () => {
       article.value = res.data.article
       recommendedProducts.value = res.data.produits_recommandes || []
       suggestedArticles.value = res.data.articles_suggeres || []
+      trackArticleView()
     }
   } catch (e) {
     console.warn('Article detail fetch error', e)

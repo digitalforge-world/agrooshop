@@ -193,7 +193,8 @@
               <a 
                 :href="whatsappOrderUrl"
                 target="_blank"
-                class="w-full py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs"
+                @click="trackWhatsappClick"
+                class="w-full py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
               >
                 <MessageSquare class="w-4 h-4 text-emerald-600" />
                 <span>Commander directement par WhatsApp</span>
@@ -263,6 +264,22 @@ const whatsappOrderUrl = computed(() => {
   const phone = useRuntimeConfig().public.whatsappNumber || '22898706081'
   return `https://wa.me/${phone}?text=${text}`
 })
+
+const trackWhatsappClick = () => {
+  try {
+    if (typeof window === 'undefined' || !props.product) return
+    const config = useRuntimeConfig()
+    const total = Number(props.product.prix_unitaire) * quantity.value
+    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+      method: 'POST',
+      body: {
+        page: window.location.pathname,
+        type_action: 'clic_whatsapp',
+        details: `Commande WhatsApp Modal: "${props.product.nom_commercial}" (x${quantity.value}) - ${total.toLocaleString('fr-FR')} FCFA`
+      }
+    })
+  } catch (e) {}
+}
 
 const handleAddToCart = () => {
   if (!props.product) return

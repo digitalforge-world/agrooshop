@@ -120,6 +120,7 @@
           <a 
             :href="whatsappCheckoutUrl"
             target="_blank"
+            @click="trackWhatsappClick"
             class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm text-center rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
           >
             <MessageSquare class="w-4 h-4" />
@@ -157,4 +158,19 @@ const whatsappCheckoutUrl = computed(() => {
   const phone = useRuntimeConfig().public.whatsappNumber || '22898706081'
   return `https://wa.me/${phone}?text=${text}`
 })
+
+const trackWhatsappClick = () => {
+  try {
+    if (typeof window === 'undefined') return
+    const config = useRuntimeConfig()
+    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+      method: 'POST',
+      body: {
+        page: window.location.pathname,
+        type_action: 'clic_whatsapp',
+        details: `Commande Panier WhatsApp (${cartStore.items.length} article(s) - Total: ${cartStore.totalPrice.toLocaleString('fr-FR')} FCFA)`
+      }
+    })
+  } catch (e) {}
+}
 </script>

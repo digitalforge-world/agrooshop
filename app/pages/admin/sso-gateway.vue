@@ -88,7 +88,7 @@
         <button 
           type="submit" 
           :disabled="authStore.isLoading"
-          class="w-full py-3.5 bg-[#0066ff] hover:bg-[#0052cc] text-[#ffffff] font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-60"
+          class="w-full py-3.5 bg-[#0066ff] hover:bg-[#0052cc] text-white font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-60"
         >
           <span v-if="!authStore.isLoading" class="flex items-center gap-2">
             <span>Se Connecter</span>

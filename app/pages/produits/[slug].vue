@@ -145,7 +145,8 @@
             <a
               :href="whatsappUrl"
               target="_blank"
-              class="w-full py-3.5 px-6 bg-lime-500 hover:bg-lime-600 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+              @click="trackWhatsappClick"
+              class="w-full py-3.5 px-6 bg-lime-500 hover:bg-lime-600 text-slate-950 font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <MessageSquare class="w-5 h-5" />
               <span>Commander sur WhatsApp</span>
@@ -222,6 +223,35 @@ const whatsappUrl = computed(() => {
   return `https://wa.me/${phone}?text=${text}`
 })
 
+const trackWhatsappClick = () => {
+  try {
+    if (typeof window === 'undefined' || !product.value) return
+    const total = Number(product.value.prix_unitaire) * selectedQuantity.value
+    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+      method: 'POST',
+      body: {
+        page: window.location.pathname,
+        type_action: 'clic_whatsapp',
+        details: `Commande WhatsApp Fiche Produit: "${product.value.nom_commercial}" (x${selectedQuantity.value}) - ${total.toLocaleString('fr-FR')} FCFA`
+      }
+    })
+  } catch (e) {}
+}
+
+const trackProductView = () => {
+  try {
+    if (typeof window === 'undefined' || !product.value) return
+    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+      method: 'POST',
+      body: {
+        page: window.location.pathname,
+        type_action: 'clic_produit',
+        details: `Consultation Fiche Produit: "${product.value.nom_commercial}" (${Number(product.value.prix_unitaire).toLocaleString('fr-FR')} FCFA)`
+      }
+    })
+  } catch (e) {}
+}
+
 const addToCart = () => {
   cartStore.addItem(product.value, selectedQuantity.value)
   isAdded.value = true
@@ -236,6 +266,7 @@ onMounted(async () => {
     const res = await $fetch(`${config.public.apiBaseUrl}/produits/${slug}`)
     if (res && res.data) {
       product.value = res.data
+      trackProductView()
     }
   } catch (e) {
     console.warn('API detail fetch error, using test product data', e)

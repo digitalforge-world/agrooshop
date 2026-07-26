@@ -45,6 +45,7 @@
                 <a 
                   :href="whatsappDirectUrl"
                   target="_blank"
+                  @click="trackSuccessWhatsappClick"
                   class="w-full sm:w-auto px-6 py-3 bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Confirmer sur WhatsApp</span>
@@ -246,6 +247,34 @@ const closeModal = () => {
   orderSuccess.value = false
 }
 
+const trackOrderValidation = (refCode) => {
+  try {
+    if (typeof window === 'undefined') return
+    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+      method: 'POST',
+      body: {
+        page: window.location.pathname,
+        type_action: 'validation_commande',
+        details: `Commande Confirmée N° ${refCode} par ${form.value.prenom_client} ${form.value.nom_client} (${form.value.telephone}) - Total: ${calculatedGrandTotal.value.toLocaleString('fr-FR')} FCFA`
+      }
+    })
+  } catch (e) {}
+}
+
+const trackSuccessWhatsappClick = () => {
+  try {
+    if (typeof window === 'undefined') return
+    $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+      method: 'POST',
+      body: {
+        page: window.location.pathname,
+        type_action: 'clic_whatsapp',
+        details: `Confirmation WhatsApp après Commande N° ${orderRefCode.value} - Total: ${calculatedGrandTotal.value.toLocaleString('fr-FR')} FCFA`
+      }
+    })
+  } catch (e) {}
+}
+
 const submitOrder = async () => {
   submitting.value = true
   try {
@@ -268,11 +297,13 @@ const submitOrder = async () => {
       orderRefCode.value = 'CMD-2026-' + Math.floor(1000 + Math.random() * 9000)
     }
 
+    trackOrderValidation(orderRefCode.value)
     cartStore.clearCart()
     orderSuccess.value = true
   } catch (e) {
     console.warn('API connection offline, simulating order success reference', e)
     orderRefCode.value = 'CMD-2026-' + Math.floor(1000 + Math.random() * 9000)
+    trackOrderValidation(orderRefCode.value)
     cartStore.clearCart()
     orderSuccess.value = true
   } finally {

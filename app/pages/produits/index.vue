@@ -376,6 +376,19 @@ const fetchProducts = async () => {
 const filterCategory = (slug) => {
   catalogStore.setCategory(slug)
   applyFiltersAndSort()
+  if (slug) {
+    try {
+      if (typeof window === 'undefined') return
+      $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+        method: 'POST',
+        body: {
+          page: window.location.pathname,
+          type_action: 'recherche',
+          details: `Filtre par Catégorie: "${getCategoryLabel(slug)}"`
+        }
+      })
+    } catch (e) {}
+  }
 }
 
 const resetAllFilters = () => {
@@ -395,8 +408,21 @@ watch(() => route.query.category, (newCat) => {
   }
 })
 
-watch(() => catalogStore.searchQuery, () => {
+watch(() => catalogStore.searchQuery, (newQuery) => {
   applyFiltersAndSort()
+  if (newQuery && newQuery.length >= 2) {
+    try {
+      if (typeof window === 'undefined') return
+      $fetch(`${config.public.apiBaseUrl}/track-visite`, {
+        method: 'POST',
+        body: {
+          page: window.location.pathname,
+          type_action: 'recherche',
+          details: `Recherche Catalogue: "${newQuery}"`
+        }
+      })
+    } catch (e) {}
+  }
 })
 
 watch([() => catalogStore.minPrice, () => catalogStore.maxPrice], () => {
