@@ -144,7 +144,7 @@
 
 
     <!-- ═══ CALCULATOR ═══ -->
-    <section class="bg-white py-16 reveal-scale">
+    <section class="bg-white py-12 sm:py-16 reveal-scale">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FertilizerCalculator />
       </div>
