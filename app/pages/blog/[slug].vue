@@ -211,4 +211,42 @@ watch(() => route.params.slug, () => {
 onMounted(() => {
   fetchArticleDetail()
 })
+
+useSeoMeta({
+  title: () => article.value.meta_title || `${article.value.titre || 'Article'} - Blog AgroShop Togo`,
+  description: () => article.value.meta_description || article.value.chapeau || article.value.extrait || 'Conseil et guide agronomique par AgroShop Togo.',
+  ogTitle: () => article.value.titre || 'Article AgroShop',
+  ogDescription: () => article.value.chapeau || article.value.extrait || 'Guide agricole au Togo.',
+  ogImage: () => getImgUrl(article.value.image_principale),
+  ogUrl: () => `https://agroshoptg.store/blog/${article.value.slug}`,
+  twitterCard: 'summary_large_image'
+})
+
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      children: computed(() => JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        'headline': article.value.titre,
+        'image': [getImgUrl(article.value.image_principale)],
+        'articleBody': article.value.contenu,
+        'datePublished': article.value.created_at || article.value.date_publication,
+        'author': {
+          '@type': 'Organization',
+          'name': 'AgroShop Togo'
+        },
+        'publisher': {
+          '@type': 'Organization',
+          'name': 'AgroShop Togo',
+          'logo': {
+            '@type': 'ImageObject',
+            'url': 'https://agroshoptg.store/images/logo.png'
+          }
+        }
+      }))
+    }
+  ]
+})
 </script>

@@ -1,37 +1,8 @@
-# =========================================================================
-# Fichier .htaccess de Production pour Nuxt 3 Single Page / Static App
-# Domaine: agrooshoptg.digitalforges.org
-# =========================================================================
-
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-
-  # 1. Transfert de l'entête Authorization pour les requêtes API (Bearer tokens)
-  SetEnvIfAuthorization "(.*)" HTTP_AUTHORIZATION=$1
-
-  # 2. Transmettre le bon protocole HTTPS
-  SetEnvIf X-Forwarded-Proto "https" HTTPS=on
-
-  # 3. Ne pas rediriger les fichiers ou dossiers physiques qui existent (images, JS, CSS, fonts)
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
-  RewriteRule ^ - [L]
-
-  # 4. Rediriger toutes les routes Nuxt (ex: /admin, /admin/produits, /blog/...) vers index.html
-  # Evite l'erreur 404 lors du rafraîchissement manuel d'une page (F5)
-  RewriteRule ^ index.html [L]
-</IfModule>
-
-# Désactiver le listing de répertoires
-Options -Indexes
-
-# Caching & En-têtes pour les assets statiques
-<IfModule mod_headers.c>
-  <FilesMatch "\.(js|css|xml|gz|html)$">
-    Header append Vary: Accept-Encoding
-  </FilesMatch>
-  <FilesMatch "\.(ico|jpe?g|png|gif|webp|svg|woff|woff2|ttf|eot)$">
-    Header set Cache-Control "max-age=31536000, public"
-  </FilesMatch>
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
 </IfModule>

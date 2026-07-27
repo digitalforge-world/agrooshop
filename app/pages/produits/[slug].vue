@@ -489,6 +489,40 @@ onMounted(async () => {
   startAutoSlide()
 })
 
+useSeoMeta({
+  title: () => `${product.value.nom_commercial} - AgroShop Togo`,
+  description: () => product.value.description || 'Achetez vos intrants agricoles certifiés chez AgroShop Togo.',
+  ogTitle: () => `${product.value.nom_commercial} | AgroShop Togo`,
+  ogDescription: () => product.value.description || 'Intrant agricole certifié disponible au Togo.',
+  ogImage: () => getImgUrl(displayImages.value[0]),
+  ogUrl: () => `https://agroshoptg.store/produits/${product.value.slug}`,
+  twitterCard: 'summary_large_image'
+})
+
+useHead({
+  script: [
+    {
+      type: 'application/ld+json',
+      children: computed(() => JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        'name': product.value.nom_commercial,
+        'image': [getImgUrl(displayImages.value[0])],
+        'description': product.value.description,
+        'sku': `AGRO-${product.value.id}`,
+        'offers': {
+          '@type': 'Offer',
+          'url': `https://agroshoptg.store/produits/${product.value.slug}`,
+          'priceCurrency': 'XOF',
+          'price': product.value.prix_unitaire,
+          'availability': product.value.stock_disponible > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+          'itemCondition': 'https://schema.org/NewCondition'
+        }
+      }))
+    }
+  ]
+})
+
 onUnmounted(() => {
   stopAutoSlide()
 })

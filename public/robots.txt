@@ -1,2 +1,26 @@
-User-Agent: *
-Disallow:
+# =========================================================================
+# Robots.txt Officiel - AgroShop Togo (https://agroshoptg.store/)
+# =========================================================================
+
+User-agent: *
+Allow: /
+Allow: /produits
+Allow: /categories
+Allow: /blog
+Allow: /contact
+Allow: /faq
+Disallow: /admin/
+Disallow: /admin
+Disallow: /checkout
+Disallow: /api/
+Disallow: /_nuxt/
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+Sitemap: https://agroshoptg.store/sitemap.xml

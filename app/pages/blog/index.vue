@@ -187,4 +187,13 @@ const resetFilters = () => {
 onMounted(() => {
   fetchArticles()
 })
+
+useSeoMeta({
+  title: 'Blog Agronomique & Guides Pratiques - AgroShop Togo',
+  description: 'Consultez nos articles d\'experts, notices phytosanitaires et recommandations de fertilisation NPK/Urée pour optimiser vos récoltes au Togo.',
+  ogTitle: 'Blog Agronomique & Guides Pratiques - AgroShop Togo',
+  ogDescription: 'Dossiers d\'experts agricoles, conseils d\'épandage et guides d\'irrigation au Togo.',
+  ogUrl: 'https://agroshoptg.store/blog',
+  twitterCard: 'summary_large_image'
+})
 </script>

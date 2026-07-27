@@ -536,6 +536,15 @@ const fallbackProducts = [
     categories: [{ nom: 'Quincaillerie / Outillage', slug: 'quincaillerie' }]
   }
 ]
+
+useSeoMeta({
+  title: 'Catalogue Produits Agricoles - AgroShop Togo | Engrais, Semences, Irrigations & Outils',
+  description: 'Découvrez l\'ensemble du catalogue AgroShop Togo : engrais certifiés (NPK, Urée 46%), produits phytosanitaires, semences hybrides, systèmes d\'irrigation et outillages agricoles.',
+  ogTitle: 'Catalogue Produits Agricoles - AgroShop Togo',
+  ogDescription: 'Achetez vos intrants agricoles et équipements certifiés au Togo avec livraison rapide.',
+  ogUrl: 'https://agroshoptg.store/produits',
+  twitterCard: 'summary_large_image'
+})
 </script>
 
 <style scoped>
