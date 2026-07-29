@@ -96,7 +96,17 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      ignore: ['/admin/**', '/admin']
+      routes: [
+        '/admin',
+        '/admin/auth/v1/sso-login-gateway-98f7a2b91c84',
+        '/admin/visites',
+        '/admin/visites/journal',
+        '/admin/produits',
+        '/admin/commandes',
+        '/admin/blog',
+        '/admin/categories',
+        '/admin/utilisateurs'
+      ]
     }
   },
 
