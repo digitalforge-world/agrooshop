@@ -60,7 +60,7 @@ export const useAdminAuthStore = defineStore('adminAuth', () => {
   async function fetchMe() {
     if (!token.value) return false
     try {
-      const res = await $fetch<{ success: boolean; data: { user: AdminUser } }>(
+      const res = await $fetch<any>(
         `${config.public.apiBaseUrl}/admin/me`,
         {
           headers: {
@@ -68,11 +68,14 @@ export const useAdminAuthStore = defineStore('adminAuth', () => {
           }
         }
       )
-      if (res?.data?.user) {
-        admin.value = res.data.user
+      // Le endpoint /me retourne data.user ou data directement
+      const adminData = res?.data?.user || res?.data?.admin || res?.data || res?.user
+      if (adminData) {
+        admin.value = adminData
         return true
       }
     } catch (e) {
+      // Token invalide : on le purge pour forcer une reconnexion
       token.value = null
       admin.value = null
     }
@@ -86,9 +89,13 @@ export const useAdminAuthStore = defineStore('adminAuth', () => {
     router.push(SECRET_ADMIN_LOGIN_PATH)
   }
 
+  // Alias pour la compatibilité avec le layout (utilise authStore.adminUser)
+  const adminUser = admin
+
   return {
     token,
     admin,
+    adminUser,
     isLoading,
     authError,
     isAuthenticated,

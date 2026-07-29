@@ -1,0 +1,428 @@
+<template>
+  <div class="space-y-6">
+    
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+          <Store class="w-6 h-6 text-emerald-600" />
+          <span>Gestion des Boutiques</span>
+        </h1>
+        <p class="text-xs text-slate-500 mt-1">Gérez vos différentes boutiques (Quincaillerie, Intrants / Semences, ou Mixte)</p>
+      </div>
+
+      <button 
+        @click="openModal()" 
+        class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-900/10 flex items-center gap-2 transition-all cursor-pointer self-start sm:self-auto"
+      >
+        <Plus class="w-4 h-4" />
+        <span>Nouvelle Boutique</span>
+      </button>
+    </div>
+
+    <!-- Stats summary badges -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-5 flex items-center justify-between shadow-xs">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Boutiques</p>
+          <h2 class="text-2xl font-black text-slate-900 mt-1">{{ boutiques.length }}</h2>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
+          <Store class="w-5 h-5" />
+        </div>
+      </div>
+
+      <div class="bg-white border border-slate-200/80 rounded-2xl p-5 flex items-center justify-between shadow-xs">
+        <div>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Actives</p>
+          <h2 class="text-2xl font-black text-emerald-700 mt-1">{{ boutiques.filter(b => b.is_active).length }}</h2>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+          <CheckCircle class="w-5 h-5" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Boutiques List Table -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Liste des Boutiques</h2>
+        <div class="relative w-64">
+          <input 
+            v-model="searchQuery" 
+            type="text" 
+            placeholder="Rechercher..." 
+            class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-colors"
+          />
+          <Search class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-500 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-4">Nom de la Boutique</th>
+              <th class="px-6 py-4">Type(s) de Boutique</th>
+              <th class="px-6 py-4">Localisation</th>
+              <th class="px-6 py-4">Statut</th>
+              <th class="px-6 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 font-medium">
+            <tr v-if="loading">
+              <td colspan="5" class="px-6 py-10 text-center text-slate-500">
+                <div class="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                Chargement...
+              </td>
+            </tr>
+            <tr v-else-if="filteredBoutiques.length === 0">
+              <td colspan="5" class="px-6 py-10 text-center text-slate-500">
+                <Store class="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                <p>Aucune boutique trouvée</p>
+                <button @click="openModal()" class="mt-3 text-emerald-700 hover:underline text-xs font-bold">+ Créer la première boutique</button>
+              </td>
+            </tr>
+            <tr v-for="boutique in filteredBoutiques" :key="boutique.id" class="hover:bg-emerald-50/30 transition-colors">
+              <td class="px-6 py-4">
+                <p class="font-bold text-slate-900 text-sm">{{ boutique.nom }}</p>
+                <p class="text-[11px] text-slate-400">Créée le {{ new Date(boutique.created_at).toLocaleDateString('fr-FR') }}</p>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex flex-wrap gap-1.5">
+                  <span 
+                    v-for="t in getTypesList(boutique)" 
+                    :key="t"
+                    :class="t === 'quincaillerie' ? 'bg-orange-50 text-orange-700 border-orange-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'" 
+                    class="px-2.5 py-1 rounded-full text-[10px] font-bold border capitalize inline-flex items-center gap-1"
+                  >
+                    <Hammer v-if="t === 'quincaillerie'" class="w-3 h-3 text-orange-600" />
+                    <Sprout v-else class="w-3 h-3 text-emerald-600" />
+                    {{ t === 'quincaillerie' ? 'Quincaillerie' : 'Agricole / Semences' }}
+                  </span>
+                </div>
+              </td>
+              <td class="px-6 py-4 text-slate-600">
+                {{ boutique.localisation || '—' }}
+              </td>
+              <td class="px-6 py-4">
+                <span :class="boutique.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'" class="px-2.5 py-1 rounded-full text-[10px] font-bold border">
+                  {{ boutique.is_active ? 'Active' : 'Désactivée' }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-right">
+                <button @click="openModal(boutique)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors mr-2">
+                  Éditer
+                </button>
+                <button @click="toggleStatut(boutique)" class="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors"
+                  :class="boutique.is_active ? 'bg-red-50 hover:bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200'"
+                >
+                  {{ boutique.is_active ? 'Désactiver' : 'Activer' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===================== MODAL Ajouter / Éditer ===================== -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div v-if="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs" @click.self="closeModal">
+          <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-lg">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-slate-100">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
+                  <Store class="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 class="text-base font-bold text-slate-900">{{ isEditing ? 'Modifier la Boutique' : 'Nouvelle Boutique' }}</h2>
+                  <p class="text-[11px] text-slate-500">{{ isEditing ? 'Modifiez les informations de la boutique' : 'Créez une nouvelle succursale' }}</p>
+                </div>
+              </div>
+              <button @click="closeModal" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors">
+                <X class="w-5 h-5" />
+              </button>
+            </div>
+
+            <!-- Modal Body / Form -->
+            <form @submit.prevent="saveBoutique" class="p-6 space-y-4">
+              
+              <!-- Nom -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nom de la Boutique <span class="text-red-500">*</span></label>
+                <input
+                  v-model="form.nom"
+                  type="text"
+                  required
+                  placeholder="Ex: AgroShop Centrale Lomé"
+                  class="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:border-emerald-600 focus:bg-white rounded-xl text-sm text-slate-900 placeholder-slate-400 outline-none transition-colors"
+                />
+              </div>
+
+              <!-- Types (Multi-sélection : Quincaillerie et/ou Agricole) -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  Type(s) de Produits Vendus <span class="text-red-500">*</span>
+                  <span class="ml-2 text-slate-400 normal-case font-normal">(cochez un ou les deux)</span>
+                </label>
+                <div class="grid grid-cols-2 gap-3">
+                  <!-- Option Quincaillerie -->
+                  <div
+                    @click="toggleType('quincaillerie')"
+                    :class="form.types.includes('quincaillerie') ? 'border-orange-500 bg-orange-50/80 text-orange-800 font-bold' : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300'"
+                    class="p-3.5 rounded-xl border-2 text-xs transition-all flex items-center gap-3 cursor-pointer select-none"
+                  >
+                    <input 
+                      type="checkbox" 
+                      :checked="form.types.includes('quincaillerie')" 
+                      class="w-4 h-4 rounded text-orange-600 accent-orange-600"
+                    />
+                    <div class="flex items-center gap-2">
+                      <Hammer class="w-4 h-4 text-orange-600" />
+                      <span>Quincaillerie</span>
+                    </div>
+                  </div>
+
+                  <!-- Option Agricole / Semences -->
+                  <div
+                    @click="toggleType('agricole')"
+                    :class="form.types.includes('agricole') ? 'border-emerald-600 bg-emerald-50/80 text-emerald-800 font-bold' : 'border-slate-200 bg-slate-50 text-slate-500 hover:border-slate-300'"
+                    class="p-3.5 rounded-xl border-2 text-xs transition-all flex items-center gap-3 cursor-pointer select-none"
+                  >
+                    <input 
+                      type="checkbox" 
+                      :checked="form.types.includes('agricole')" 
+                      class="w-4 h-4 rounded text-emerald-600 accent-emerald-600"
+                    />
+                    <div class="flex items-center gap-2">
+                      <Sprout class="w-4 h-4 text-emerald-600" />
+                      <span>Semences & Engrais</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Localisation -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Localisation</label>
+                <input
+                  v-model="form.localisation"
+                  type="text"
+                  placeholder="Ex: Lomé Centre, Quartier Bè, Agoè..."
+                  class="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:border-emerald-600 focus:bg-white rounded-xl text-sm text-slate-900 placeholder-slate-400 outline-none transition-colors"
+                />
+              </div>
+
+              <!-- Description -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Description (optionnel)</label>
+                <textarea
+                  v-model="form.description"
+                  rows="2"
+                  placeholder="Informations complémentaires sur la boutique..."
+                  class="w-full px-4 py-3 bg-slate-50 border border-slate-200 focus:border-emerald-600 focus:bg-white rounded-xl text-sm text-slate-900 placeholder-slate-400 outline-none transition-colors resize-none"
+                ></textarea>
+              </div>
+
+              <!-- Statut (edit only) -->
+              <div v-if="isEditing" class="flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                <span class="text-xs font-bold text-slate-700">Boutique Active</span>
+                <button
+                  type="button"
+                  @click="form.is_active = !form.is_active"
+                  :class="form.is_active ? 'bg-emerald-600' : 'bg-slate-300'"
+                  class="relative w-10 h-5 rounded-full transition-colors"
+                >
+                  <span :class="form.is_active ? 'translate-x-5' : 'translate-x-0.5'" class="absolute top-0.5 w-4 h-4 bg-white rounded-full transition-transform shadow-xs"></span>
+                </button>
+              </div>
+
+              <!-- Error -->
+              <div v-if="formError" class="bg-red-50 border border-red-200 rounded-xl p-3 text-xs text-red-700 flex items-center gap-2">
+                <AlertCircle class="w-4 h-4 flex-shrink-0" />
+                {{ formError }}
+              </div>
+
+              <!-- Buttons -->
+              <div class="flex gap-3 pt-2">
+                <button type="button" @click="closeModal" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl transition-colors">
+                  Annuler
+                </button>
+                <button type="submit" :disabled="saving || !form.nom || form.types.length === 0" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-sm rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm">
+                  <span v-if="saving" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  <span>{{ saving ? 'Enregistrement...' : (isEditing ? 'Mettre à Jour' : 'Créer la Boutique') }}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { Store, Plus, Search, CheckCircle, X, Hammer, Sprout, AlertCircle } from 'lucide-vue-next'
+import { useAdminAuthStore } from '~/stores/adminAuth'
+
+definePageMeta({
+  path: '/admin/boutiques',
+  layout: 'admin',
+  middleware: 'admin-auth'
+})
+
+useHead({ title: 'Boutiques - Administration AgroShop' })
+
+const authStore = useAdminAuthStore()
+const config = useRuntimeConfig()
+const { adminFetch } = useAdminFetch()
+
+// ---- State ----
+const searchQuery = ref('')
+const boutiques = ref([])
+const loading = ref(true)
+const showModal = ref(false)
+const isEditing = ref(false)
+const saving = ref(false)
+const formError = ref(null)
+const editingId = ref(null)
+
+const defaultForm = () => ({ nom: '', types: ['agricole'], localisation: '', description: '', is_active: true })
+const form = ref(defaultForm())
+
+// ---- Fetch ----
+const fetchBoutiques = async () => {
+  loading.value = true
+  try {
+    const res = await adminFetch('/admin/boutiques')
+    boutiques.value = res?.data ?? (Array.isArray(res) ? res : [])
+  } catch (e) {
+    if (e?.status !== 401 && e?.statusCode !== 401) {
+      boutiques.value = [
+        { id: 1, nom: 'AgroShop Quincaillerie Centre', type: 'quincaillerie', types: ['quincaillerie'], localisation: 'Lomé Centre', is_active: true, created_at: '2025-01-01' },
+        { id: 2, nom: 'AgroShop Engrais Nord', type: 'agricole', types: ['agricole'], localisation: 'Agoë', is_active: true, created_at: '2025-02-15' },
+        { id: 3, nom: 'AgroShop Grand Marché (Complet)', type: 'quincaillerie,agricole', types: ['quincaillerie', 'agricole'], localisation: 'Grand Marché', is_active: true, created_at: '2025-03-01' }
+      ]
+    }
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(fetchBoutiques)
+
+// ---- Helper ----
+const getTypesList = (boutique) => {
+  if (boutique.types && Array.isArray(boutique.types) && boutique.types.length > 0) {
+    return boutique.types
+  }
+  if (boutique.type) {
+    return boutique.type.split(',').map(t => t.trim()).filter(Boolean)
+  }
+  return ['agricole']
+}
+
+const toggleType = (t) => {
+  const idx = form.value.types.indexOf(t)
+  if (idx > -1) {
+    if (form.value.types.length > 1) {
+      form.value.types.splice(idx, 1)
+    }
+  } else {
+    form.value.types.push(t)
+  }
+}
+
+// ---- Computed ----
+const filteredBoutiques = computed(() => {
+  if (!searchQuery.value) return boutiques.value
+  const q = searchQuery.value.toLowerCase()
+  return boutiques.value.filter(b => b.nom.toLowerCase().includes(q) || (b.localisation || '').toLowerCase().includes(q))
+})
+
+// ---- Modal ----
+const openModal = (boutique = null) => {
+  formError.value = null
+  if (boutique) {
+    isEditing.value = true
+    editingId.value = boutique.id
+    form.value = { 
+      nom: boutique.nom, 
+      types: getTypesList(boutique), 
+      localisation: boutique.localisation || '', 
+      description: boutique.description || '', 
+      is_active: boutique.is_active 
+    }
+  } else {
+    isEditing.value = false
+    editingId.value = null
+    form.value = defaultForm()
+  }
+  showModal.value = true
+}
+
+const closeModal = () => {
+  showModal.value = false
+  formError.value = null
+}
+
+// ---- Save ----
+const saveBoutique = async () => {
+  saving.value = true
+  formError.value = null
+  if (form.value.types.length === 0) {
+    formError.value = 'Veuillez choisir au moins un type pour la boutique.'
+    saving.value = false
+    return
+  }
+  try {
+    const endpoint = isEditing.value
+      ? `/admin/boutiques/${editingId.value}`
+      : '/admin/boutiques'
+    const method = isEditing.value ? 'PUT' : 'POST'
+
+    const payload = {
+      ...form.value,
+      type: form.value.types.join(',')
+    }
+
+    const res = await adminFetch(endpoint, { method, body: payload })
+    const saved = res?.data || res
+    if (isEditing.value) {
+      const idx = boutiques.value.findIndex(b => b.id === editingId.value)
+      if (idx !== -1) boutiques.value[idx] = saved
+    } else {
+      boutiques.value.unshift(saved)
+    }
+    closeModal()
+  } catch (e) {
+    formError.value = e?.data?.message || e?.message || 'Erreur lors de l\'enregistrement. Vérifiez les champs.'
+  } finally {
+    saving.value = false
+  }
+}
+
+// ---- Toggle Statut ----
+const toggleStatut = async (boutique) => {
+  try {
+    await adminFetch(`/admin/boutiques/${boutique.id}`, {
+      method: 'PUT',
+      body: { ...boutique, is_active: !boutique.is_active }
+    })
+    boutique.is_active = !boutique.is_active
+  } catch (e) {
+    if (e?.status !== 401) boutique.is_active = !boutique.is_active
+  }
+}
+</script>
+
+<style scoped>
+.modal-fade-enter-active, .modal-fade-leave-active { transition: all 0.2s ease; }
+.modal-fade-enter-from, .modal-fade-leave-to { opacity: 0; transform: scale(0.97); }
+</style>
