@@ -7,7 +7,11 @@
  */
 export const useAdminFetch = () => {
   const config = useRuntimeConfig()
-  const tokenCookie = useCookie<string | null>('agro_admin_token')
+  const tokenCookie = useCookie<string | null>('agro_admin_token', {
+    maxAge: 60 * 60 * 24 * 7,
+    path: '/',
+    sameSite: 'lax'
+  })
   const SECRET_PATH = '/admin/auth/v1/sso-login-gateway-98f7a2b91c84'
 
   const adminFetch = async <T = any>(

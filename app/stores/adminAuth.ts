@@ -12,7 +12,11 @@ export interface AdminUser {
 export const SECRET_ADMIN_LOGIN_PATH = '/admin/auth/v1/sso-login-gateway-98f7a2b91c84'
 
 export const useAdminAuthStore = defineStore('adminAuth', () => {
-  const token = useCookie<string | null>('agro_admin_token', { maxAge: 60 * 60 * 24 * 7 })
+  const token = useCookie<string | null>('agro_admin_token', { 
+    maxAge: 60 * 60 * 24 * 7,
+    path: '/',
+    sameSite: 'lax'
+  })
   const admin = ref<AdminUser | null>(null)
   const isLoading = ref(false)
   const authError = ref<string | null>(null)
