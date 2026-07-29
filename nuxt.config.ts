@@ -152,6 +152,27 @@ export default defineNuxtConfig({
         path: '/admin/utilisateurs',
         file: '~/pages/admin/utilisateurs.vue'
       })
+      // Routes Gestionnaire de Boutique
+      pages.push({
+        name: 'gestionnaire-login',
+        path: '/gestionnaire/login',
+        file: '~/pages/gestionnaire/login.vue'
+      })
+      pages.push({
+        name: 'gestionnaire-dashboard',
+        path: '/gestionnaire',
+        file: '~/pages/gestionnaire/index.vue'
+      })
+      pages.push({
+        name: 'gestionnaire-stock',
+        path: '/gestionnaire/stock',
+        file: '~/pages/gestionnaire/stock.vue'
+      })
+      pages.push({
+        name: 'gestionnaire-ventes',
+        path: '/gestionnaire/ventes',
+        file: '~/pages/gestionnaire/ventes.vue'
+      })
     }
   }
 })
