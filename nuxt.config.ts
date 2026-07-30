@@ -95,20 +95,40 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/admin': { ssr: false, prerender: false },
-    '/admin/**': { ssr: false, prerender: false },
-    '/gestionnaire': { ssr: false, prerender: false },
-    '/gestionnaire/**': { ssr: false, prerender: false },
-    '/produits': { ssr: false, prerender: false },
-    '/produits/**': { ssr: false, prerender: false }
+    '/admin': { ssr: false },
+    '/admin/**': { ssr: false },
+    '/gestionnaire': { ssr: false },
+    '/gestionnaire/**': { ssr: false },
+    '/produits': { ssr: false },
+    '/produits/**': { ssr: false }
   },
 
   nitro: {
     prerender: {
-      // Désactiver le suivi automatique des liens <a href> par le crawler.
-      // Cela évite de tenter le prerender des routes dynamiques/authentifiées.
+      // Désactiver le suivi automatique des liens pour éviter le crawl sauvage
       crawlLinks: false,
-      routes: ['/', '/agrodop', '/quincaillerie', '/contact', '/faq'],
+      // Générer les shells HTML SPA statiques pour les routes publiques et d'accès direct
+      routes: [
+        '/',
+        '/agrodop',
+        '/quincaillerie',
+        '/contact',
+        '/faq',
+        '/gestionnaire/login',
+        '/gestionnaire',
+        '/gestionnaire/stock',
+        '/gestionnaire/ventes',
+        '/admin/auth/v1/sso-login-gateway-98f7a2b91c84',
+        '/admin',
+        '/admin/produits',
+        '/admin/commandes',
+        '/admin/categories',
+        '/admin/utilisateurs',
+        '/admin/boutiques',
+        '/admin/visites',
+        '/admin/visites/journal',
+        '/admin/blog'
+      ],
       failOnError: false
     }
   },
