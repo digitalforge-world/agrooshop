@@ -431,6 +431,9 @@
             </div>
           </div>
         </div>
+      </Transition>
+    </Teleport>
+
     <!-- ===================== MODAL Approvisionnement de Boutique ===================== -->
     <Teleport to="body">
       <Transition name="modal-fade">
