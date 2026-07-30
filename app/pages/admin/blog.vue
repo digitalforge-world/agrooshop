@@ -237,7 +237,17 @@
           <form @submit.prevent="saveArticle" class="space-y-4 text-xs overflow-y-auto custom-modal-scroll flex-1 pr-1">
             
             <div>
-              <label class="block font-bold text-slate-700 uppercase mb-1">Titre de l'Article *</label>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block font-bold text-slate-700 uppercase">Titre de l'Article *</label>
+                <button 
+                  type="button"
+                  @click="openAiGenerator"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-[10px] rounded-lg shadow-sm shadow-violet-900/20 transition-all cursor-pointer active:scale-95"
+                >
+                  <Wand2 class="w-3 h-3" />
+                  🤖 Générer article IA
+                </button>
+              </div>
               <input 
                 v-model="articleForm.titre" 
                 required 
@@ -376,12 +386,150 @@
       </div>
     </Teleport>
 
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- 3. AI ARTICLE GENERATOR MODAL -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <Teleport to="body">
+      <div v-if="isAiGeneratorOpen" class="fixed inset-0 z-[9999] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-2xl max-h-[92vh] flex flex-col text-slate-800">
+          
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3 flex-shrink-0">
+            <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+              <Sparkles class="w-5 h-5 text-violet-600" />
+              <span>Générer un Article avec l'IA</span>
+            </h3>
+            <button @click="isAiGeneratorOpen = false" class="p-1.5 text-slate-500 hover:text-slate-900 rounded-xl bg-slate-100 cursor-pointer">
+              <X class="w-4 h-4" />
+            </button>
+          </div>
+
+          <div class="space-y-4 text-xs overflow-y-auto custom-modal-scroll flex-1 pr-1">
+            
+            <div>
+              <label class="block font-bold text-slate-700 uppercase mb-1">Titre / Sujet principal</label>
+              <input 
+                v-model="aiGeneratorForm.titre" 
+                type="text" 
+                placeholder="ex: Fertilisation du maïs en saison pluvieuse..." 
+                class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-violet-500 focus:bg-white font-medium"
+              />
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 uppercase mb-1">Thèmes / Mots-clés</label>
+              <div class="flex gap-2 mb-2">
+                <input 
+                  v-model="aiGeneratorForm.themeInput" 
+                  type="text" 
+                  @keyup.enter.prevent="addTheme"
+                  placeholder="Ajouter un thème puis Entrée"
+                  class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-violet-500 focus:bg-white text-xs"
+                />
+                <button type="button" @click="addTheme" class="px-3 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-xs font-bold">+</button>
+              </div>
+              <div class="flex flex-wrap gap-1.5" v-if="aiGeneratorForm.themes.length > 0">
+                <span v-for="t in aiGeneratorForm.themes" :key="t" class="inline-flex items-center gap-1 px-2.5 py-1 bg-violet-50 text-violet-800 border border-violet-200 rounded-full text-[10px] font-bold">
+                  #{{ t }}
+                  <button @click="removeTheme(t)" type="button" class="text-violet-500 hover:text-violet-700">×</button>
+                </span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block font-bold text-slate-700 uppercase mb-1">Catégorie produit</label>
+                <input 
+                  v-model="aiGeneratorForm.categorie_produit_nom" 
+                  type="text" 
+                  placeholder="ex: Engrais NPK" 
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-violet-500 focus:bg-white text-xs"
+                />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 uppercase mb-1">Ton d'écriture</label>
+                <select 
+                  v-model="aiGeneratorForm.ton" 
+                  class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-violet-500 cursor-pointer text-xs font-medium"
+                >
+                  <option value="professionnel">👔 Professionnel</option>
+                  <option value="pédagogique">📚 Pédagogique</option>
+                  <option value="convivial">😊 Convivial</option>
+                  <option value="expert">🎓 Expert</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 uppercase mb-1">Public cible</label>
+              <select 
+                v-model="aiGeneratorForm.public_cible" 
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-violet-500 cursor-pointer text-xs font-medium"
+              >
+                <option value="agriculteurs">👨‍🌾 Agriculteurs débutants</option>
+                <option value="agriculteurs_exp">🌾 Agriculteurs expérimentés</option>
+                <option value="maraichers">🥬 Maraîchers</option>
+                <option value="cooperatives">🏘️ Coopératives</option>
+                <option value="general">🌍 Public général</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 uppercase mb-2">
+                Produits associés (optionnel)
+                <span class="ml-2 text-slate-400 normal-case font-normal">{{ aiGeneratorForm.produits_ids.length }} sélectionné(s)</span>
+              </label>
+              <div class="max-h-40 overflow-y-auto border border-slate-200 rounded-xl p-2 space-y-1 bg-slate-50">
+                <label 
+                  v-for="p in aiGeneratorForm.produitsDisponibles" 
+                  :key="p.id"
+                  class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white cursor-pointer text-xs"
+                >
+                  <input 
+                    type="checkbox" 
+                    :checked="aiGeneratorForm.produits_ids.includes(p.id)"
+                    @change="toggleProduitSelection(p.id)"
+                    class="w-3.5 h-3.5 accent-violet-600 rounded"
+                  />
+                  <span class="truncate flex-1 text-slate-700">{{ p.nom_commercial || p.nom }}</span>
+                </label>
+                <p v-if="aiGeneratorForm.produitsDisponibles.length === 0" class="text-slate-400 text-center py-2">
+                  Chargement des produits...
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="flex items-center justify-between pt-3 border-t border-slate-200 flex-shrink-0">
+            <button 
+              type="button" 
+              @click="isAiGeneratorOpen = false" 
+              class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 cursor-pointer"
+            >
+              Annuler
+            </button>
+            <button 
+              type="button" 
+              @click="generateAiArticle"
+              :disabled="isGeneratingAi"
+              class="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-xs rounded-xl shadow-md shadow-violet-900/20 transition-all cursor-pointer flex items-center gap-2"
+            >
+              <RefreshCw v-if="isGeneratingAi" class="w-3.5 h-3.5 animate-spin" />
+              <Sparkles v-else class="w-3.5 h-3.5" />
+              <span>{{ isGeneratingAi ? 'Génération en cours...' : '✨ Générer l\'article' }}</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </Teleport>
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { FileText, Plus, Search, RefreshCw, Eye, ExternalLink, CheckCircle2, Clock, X, AlertTriangle } from 'lucide-vue-next'
+import { FileText, Plus, Search, RefreshCw, Eye, ExternalLink, CheckCircle2, Clock, X, AlertTriangle, Sparkles, Wand2 } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 definePageMeta({
@@ -407,6 +555,19 @@ const isConfirmModalOpen = ref(false)
 const confirmTitle = ref('')
 const confirmMessage = ref('')
 const confirmAction = ref(null)
+
+const isAiGeneratorOpen = ref(false)
+const isGeneratingAi = ref(false)
+const aiGeneratorForm = ref({
+  titre: '',
+  themes: [],
+  themeInput: '',
+  categorie_produit_nom: '',
+  produits_ids: [],
+  produitsDisponibles: [],
+  ton: 'professionnel',
+  public_cible: 'agriculteurs'
+})
 
 const searchQuery = ref('')
 const statusFilter = ref('tous')
@@ -506,6 +667,86 @@ const openAddArticleModal = () => {
     meta_description: ''
   }
   isArticleModalOpen.value = true
+}
+
+const openAiGenerator = async () => {
+  isAiGeneratorOpen.value = true
+  isGeneratingAi.value = false
+  aiGeneratorForm.value = {
+    titre: articleForm.value.titre || '',
+    themes: [],
+    themeInput: '',
+    categorie_produit_nom: '',
+    produits_ids: [],
+    produitsDisponibles: [],
+    ton: 'professionnel',
+    public_cible: 'agriculteurs'
+  }
+  try {
+    const res = await $fetch(`${config.public.apiBaseUrl}/admin/produits`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    })
+    const list = res?.data?.data || res?.data || res || []
+    aiGeneratorForm.value.produitsDisponibles = Array.isArray(list) ? list.slice(0, 50) : []
+  } catch (e) {
+    console.warn('Fetch produits for AI failed', e)
+  }
+}
+
+const addTheme = () => {
+  const t = aiGeneratorForm.value.themeInput.trim()
+  if (t && !aiGeneratorForm.value.themes.includes(t)) {
+    aiGeneratorForm.value.themes.push(t)
+  }
+  aiGeneratorForm.value.themeInput = ''
+}
+
+const removeTheme = (t) => {
+  aiGeneratorForm.value.themes = aiGeneratorForm.value.themes.filter(x => x !== t)
+}
+
+const toggleProduitSelection = (id) => {
+  const idx = aiGeneratorForm.value.produits_ids.indexOf(id)
+  if (idx > -1) {
+    aiGeneratorForm.value.produits_ids.splice(idx, 1)
+  } else {
+    aiGeneratorForm.value.produits_ids.push(id)
+  }
+}
+
+const generateAiArticle = async () => {
+  isGeneratingAi.value = true
+  try {
+    const res = await $fetch(`${config.public.apiBaseUrl}/admin/ai/blog/generer-article`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authStore.token}` },
+      body: {
+        titre: aiGeneratorForm.value.titre,
+        themes: aiGeneratorForm.value.themes,
+        categorie_produit_nom: aiGeneratorForm.value.categorie_produit_nom,
+        produits_ids: aiGeneratorForm.value.produits_ids,
+        ton: aiGeneratorForm.value.ton,
+        public_cible: aiGeneratorForm.value.public_cible
+      }
+    })
+    const data = res?.data || res
+    if (data) {
+      articleForm.value.titre = data.titre_propose || articleForm.value.titre
+      articleForm.value.extrait = data.extrait || articleForm.value.extrait
+      const intro = data.introduction || ''
+      const sectionsHtml = (data.sections || []).map((s) => `\n## ${s.titre}\n${s.contenu}`)
+      const conseil = data.conseil_pratique ? `\n## Conseil Pratique\n${data.conseil_pratique}` : ''
+      const conclusion = data.conclusion ? `\n## Conclusion\n${data.conclusion}` : ''
+      articleForm.value.contenu = intro + sectionsHtml.join('') + conseil + conclusion
+      articleForm.value.meta_title = data.meta_title || articleForm.value.meta_title
+      articleForm.value.meta_description = data.meta_description || articleForm.value.meta_description
+    }
+    isAiGeneratorOpen.value = false
+  } catch (e) {
+    console.error('AI generation error', e)
+  } finally {
+    isGeneratingAi.value = false
+  }
 }
 
 const openEditArticleModal = (art) => {

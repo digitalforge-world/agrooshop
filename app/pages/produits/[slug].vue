@@ -243,13 +243,67 @@
 
       </div>
 
+      <!-- AI Product Recommendations -->
+      <section class="mt-10 pt-8 border-t border-slate-200">
+        <div class="flex items-center gap-2 mb-6">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white shadow-sm">
+            <Sparkles class="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
+              Produits qui pourraient vous intéresser
+            </h2>
+            <p class="text-xs text-slate-500">Suggestions IA basées sur ce produit et votre panier</p>
+          </div>
+        </div>
+        <div v-if="aiRecommendations.loading" class="py-10 text-center text-xs font-mono text-slate-500">
+          <div class="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+          Recherche de suggestions en cours...
+        </div>
+        <div v-else-if="aiRecommendations.produits.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <NuxtLink
+            v-for="rec in aiRecommendations.produits"
+            :key="rec.id"
+            :to="`/produits/${rec.slug || rec.id}`"
+            class="group bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-200 flex flex-col"
+          >
+            <div class="aspect-square p-3 bg-gradient-to-br from-slate-50 to-emerald-50/40 border-b border-slate-100 flex items-center justify-center">
+              <img
+                :src="getImgUrl(rec.url_image || rec.image_principale?.url_image || rec.image)"
+                :alt="rec.nom_commercial"
+                class="w-full h-full object-contain transition-transform group-hover:scale-105"
+                @error="(e) => e.target.src = fallbackImage"
+              />
+            </div>
+            <div class="p-3 flex flex-col gap-1 flex-1">
+              <h3 class="text-xs font-bold text-slate-900 line-clamp-2 leading-tight min-h-[2.5rem]">{{ rec.nom_commercial || rec.nom }}</h3>
+              <p v-if="rec.categorie || (rec.categories && rec.categories.length)" class="text-[10px] text-emerald-700 uppercase font-semibold tracking-tight">
+                {{ rec.categorie || rec.categories[0]?.nom }}
+              </p>
+              <div class="mt-auto pt-2 flex items-baseline gap-1">
+                <span class="text-sm font-black text-emerald-700">{{ formatPrice(rec.prix_unitaire) }}</span>
+                <span class="text-[10px] text-slate-500 font-bold">FCFA</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span :class="(rec.stock_disponible ?? rec.stock ?? 0) > 0 ? 'text-emerald-600' : 'text-rose-500'" class="text-[10px] font-bold">
+                  {{ (rec.stock_disponible ?? rec.stock ?? 0) > 0 ? '✓ En stock' : '⚠️ Rupture' }}
+                </span>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+        <div v-else class="py-10 text-center text-xs text-slate-400">
+          Aucune suggestion disponible pour ce produit pour le moment.
+        </div>
+      </section>
+
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { Home, ChevronRight, ChevronLeft, CheckCircle, CheckCircle2, Minus, Plus, ShoppingBag, FileText, Beaker, ShieldAlert, Truck, MessageSquare, ShieldCheck } from 'lucide-vue-next'
+import { Home, ChevronRight, ChevronLeft, CheckCircle, CheckCircle2, Minus, Plus, ShoppingBag, FileText, Beaker, ShieldAlert, Truck, MessageSquare, ShieldCheck, Sparkles } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'
 
 const route = useRoute()
@@ -355,6 +409,35 @@ const fallbackProducts = [
     categories: [{ nom: 'Produits Phytosanitaires / Insecticides' }]
   }
 ]
+
+const aiRecommendations = ref({
+  loading: false,
+  produits: []
+})
+
+const fetchAiRecommendations = async () => {
+  if (!product.value?.id) return
+  aiRecommendations.value.loading = true
+  try {
+    const panierIds = (cartStore.items || []).map((it) => it.produit?.id || it.id).filter(Boolean)
+    const res = await $fetch(`${config.public.apiBaseUrl}/ai/produits/recommandations`, {
+      method: 'POST',
+      body: {
+        produit_id: product.value.id,
+        panier_produits: panierIds,
+        limit: 6
+      }
+    })
+    const list = res?.data?.produits || res?.data || res?.produits || res || []
+    aiRecommendations.value.produits = Array.isArray(list) ? list.filter((p) => p.id !== product.value.id).slice(0, 6) : []
+  } catch (e) {
+    console.warn('AI recommendations fetch error', e)
+    // Fallback: use other fallback products
+    aiRecommendations.value.produits = fallbackProducts.filter(p => p.id !== product.value.id).slice(0, 6)
+  } finally {
+    aiRecommendations.value.loading = false
+  }
+}
 
 const formatPrice = (val) => Number(val || 0).toLocaleString('fr-FR')
 const getImgUrl = (img) => getImageUrl(img, fallbackImage)
@@ -513,6 +596,7 @@ onMounted(async () => {
     findFallbackProduct(route.params.slug)
   }
   startAutoSlide()
+  fetchAiRecommendations()
 })
 
 useSeoMeta({

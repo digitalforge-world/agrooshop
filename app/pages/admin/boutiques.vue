@@ -66,18 +66,19 @@
               <th class="px-6 py-4">Type(s) de Boutique</th>
               <th class="px-6 py-4">Localisation</th>
               <th class="px-6 py-4">Statut</th>
+              <th class="px-6 py-4">📊 Prévision IA</th>
               <th class="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 font-medium">
             <tr v-if="loading">
-              <td colspan="5" class="px-6 py-10 text-center text-slate-500">
+              <td colspan="6" class="px-6 py-10 text-center text-slate-500">
                 <div class="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
                 Chargement...
               </td>
             </tr>
             <tr v-else-if="filteredBoutiques.length === 0">
-              <td colspan="5" class="px-6 py-10 text-center text-slate-500">
+              <td colspan="6" class="px-6 py-10 text-center text-slate-500">
                 <Store class="w-8 h-8 text-slate-300 mx-auto mb-2" />
                 <p>Aucune boutique trouvée</p>
                 <button @click="openModal()" class="mt-3 text-emerald-700 hover:underline text-xs font-bold">+ Créer la première boutique</button>
@@ -109,6 +110,18 @@
                 <span :class="boutique.is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-700 border-red-200'" class="px-2.5 py-1 rounded-full text-[10px] font-bold border">
                   {{ boutique.is_active ? 'Active' : 'Désactivée' }}
                 </span>
+              </td>
+              <td class="px-6 py-4">
+                <button
+                  @click="openPrevision(boutique)"
+                  :disabled="!boutique.is_active"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 disabled:opacity-50 disabled:cursor-not-allowed text-indigo-700 border border-indigo-200 rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-xs"
+                  title="Voir la prévision IA de réapprovisionnement"
+                >
+                  <BarChart3 class="w-3 h-3 text-violet-600" />
+                  <Sparkles class="w-3 h-3" />
+                  Prévision
+                </button>
               </td>
               <td class="px-6 py-4 text-right">
                 <button @click="openModal(boutique)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors mr-2">
@@ -263,12 +276,148 @@
       </Transition>
     </Teleport>
 
+    <!-- ===================== MODAL PRÉVISION IA RÉAPPRO ===================== -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div v-if="showPrevisionModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs" @click.self="showPrevisionModal = false">
+          <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+            
+            <div class="flex items-center justify-between p-5 border-b border-slate-100 flex-shrink-0">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white shadow-md shadow-violet-900/20">
+                  <BarChart3 class="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                    📊 Prévision IA — Réapprovisionnement
+                  </h2>
+                  <p class="text-[11px] text-slate-500 mt-0.5">
+                    Boutique : <span class="font-bold text-slate-700">{{ selectedBoutiqueForPrevision?.nom || '-' }}</span>
+                    {{ selectedBoutiqueForPrevision?.localisation ? ` · ${selectedBoutiqueForPrevision.localisation}` : '' }}
+                  </p>
+                </div>
+              </div>
+              <button @click="showPrevisionModal = false" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors">
+                <X class="w-5 h-5" />
+              </button>
+            </div>
+
+            <div v-if="previsionLoading" class="p-12 text-center text-slate-500 font-mono text-xs flex-shrink-0">
+              <div class="w-7 h-7 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+              Analyse IA en cours — Calcul des besoins de stock...
+            </div>
+
+            <div v-else class="overflow-y-auto p-5 space-y-5 flex-1">
+              
+              <!-- 3 mini stats KPI -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div class="bg-gradient-to-br from-rose-50 to-red-50 border border-rose-200 rounded-xl p-4">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <AlertTriangle class="w-4 h-4 text-rose-600" />
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-rose-700">Produits prioritaires</span>
+                  </div>
+                  <p class="text-2xl font-black text-rose-700 font-mono">{{ previsionData.nombre_prioritaires }}</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-xl p-4">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <Package class="w-4 h-4 text-emerald-600" />
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Coût estimé total</span>
+                  </div>
+                  <p class="text-2xl font-black text-emerald-700 font-mono">{{ Number(previsionData.total_estime || 0).toLocaleString('fr-FR') }} <span class="text-xs font-semibold text-emerald-600">FCFA</span></p>
+                </div>
+
+                <div class="bg-gradient-to-br from-violet-50 to-indigo-50 border border-violet-200 rounded-xl p-4">
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <Sparkles class="w-4 h-4 text-violet-600" />
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-violet-700">Statut</span>
+                  </div>
+                  <p class="text-2xl font-black text-violet-700 font-mono">
+                    {{ previsionData.nombre_prioritaires > 5 ? '⚠️ Action requise' : previsionData.nombre_prioritaires > 0 ? '📋 Suivi conseillé' : '✅ Stock OK' }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- AI Summary -->
+              <div v-if="previsionData.ai_summary" class="bg-gradient-to-r from-indigo-950 via-violet-900 to-indigo-950 text-white rounded-2xl p-5 border border-violet-700/40 shadow-inner">
+                <div class="flex items-center gap-2 mb-2 text-[10px] font-bold uppercase tracking-wider text-violet-300">
+                  <Sparkles class="w-3.5 h-3.5" />
+                  Résumé IA
+                </div>
+                <p class="text-xs leading-relaxed text-violet-100">{{ previsionData.ai_summary }}</p>
+              </div>
+
+              <!-- Tableau des produits prioritaires -->
+              <div>
+                <h3 class="text-xs font-black uppercase tracking-wider text-slate-700 mb-3 flex items-center gap-2">
+                  <Package class="w-3.5 h-3.5 text-slate-500" />
+                  Produits à réapprovisionner en priorité
+                </h3>
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                  <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-500 border-b border-slate-200">
+                      <tr>
+                        <th class="px-4 py-2.5">Produit</th>
+                        <th class="px-4 py-2.5 text-center">Stock actuel</th>
+                        <th class="px-4 py-2.5 text-center">Qté suggérée</th>
+                        <th class="px-4 py-2.5 text-right">Coût estimé</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                      <tr v-if="!previsionData.prioritaires || previsionData.prioritaires.length === 0">
+                        <td colspan="4" class="px-4 py-6 text-center text-slate-400 text-xs">
+                          Aucun produit prioritaire détecté — Stock sain ✅
+                        </td>
+                      </tr>
+                      <tr v-for="(p, i) in previsionData.prioritaires.slice(0, 20)" :key="p.id || p.produit_id || i" class="hover:bg-slate-50/80 transition-colors">
+                        <td class="px-4 py-2.5">
+                          <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-md bg-rose-50 border border-rose-200 text-rose-600 text-[10px] font-black flex items-center justify-center flex-shrink-0">
+                              !
+                            </span>
+                            <div class="min-w-0">
+                              <p class="font-bold text-slate-900 truncate max-w-[220px]">{{ p.nom_commercial || p.nom || p.produit_nom || 'Produit #' + (p.id || p.produit_id || i) }}</p>
+                              <p class="text-[10px] text-slate-400 font-mono truncate max-w-[220px]">Priorité: {{ p.priorite || p.urgence || 'Haute' }}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-4 py-2.5 text-center font-mono">
+                          <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[11px]">
+                            {{ p.stock_actuel ?? p.stock_disponible ?? p.stock ?? '?' }}
+                          </span>
+                        </td>
+                        <td class="px-4 py-2.5 text-center font-mono font-bold text-slate-800 text-[12px]">
+                          +{{ p.quantite_suggeree ?? p.quantite ?? p.qte ?? '?' }}
+                          <span class="text-[10px] text-slate-400 font-normal ml-0.5">{{ p.unite || 'unités' }}</span>
+                        </td>
+                        <td class="px-4 py-2.5 text-right font-mono font-bold text-emerald-700 text-[12px]">
+                          {{ Number(p.cout_estime ?? p.cout ?? p.prix_total ?? 0).toLocaleString('fr-FR') }}
+                          <span class="text-[10px] text-emerald-600 font-normal">FCFA</span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="p-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50 rounded-b-2xl flex-shrink-0">
+              <button @click="showPrevisionModal = false" class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl transition-colors border border-slate-200">
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Store, Plus, Search, CheckCircle, X, Hammer, Sprout, AlertCircle } from 'lucide-vue-next'
+import { Store, Plus, Search, CheckCircle, X, Hammer, Sprout, AlertCircle, Sparkles, BarChart3, Package, AlertTriangle } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 definePageMeta({
@@ -295,6 +444,17 @@ const editingId = ref(null)
 
 const defaultForm = () => ({ nom: '', types: ['agricole'], localisation: '', description: '', is_active: true })
 const form = ref(defaultForm())
+
+// AI Prévision / Réappro State
+const showPrevisionModal = ref(false)
+const previsionLoading = ref(false)
+const selectedBoutiqueForPrevision = ref(null)
+const previsionData = ref({
+  nombre_prioritaires: 0,
+  total_estime: 0,
+  ai_summary: '',
+  prioritaires: []
+})
 
 // ---- Fetch ----
 const fetchBoutiques = async () => {
@@ -418,6 +578,26 @@ const toggleStatut = async (boutique) => {
     boutique.is_active = !boutique.is_active
   } catch (e) {
     if (e?.status !== 401) boutique.is_active = !boutique.is_active
+  }
+}
+
+// ---- AI Prévision Réappro ----
+const openPrevision = async (boutique) => {
+  selectedBoutiqueForPrevision.value = boutique
+  showPrevisionModal.value = true
+  previsionLoading.value = true
+  previsionData.value = { nombre_prioritaires: 0, total_estime: 0, ai_summary: '', prioritaires: [] }
+  try {
+    const res = await adminFetch(`/admin/ai/boutiques/${boutique.id}/suggerer-reappro`)
+    const d = res?.data || res
+    previsionData.value.nombre_prioritaires = d.nombre_prioritaires || d.prioritaires?.length || 0
+    previsionData.value.total_estime = d.total_estime || d.cout_total || 0
+    previsionData.value.ai_summary = d.ai_summary || d.resume || ''
+    previsionData.value.prioritaires = d.prioritaires || d.produits || []
+  } catch (e) {
+    console.warn('Prevision fetch error', e)
+  } finally {
+    previsionLoading.value = false
   }
 }
 </script>

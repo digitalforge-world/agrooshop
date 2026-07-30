@@ -504,6 +504,32 @@
                 <span>1. Informations générales</span>
               </h3>
 
+              <div class="bg-gradient-to-br from-emerald-50 via-white to-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <p class="text-[11px] font-black uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                    <span>🤖</span> Assistant IA — Fiche Technique Automatique
+                  </p>
+                  <p class="text-xs text-slate-600 mt-1">
+                    Saisissez le Nom commercial (et les Catégories à l'étape 5), puis laissez l'IA rédiger description, composition, mode d'emploi, dosages et SEO.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  @click="genererFicheProduitIA"
+                  :disabled="isAiGeneratingFiche"
+                  class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-700/15 flex items-center gap-2 transition-all active:scale-95 cursor-pointer whitespace-nowrap flex-shrink-0"
+                >
+                  <span v-if="isAiGeneratingFiche" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  <Sparkles v-else class="w-4 h-4" />
+                  <span>{{ isAiGeneratingFiche ? 'Génération en cours…' : '✨ Générer la fiche technique' }}</span>
+                </button>
+              </div>
+
+              <div v-if="aiFicheMessage" class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-4 py-2.5 text-xs font-bold flex items-center gap-2">
+                <CheckCircle2 class="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>{{ aiFicheMessage }}</span>
+              </div>
+
               <div class="space-y-4">
                 <div>
                   <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nom commercial * <span class="text-rose-600">(Obligatoire)</span></label>
@@ -704,6 +730,55 @@
                 <DollarSign class="w-4 h-4 text-emerald-600" />
                 <span>4. Prix et stock</span>
               </h3>
+
+              <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <p class="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                    <Zap class="w-3.5 h-3.5 text-amber-600" />
+                    Contrôle IA — Détecteur d'anomalies
+                  </p>
+                  <p class="text-xs text-slate-600 mt-1">
+                    Vérification automatique : prix atypique, stock incoherent, produit non adapté à la boutique.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  @click="validerSaisieIA"
+                  :disabled="isAiValidating"
+                  class="px-4 py-2.5 bg-white hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed text-slate-800 font-bold text-xs rounded-xl border border-slate-200 shadow-xs flex items-center gap-2 transition-all active:scale-95 cursor-pointer whitespace-nowrap flex-shrink-0"
+                >
+                  <span v-if="isAiValidating" class="w-4 h-4 border-2 border-slate-400/30 border-t-slate-700 rounded-full animate-spin"></span>
+                  <ShieldAlert v-else class="w-4 h-4 text-amber-600" />
+                  <span>{{ isAiValidating ? 'Analyse en cours…' : '🔍 Vérifier la saisie' }}</span>
+                </button>
+              </div>
+
+              <div v-if="aiValidationWarnings.length > 0 || aiValidationInfos.length > 0" class="space-y-2">
+                <div
+                  v-for="(w, i) in aiValidationWarnings"
+                  :key="'w'+i"
+                  :class="w.severity === 'error' ? 'bg-rose-50 border-rose-200 text-rose-800' : 'bg-amber-50 border-amber-200 text-amber-800'"
+                  class="border rounded-xl px-4 py-2.5 text-xs font-semibold flex items-start gap-2"
+                >
+                  <AlertTriangle v-if="w.severity === 'error'" class="w-4 h-4 flex-shrink-0 mt-0.5 text-rose-600" />
+                  <AlertCircle v-else class="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600" />
+                  <div>
+                    <span class="uppercase tracking-wider text-[10px] font-black opacity-80">[{{ w.code }}]</span>
+                    <p>{{ w.message }}</p>
+                  </div>
+                </div>
+                <div
+                  v-for="(inf, i) in aiValidationInfos"
+                  :key="'i'+i"
+                  class="bg-blue-50 border border-blue-200 text-blue-800 rounded-xl px-4 py-2.5 text-xs font-semibold flex items-start gap-2"
+                >
+                  <Info class="w-4 h-4 flex-shrink-0 mt-0.5 text-blue-600" />
+                  <div>
+                    <span class="uppercase tracking-wider text-[10px] font-black opacity-80">[INFO]</span>
+                    <p>{{ inf.message }}</p>
+                  </div>
+                </div>
+              </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
@@ -969,7 +1044,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Package, Search, RefreshCw, Star, Eye, Plus, Pencil, Trash2, Save, Info, ShieldAlert, Image, Upload, DollarSign, Layers, Globe, X, Filter, AlertTriangle } from 'lucide-vue-next'
+import { Package, Search, RefreshCw, Star, Eye, Plus, Pencil, Trash2, Save, Info, ShieldAlert, Image, Upload, DollarSign, Layers, Globe, X, Filter, AlertTriangle, Sparkles, CheckCircle2, AlertCircle, Zap } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 definePageMeta({
@@ -1001,6 +1076,12 @@ const isConfirmModalOpen = ref(false)
 const confirmTitle = ref('')
 const confirmMessage = ref('')
 const confirmAction = ref(null)
+
+const isAiGeneratingFiche = ref(false)
+const isAiValidating = ref(false)
+const aiValidationWarnings = ref([])
+const aiValidationInfos = ref([])
+const aiFicheMessage = ref('')
 
 const triggerConfirmModal = (title, message, actionFn) => {
   confirmTitle.value = title
@@ -1628,6 +1709,104 @@ const toggleFeatured = async (prod) => {
     })
   } catch (e) {
     console.warn(e)
+  }
+}
+
+// ====================================================================
+// 🤖 FONCTIONS IA : Fiche produit + Validation anomalies
+// ====================================================================
+const genererFicheProduitIA = async () => {
+  if (!form.value.nom_commercial?.trim()) {
+    stepErrorMessage.value = 'Saisissez d\'abord un Nom commercial pour générer la fiche technique IA.'
+    return
+  }
+  isAiGeneratingFiche.value = true
+  aiFicheMessage.value = ''
+  stepErrorMessage.value = ''
+
+  try {
+    const payload = {
+      nom_commercial: form.value.nom_commercial.trim(),
+      prix_unitaire: form.value.prix_unitaire || null,
+      unite_mesure: form.value.unite_mesure || '',
+      categories_ids: Array.isArray(form.value.selectedCategories) && form.value.selectedCategories.length > 0
+        ? form.value.selectedCategories.map(c => Number(c)).filter(c => c > 0)
+        : [],
+    }
+    const catPrincipale = categoriesList.value.find(c => Number(c.id) === Number(form.value.categorie_principale))
+    if (catPrincipale) payload.categorie_nom = catPrincipale.nom
+
+    const res = await $fetch(`${config.public.apiBaseUrl}/admin/ai/produits/generer-fiche`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+
+    const data = res?.data || res
+    if (data && typeof data === 'object') {
+      if (data.description) form.value.description = String(data.description)
+      if (data.composition) form.value.composition = String(data.composition)
+      if (data.principes_actifs) form.value.principes_actifs = String(data.principes_actifs)
+      if (data.mode_emploi) form.value.mode_emploi = String(data.mode_emploi)
+      if (data.dosage_recommande) form.value.dosage_recommande = String(data.dosage_recommande)
+      if (data.precautions_usage) form.value.precautions_usage = String(data.precautions_usage)
+      if (data.contre_indications) form.value.contre_indications = String(data.contre_indications)
+      if (data.meta_title) form.value.meta_title = String(data.meta_title).slice(0, 200)
+      if (data.meta_description) form.value.meta_description = String(data.meta_description).slice(0, 160)
+      if (typeof data.suggestion_stock_alerte === 'number' && form.value.stock_alerte <= 0) {
+        form.value.stock_alerte = data.suggestion_stock_alerte
+      }
+      if (typeof data.suggestion_poids_kg === 'number' && !form.value.poids) {
+        form.value.poids = data.suggestion_poids_kg
+      }
+      if (data.suggestion_dimensions && !form.value.dimensions) {
+        form.value.dimensions = String(data.suggestion_dimensions)
+      }
+      aiFicheMessage.value = res?.message || 'Fiche technique générée avec succès !'
+      aiValidationWarnings.value = []
+      aiValidationInfos.value = []
+    } else {
+      stepErrorMessage.value = 'Aucune donnée retournée par l\'IA. Réessayez.'
+    }
+  } catch (e) {
+    stepErrorMessage.value = e?.data?.message || e?.message || 'Erreur IA lors de la génération de la fiche.'
+  } finally {
+    isAiGeneratingFiche.value = false
+  }
+}
+
+const validerSaisieIA = async () => {
+  isAiValidating.value = true
+  aiValidationWarnings.value = []
+  aiValidationInfos.value = []
+  try {
+    const catPrincipale = categoriesList.value.find(c => Number(c.id) === Number(form.value.categorie_principale))
+    const payload = {
+      nom_commercial: form.value.nom_commercial || '',
+      prix_unitaire: form.value.prix_unitaire || 0,
+      stock_disponible: form.value.stock_disponible ?? null,
+      stock_alerte: form.value.stock_alerte ?? null,
+      categorie_principale_nom: catPrincipale?.nom || '',
+      unite_mesure: form.value.unite_mesure || '',
+      produit_id: editingId.value ? Number(editingId.value) : null,
+    }
+    const res = await $fetch(`${config.public.apiBaseUrl}/admin/ai/produits/valider-saisie`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+    aiValidationWarnings.value = res?.data?.warnings || []
+    aiValidationInfos.value = res?.data?.infos || []
+  } catch (e) {
+    console.warn('Validation IA error', e)
+  } finally {
+    isAiValidating.value = false
   }
 }
 

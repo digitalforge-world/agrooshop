@@ -162,6 +162,158 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════ -->
+    <!-- AI INSIGHTS CARD                                    -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="ai-insights-panel">
+      <div class="ai-insights-header">
+        <div class="flex items-center gap-3">
+          <div class="ai-badge-icon">
+            <Brain class="w-5 h-5" />
+          </div>
+          <div>
+            <h2 class="ai-insights-title">
+              <Sparkles class="w-4 h-4 inline-block mr-1.5 text-amber-400" />
+              Insights IA — Analyse Prédictive
+            </h2>
+            <p class="ai-insights-subtitle">Analyse automatique des tendances et recommandations intelligentes</p>
+          </div>
+        </div>
+        <button 
+          @click="fetchAiInsights" 
+          :disabled="aiInsights.loading"
+          class="ai-refresh-btn"
+        >
+          <RefreshCw class="w-3.5 h-3.5 mr-1.5" :class="{ spinning: aiInsights.loading }" />
+          Actualiser
+        </button>
+      </div>
+
+      <div v-if="aiInsights.loading" class="py-10 text-center text-xs font-mono text-slate-500">
+        <div class="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+        Analyse IA en cours...
+      </div>
+
+      <div v-else class="ai-insights-body">
+        <!-- 3 AI KPI stats: CA 30j, Prévision, Tendance -->
+        <div class="ai-kpi-grid">
+          <div class="ai-kpi-card">
+            <div class="ai-kpi-label">CA 30 derniers jours</div>
+            <div class="ai-kpi-value ai-kpi-green">{{ formatPrice(aiInsights.ca_30j) }} <span class="ai-kpi-currency">FCFA</span></div>
+          </div>
+          <div class="ai-kpi-card">
+            <div class="ai-kpi-label">Prévision 30j (IA)</div>
+            <div class="ai-kpi-value ai-kpi-blue">{{ formatPrice(aiInsights.prevision_30j) }} <span class="ai-kpi-currency">FCFA</span></div>
+          </div>
+          <div class="ai-kpi-card">
+            <div class="ai-kpi-label">Tendance</div>
+            <div class="flex items-center gap-2">
+              <TrendingUp v-if="aiInsights.tendance_pct >= 0" class="w-5 h-5 text-emerald-500" />
+              <TrendingDown v-else class="w-5 h-5 text-rose-500" />
+              <span :class="aiInsights.tendance_pct >= 0 ? 'ai-kpi-green' : 'ai-kpi-red'" class="ai-kpi-value">
+                {{ aiInsights.tendance_pct >= 0 ? '+' : '' }}{{ aiInsights.tendance_pct }}%
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tendances / Alertes / Opportunités columns -->
+        <div class="ai-columns-grid">
+          <!-- Tendances -->
+          <div class="ai-col-card">
+            <div class="ai-col-header ai-col-header-blue">
+              <TrendingUp class="w-4 h-4" />
+              <span>Tendances du marché</span>
+            </div>
+            <div class="ai-col-body">
+              <div v-if="aiInsights.ai_insights.tendances?.length > 0" class="ai-list">
+                <div v-for="(t, i) in aiInsights.ai_insights.tendances.slice(0, 4)" :key="i" class="ai-list-item">
+                  <span class="ai-dot ai-dot-blue"></span>
+                  <span>{{ t }}</span>
+                </div>
+              </div>
+              <div v-else class="ai-empty">Aucune tendance détectée</div>
+            </div>
+          </div>
+
+          <!-- Alertes -->
+          <div class="ai-col-card">
+            <div class="ai-col-header ai-col-header-amber">
+              <Zap class="w-4 h-4" />
+              <span>Alertes critiques</span>
+            </div>
+            <div class="ai-col-body">
+              <div v-if="aiInsights.ai_insights.alertes?.length > 0" class="ai-list">
+                <div v-for="(a, i) in aiInsights.ai_insights.alertes.slice(0, 4)" :key="i" class="ai-list-item">
+                  <span class="ai-dot ai-dot-amber"></span>
+                  <span>{{ a }}</span>
+                </div>
+              </div>
+              <div v-else class="ai-empty">✅ Aucune alerte critique</div>
+            </div>
+          </div>
+
+          <!-- Opportunités -->
+          <div class="ai-col-card">
+            <div class="ai-col-header ai-col-header-green">
+              <Target class="w-4 h-4" />
+              <span>Opportunités</span>
+            </div>
+            <div class="ai-col-body">
+              <div v-if="aiInsights.ai_insights.opportunites?.length > 0" class="ai-list">
+                <div v-for="(o, i) in aiInsights.ai_insights.opportunites.slice(0, 4)" :key="i" class="ai-list-item">
+                  <span class="ai-dot ai-dot-green"></span>
+                  <span>{{ o }}</span>
+                </div>
+              </div>
+              <div v-else class="ai-empty">Analyse en cours...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top produits + Rupture -->
+        <div class="ai-columns-grid">
+          <div class="ai-col-card">
+            <div class="ai-col-header">
+              <Package class="w-4 h-4 text-purple-500" />
+              <span>🏆 Top produits (IA)</span>
+            </div>
+            <div class="ai-col-body">
+              <div v-if="aiInsights.top_produits?.length > 0" class="ai-list ai-dense-list">
+                <div v-for="(p, i) in aiInsights.top_produits.slice(0, 5)" :key="p.id || i" class="ai-dense-item">
+                  <span class="ai-rank">#{{ i + 1 }}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="ai-dense-name">{{ p.nom_commercial || p.nom }}</div>
+                  </div>
+                  <div class="ai-dense-amount">{{ formatPrice(p.chiffre_affaires || p.total_vente || 0) }}</div>
+                </div>
+              </div>
+              <div v-else class="ai-empty">Aucune donnée top produits</div>
+            </div>
+          </div>
+
+          <div class="ai-col-card">
+            <div class="ai-col-header">
+              <AlertTriangle class="w-4 h-4 text-rose-500" />
+              <span>⚠️ Produits en rupture prévue</span>
+            </div>
+            <div class="ai-col-body">
+              <div v-if="aiInsights.produits_rupture?.length > 0" class="ai-list ai-dense-list">
+                <div v-for="(p, i) in aiInsights.produits_rupture.slice(0, 5)" :key="p.id || i" class="ai-dense-item">
+                  <div class="w-2 h-2 rounded-full bg-rose-500 flex-shrink-0 mt-1.5"></div>
+                  <div class="flex-1 min-w-0">
+                    <div class="ai-dense-name">{{ p.nom_commercial || p.nom }}</div>
+                    <div class="text-[10px] text-rose-600 font-mono">Stock: {{ p.stock_disponible ?? p.stock ?? '?' }}</div>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="ai-empty">✅ Aucune rupture prévue</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
     <!-- MIDDLE ROW 1: Sales Chart + Performance Gauge       -->
     <!-- ═══════════════════════════════════════════════════ -->
     <div class="middle-row">
@@ -474,7 +626,8 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import {
   TrendingUp, ShoppingCart, DollarSign, Package, RefreshCw,
-  AlertTriangle, Clock, CreditCard, MapPin
+  AlertTriangle, Clock, CreditCard, MapPin, Sparkles, Brain,
+  Zap, Target, TrendingDown
 } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
@@ -520,6 +673,20 @@ const modesPaiement = ref([])
 const topProduits = ref([])
 const ventesVilles = ref([])
 const recentOrders = ref([])
+
+const aiInsights = ref({
+  loading: false,
+  ca_30j: 0,
+  prevision_30j: 0,
+  tendance_pct: 0,
+  ai_insights: {
+    tendances: [],
+    alertes: [],
+    opportunites: []
+  },
+  top_produits: [],
+  produits_rupture: []
+})
 
 // ── Computed for Category Total ──
 const totalVentesCategories = computed(() => {
@@ -661,6 +828,27 @@ const getPaiementBadgeClass = (statut) => {
   }
 }
 
+const fetchAiInsights = async () => {
+  aiInsights.value.loading = true
+  try {
+    const res = await $fetch(`${config.public.apiBaseUrl}/admin/ai/dashboard/insights`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    })
+    const d = res?.data || res
+    if (d) {
+      aiInsights.value.ca_30j = d.ca_30j || d.ca || 0
+      aiInsights.value.prevision_30j = d.prevision_30j || d.prevision || 0
+      aiInsights.value.tendance_pct = d.tendance_pct || d.tendance || 0
+      aiInsights.value.ai_insights = d.ai_insights || { tendances: [], alertes: [], opportunites: [] }
+      aiInsights.value.top_produits = d.top_produits || d.topProduits || []
+      aiInsights.value.produits_rupture = d.produits_rupture || d.stock_alerte || []
+    }
+  } catch (e) {
+    console.warn('AI insights fetch error', e)
+  }
+  aiInsights.value.loading = false
+}
+
 // ── Fetch data ──
 const fetchDashboardData = async () => {
   isLoading.value = true
@@ -709,6 +897,7 @@ const fetchDashboardData = async () => {
     console.error('Erreur de chargement du dashboard', e)
   }
   isLoading.value = false
+  fetchAiInsights()
 }
 
 onMounted(() => {
@@ -1677,5 +1866,264 @@ onMounted(() => {
 
 .text-right {
   text-align: right;
+}
+
+/* ── AI INSIGHTS PANEL ── */
+.ai-insights-panel {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e293b 100%);
+  border: 1px solid rgba(129, 140, 248, 0.25);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 10px 40px rgba(79, 70, 229, 0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.ai-insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ai-badge-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #a78bfa, #6366f1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+}
+
+.ai-insights-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: white;
+  margin: 0;
+}
+
+.ai-insights-subtitle {
+  font-size: 12px;
+  color: rgba(199, 210, 254, 0.8);
+  margin-top: 2px;
+}
+
+.ai-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e0e7ff;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ai-refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+}
+
+.ai-refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ai-insights-body {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.ai-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .ai-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ai-kpi-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.ai-kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(199, 210, 254, 0.85);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ai-kpi-value {
+  font-size: 22px;
+  font-weight: 900;
+  font-family: 'Inter', system-ui, sans-serif;
+  margin-top: 4px;
+  letter-spacing: -0.5px;
+}
+
+.ai-kpi-green { color: #4ade80; }
+.ai-kpi-blue { color: #60a5fa; }
+.ai-kpi-red { color: #f87171; }
+
+.ai-kpi-currency {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.5);
+}
+
+.ai-columns-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 1024px) {
+  .ai-columns-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ai-columns-grid:nth-of-type(2) {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .ai-columns-grid:nth-of-type(2) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ai-col-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-col-header {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #e0e7ff;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.ai-col-header-blue { color: #93c5fd; }
+.ai-col-header-amber { color: #fcd34d; }
+.ai-col-header-green { color: #86efac; }
+
+.ai-col-body {
+  padding: 12px 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.ai-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.ai-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.ai-dot-blue { background: #60a5fa; box-shadow: 0 0 6px rgba(96, 165, 250, 0.6); }
+.ai-dot-amber { background: #fbbf24; box-shadow: 0 0 6px rgba(251, 191, 36, 0.6); }
+.ai-dot-green { background: #4ade80; box-shadow: 0 0 6px rgba(74, 222, 128, 0.6); }
+
+.ai-empty {
+  font-size: 11px;
+  color: rgba(148, 163, 184, 0.8);
+  text-align: center;
+  padding: 8px 0;
+}
+
+.ai-dense-list {
+  gap: 6px;
+}
+
+.ai-dense-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 8px;
+  font-size: 11px;
+}
+
+.ai-rank {
+  min-width: 28px;
+  padding: 2px 6px;
+  text-align: center;
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #c4b5fd;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 10px;
+  font-family: monospace;
+}
+
+.ai-dense-name {
+  font-weight: 700;
+  color: #f1f5f9;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ai-dense-amount {
+  font-weight: 800;
+  color: #86efac;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+/* Spinning animation for refresh icons */
+.spinning {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 </style>
