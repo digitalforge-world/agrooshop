@@ -95,19 +95,10 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    prerender: {
-      routes: [
-        '/admin',
-        '/admin/auth/v1/sso-login-gateway-98f7a2b91c84',
-        '/admin/visites',
-        '/admin/visites/journal',
-        '/admin/produits',
-        '/admin/commandes',
-        '/admin/blog',
-        '/admin/categories',
-        '/admin/utilisateurs'
-      ]
-    }
+    // Routes admin et gestionnaire NE DOIVENT PAS être pré-rendues
+    // car elles dépendent des cookies d'authentification à l'exécution.
+    // Le pré-rendu les générait SANS cookies → le middleware redirigeait
+    // systématiquement vers la page de connexion à chaque rechargement.
   },
 
   hooks: {
