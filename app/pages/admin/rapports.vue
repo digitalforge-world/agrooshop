@@ -116,21 +116,22 @@
               </td>
               <td class="px-6 py-4 text-right flex items-center justify-end gap-2">
                 <button
-                  v-if="!rapport.lu_par_admin"
+                  v-if="!isRapportLu(rapport)"
                   @click="marquerLu(rapport)"
                   title="Marquer comme lu"
                   class="p-2 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-lg transition-colors border border-amber-200"
                 >
                   <Eye class="w-4 h-4" />
                 </button>
-                <a
-                  :href="`${config.public.apiBaseUrl}/admin/rapports/${rapport.id}/telecharger`"
-                  target="_blank"
-                  class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg transition-colors inline-flex items-center border border-emerald-200"
+                <button
+                  @click="telechargerRapport(rapport)"
+                  :disabled="downloadingId === rapport.id"
+                  class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg transition-colors inline-flex items-center border border-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Télécharger le PDF"
                 >
-                  <Download class="w-4 h-4" />
-                </a>
+                  <RefreshCw v-if="downloadingId === rapport.id" class="w-4 h-4 animate-spin" />
+                  <Download v-else class="w-4 h-4" />
+                </button>
               </td>
             </tr>
           </tbody>
@@ -143,7 +144,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { FileSpreadsheet, FileText, BellDot, CheckCheck, Eye, Download } from 'lucide-vue-next'
+import { FileSpreadsheet, FileText, BellDot, CheckCheck, Eye, Download, RefreshCw } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 definePageMeta({
@@ -160,6 +161,7 @@ const config = useRuntimeConfig()
 const rapports = ref([])
 const loading = ref(true)
 const activeFilter = ref('all')
+const downloadingId = ref(null)
 
 const filters = [
   { key: 'all', label: 'Tous' },
@@ -168,17 +170,32 @@ const filters = [
   { key: 'mensuel', label: 'Mensuels' }
 ]
 
+const isRapportLu = (r) => !!(r?.lu_par_admin || r?.statut_lecture)
+
+const setRapportLu = (r, val = true) => {
+  if (!r) return
+  r.lu_par_admin = val
+  r.statut_lecture = val
+}
+
+const getTypeRapport = (r) => r?.type_rapport || r?.type
+
 const fetchRapports = async () => {
   loading.value = true
   try {
     const res = await $fetch(`${config.public.apiBaseUrl}/admin/rapports`, {
       headers: { Authorization: `Bearer ${authStore.token}`, Accept: 'application/json' }
     })
-    rapports.value = res?.data ?? (Array.isArray(res) ? res : [])
+    const raw = res?.data ?? (Array.isArray(res) ? res : [])
+    rapports.value = raw.map(r => ({
+      ...r,
+      lu_par_admin: isRapportLu(r),
+      type_rapport: getTypeRapport(r)
+    }))
   } catch (e) {
     rapports.value = [
-      { id: 1, titre: 'Rapport Journalier - 28 Juillet', type_rapport: 'journalier', lu_par_admin: false, boutique: { nom: 'AgroShop Quincaillerie Centre' }, gestionnaire: { prenom: 'Paul', nom: 'Koffi' }, created_at: new Date().toISOString() },
-      { id: 2, titre: 'Rapport Mensuel - Juillet 2025', type_rapport: 'mensuel', lu_par_admin: true, boutique: { nom: 'AgroShop Engrais Nord' }, gestionnaire: { prenom: 'Marie', nom: 'Aya' }, created_at: new Date().toISOString() }
+      { id: 1, titre: 'Rapport Journalier - 28 Juillet', type_rapport: 'journalier', lu_par_admin: false, statut_lecture: false, boutique: { nom: 'AgroShop Quincaillerie Centre' }, gestionnaire: { prenom: 'Paul', nom: 'Koffi' }, created_at: new Date().toISOString() },
+      { id: 2, titre: 'Rapport Mensuel - Juillet 2025', type_rapport: 'mensuel', lu_par_admin: true, statut_lecture: true, boutique: { nom: 'AgroShop Engrais Nord' }, gestionnaire: { prenom: 'Marie', nom: 'Aya' }, created_at: new Date().toISOString() }
     ]
   } finally {
     loading.value = false
@@ -191,16 +208,50 @@ const marquerLu = async (rapport) => {
       method: 'POST',
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
-    rapport.lu_par_admin = true
+    setRapportLu(rapport, true)
   } catch (e) {
-    rapport.lu_par_admin = true
+    setRapportLu(rapport, true)
+  }
+}
+
+const telechargerRapport = async (rapport) => {
+  if (downloadingId.value) return
+  downloadingId.value = rapport.id
+  try {
+    const blob = await $fetch(`${config.public.apiBaseUrl}/admin/rapports/${rapport.id}/telecharger`, {
+      headers: {
+        Authorization: `Bearer ${authStore.token}`
+      },
+      responseType: 'blob'
+    })
+
+    if (!blob || blob.size === 0) {
+      throw new Error('Fichier vide ou introuvable')
+    }
+
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    const safeTitle = (rapport.titre || `rapport-${rapport.id}`).replace(/[^a-zA-Z0-9_-]/g, '_')
+    a.download = `${safeTitle}.pdf`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+
+    setRapportLu(rapport, true)
+  } catch (e) {
+    console.error('Erreur téléchargement rapport:', e)
+    alert('Impossible de télécharger le rapport. Veuillez réessayer ou contacter le support.')
+  } finally {
+    downloadingId.value = null
   }
 }
 
 const filteredRapports = computed(() => {
-  if (activeFilter.value === 'unread') return rapports.value.filter(r => !r.lu_par_admin)
-  if (activeFilter.value === 'journalier') return rapports.value.filter(r => r.type_rapport === 'journalier')
-  if (activeFilter.value === 'mensuel') return rapports.value.filter(r => r.type_rapport === 'mensuel')
+  if (activeFilter.value === 'unread') return rapports.value.filter(r => !isRapportLu(r))
+  if (activeFilter.value === 'journalier') return rapports.value.filter(r => getTypeRapport(r) === 'journalier')
+  if (activeFilter.value === 'mensuel') return rapports.value.filter(r => getTypeRapport(r) === 'mensuel')
   return rapports.value
 })
 

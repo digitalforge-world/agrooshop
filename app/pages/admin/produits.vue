@@ -1061,11 +1061,26 @@ const form = ref({
 const formatPrice = (val) => Number(val || 0).toLocaleString('fr-FR')
 const getImgUrl = (img) => getImageUrl(img, fallbackImage)
 
+const extractProduitFromApiResponse = (res) => {
+  if (!res || typeof res !== 'object') return null
+  const direct = res?.data?.produit || res?.produit || res?.data?.data?.produit
+  if (direct && (direct.nom_commercial || direct.slug || direct.id)) {
+    return direct
+  }
+  const obj = res?.data?.data || res?.data || res
+  if (obj && (obj.nom_commercial || obj.slug || obj.id)) {
+    return obj
+  }
+  return null
+}
+
 const getPublicLink = (prod) => {
   if (!prod) return '/produits'
   const s = String(prod.slug || prod.id)
+  if (!s || s === 'undefined' || s === 'null') return '/produits'
   if (s.startsWith('http')) return s
-  const cleanSlug = s.replace(/^\/produits\//, '')
+  const cleanSlug = s.replace(/^\/produits\//, '').replace(/^\//, '')
+  if (!cleanSlug) return '/produits'
   return `/produits/${cleanSlug}`
 }
 
@@ -1415,11 +1430,14 @@ const openDetailModal = async (prod) => {
   try {
     const slugOrId = prod.slug || prod.id
     const res = await $fetch(`${config.public.apiBaseUrl}/produits/${slugOrId}`)
-    const fullData = res?.data || res
+    const fullData = extractProduitFromApiResponse(res)
     if (fullData && typeof fullData === 'object') {
+      const imgPrincipale = fullData.image_principale || fullData.imagePrincipale || prod.image_principale
       selectedProductDetail.value = {
         ...prod,
         ...fullData,
+        image_principale: imgPrincipale,
+        url_image: fullData.url_image || imgPrincipale?.url_image || prod.url_image,
         categories: fullData.categories || prod.categories || [],
         description: fullData.description || prod.description,
         composition: fullData.composition || prod.composition,
@@ -1429,7 +1447,8 @@ const openDetailModal = async (prod) => {
         precautions_usage: fullData.precautions_usage || prod.precautions_usage,
         contre_indications: fullData.contre_indications || prod.contre_indications,
         meta_title: fullData.meta_title || prod.meta_title,
-        meta_description: fullData.meta_description || prod.meta_description
+        meta_description: fullData.meta_description || prod.meta_description,
+        slug: fullData.slug || prod.slug
       }
     }
   } catch (e) {

@@ -426,6 +426,29 @@ const stopAutoSlide = () => {
   }
 }
 
+const extractProduitFromResponse = (res) => {
+  if (!res || typeof res !== 'object') return null
+  const direct = res?.data?.produit || res?.produit || res?.data?.data?.produit
+  if (direct && (direct.nom_commercial || direct.slug || direct.id)) {
+    return direct
+  }
+  const obj = res?.data?.data || res?.data || res
+  if (obj && (obj.nom_commercial || obj.slug || obj.id)) {
+    return obj
+  }
+  return null
+}
+
+const normalizeProduit = (item) => {
+  if (!item || typeof item !== 'object') return item
+  const imgPrincipale = item.image_principale || item.imagePrincipale || item.image_principale
+  return {
+    ...item,
+    image_principale: imgPrincipale,
+    url_image: item.url_image || imgPrincipale?.url_image || imgPrincipale?.url || item.image
+  }
+}
+
 const trackProductView = async () => {
   try {
     await $fetch(`${config.public.apiBaseUrl}/statistiques/visites`, {
@@ -462,7 +485,8 @@ onMounted(async () => {
   try {
     const slug = route.params.slug
     const res = await $fetch(`${config.public.apiBaseUrl}/produits/${slug}`)
-    const item = res?.data?.produit || res?.data
+    const rawItem = extractProduitFromResponse(res)
+    const item = normalizeProduit(rawItem)
     if (item && item.nom_commercial) {
       product.value = {
         ...product.value,
@@ -477,7 +501,9 @@ onMounted(async () => {
         unite_mesure: item.unite_mesure || product.value.unite_mesure,
         stock_disponible: item.stock_disponible ?? product.value.stock_disponible,
         images: (item.images && item.images.length > 0) ? item.images : product.value.images,
-        categories: (item.categories && item.categories.length > 0) ? item.categories : product.value.categories
+        categories: (item.categories && item.categories.length > 0) ? item.categories : product.value.categories,
+        image_principale: item.image_principale || product.value.image_principale,
+        url_image: item.url_image || product.value.url_image
       }
       trackProductView()
     } else {
