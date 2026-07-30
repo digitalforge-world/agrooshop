@@ -1,6 +1,6 @@
 <template>
   <!-- Fixed Fullscreen Viewport Shell with AgroShop Brand Palette -->
-  <div class="h-screen w-screen overflow-hidden bg-slate-50 text-slate-800 flex font-sans select-none">
+  <div class="h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 flex font-sans select-none">
     
     <!-- Fixed Sidebar Navigation (Deep Agro Emerald Theme) -->
     <aside class="w-64 h-full bg-emerald-950 border-r border-emerald-900/60 flex flex-col justify-between p-5 flex-shrink-0 overflow-y-auto z-30 text-slate-100">
@@ -165,19 +165,19 @@
       </div>
     </aside>
 
-    <!-- Main Section (Header Fixed Top + Content Body Light & Crisp) -->
-    <main class="flex-1 h-full flex flex-col min-w-0 bg-slate-50 overflow-hidden">
+    <!-- Main Section (Header Fixed Top + Content Body Slate 950) -->
+    <main class="flex-1 h-full flex flex-col min-w-0 bg-slate-950 overflow-hidden">
       
       <!-- Fixed Top Bar Header -->
-      <header class="h-16 border-b border-slate-200 bg-white/90 backdrop-blur-md px-6 flex items-center justify-between flex-shrink-0 z-20 shadow-xs">
-        <div class="flex items-center gap-2 text-xs font-mono text-slate-500">
+      <header class="h-16 border-b border-slate-800 bg-slate-900/90 backdrop-blur-md px-6 flex items-center justify-between flex-shrink-0 z-20 shadow-xs">
+        <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
           <span>PORTAIL D'ADMINISTRATION</span>
           <span>/</span>
-          <span class="text-emerald-700 font-bold uppercase">{{ route.name?.toString().replace('admin-', '') || 'DASHBOARD' }}</span>
+          <span class="text-emerald-400 font-bold uppercase">{{ route.name?.toString().replace('admin-', '') || 'DASHBOARD' }}</span>
         </div>
 
         <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2 text-[11px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-semibold shadow-2xs">
+          <div class="flex items-center gap-2 text-[11px] font-mono text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-3 py-1 rounded-full font-semibold shadow-2xs">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>API CONNECTÉE</span>
           </div>
