@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, skipHydrate } from 'pinia'
 import { ref, computed } from 'vue'
 
 export interface AdminUser {
@@ -104,9 +104,9 @@ export const useAdminAuthStore = defineStore('adminAuth', () => {
   const adminUser = admin
 
   return {
-    token,
-    admin,
-    adminUser,
+    token: skipHydrate(token),
+    admin: skipHydrate(admin),
+    adminUser: skipHydrate(admin),
     isLoading,
     authError,
     isAuthenticated,

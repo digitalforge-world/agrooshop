@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, skipHydrate } from 'pinia'
 import { ref, computed } from 'vue'
 
 export interface GestionnaireUser {
@@ -111,11 +111,11 @@ export const useGestionnaireAuthStore = defineStore('gestionnaireAuth', () => {
   const adminUser = computed(() => user.value)
 
   return {
-    token,
-    user,
-    boutiques,
+    token: skipHydrate(token),
+    user: skipHydrate(user),
+    boutiques: skipHydrate(boutiques),
     boutique,
-    activeBoutiqueId,
+    activeBoutiqueId: skipHydrate(activeBoutiqueId),
     hasMultipleBoutiques,
     isLoading,
     authError,

@@ -94,11 +94,27 @@ export default defineNuxtConfig({
     }
   },
 
+  routeRules: {
+    '/admin': { ssr: false, prerender: false },
+    '/admin/**': { ssr: false, prerender: false },
+    '/gestionnaire': { ssr: false, prerender: false },
+    '/gestionnaire/**': { ssr: false, prerender: false },
+    '/produits': { ssr: false, prerender: false },
+    '/produits/**': { ssr: false, prerender: false }
+  },
+
   nitro: {
-    // Routes admin et gestionnaire NE DOIVENT PAS être pré-rendues
-    // car elles dépendent des cookies d'authentification à l'exécution.
-    // Le pré-rendu les générait SANS cookies → le middleware redirigeait
-    // systématiquement vers la page de connexion à chaque rechargement.
+    prerender: {
+      // Empêcher le crawler Nitro de découvrir et pré-rendre les routes protégées.
+      // Les globs ** ne fonctionnent pas toujours ; on utilise des regex pour garantir
+      // que toute route commençant par /admin ou /gestionnaire est ignorée.
+      ignore: [
+        /^\/admin/,
+        /^\/gestionnaire/
+      ],
+      // Ne pas arrêter le build si une route crawlée échoue (sécurité)
+      failOnError: false
+    }
   },
 
   hooks: {
