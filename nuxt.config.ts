@@ -105,14 +105,10 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      // Empêcher le crawler Nitro de découvrir et pré-rendre les routes protégées.
-      // Les globs ** ne fonctionnent pas toujours ; on utilise des regex pour garantir
-      // que toute route commençant par /admin ou /gestionnaire est ignorée.
-      ignore: [
-        /^\/admin/,
-        /^\/gestionnaire/
-      ],
-      // Ne pas arrêter le build si une route crawlée échoue (sécurité)
+      // Désactiver le suivi automatique des liens <a href> par le crawler.
+      // Cela évite de tenter le prerender des routes dynamiques/authentifiées.
+      crawlLinks: false,
+      routes: ['/', '/agrodop', '/quincaillerie', '/contact', '/faq'],
       failOnError: false
     }
   },
