@@ -120,30 +120,30 @@
           </thead>
 
           <!-- Compact Body Rows -->
-          <tbody class="divide-y divide-slate-800/60 font-medium">
-            <tr v-for="cmd in filteredOrders" :key="cmd.id" class="hover:bg-slate-800/40 transition-colors">
+          <tbody class="divide-y divide-slate-100 font-medium">
+            <tr v-for="cmd in filteredOrders" :key="cmd.id" class="hover:bg-slate-50/80 transition-colors">
               
               <!-- Code Ref -->
-              <td class="px-4 py-2 font-mono font-bold text-emerald-400 text-xs">
+              <td class="px-4 py-2 font-mono font-bold text-emerald-700 text-xs">
                 {{ cmd.code_reference || cmd.reference_commande || `CMD-${cmd.id}` }}
               </td>
 
               <!-- Client Info -->
               <td class="px-4 py-2">
-                <p class="font-bold text-white text-xs">{{ cmd.nom_client || 'Client AgroShop' }} {{ cmd.prenom_client || '' }}</p>
-                <p class="text-[11px] text-slate-400 font-mono">{{ cmd.telephone_client || cmd.telephone || '+228 -- -- -- --' }}</p>
+                <p class="font-bold text-slate-900 text-xs">{{ cmd.nom_client || 'Client AgroShop' }} {{ cmd.prenom_client || '' }}</p>
+                <p class="text-[11px] text-slate-500 font-mono">{{ cmd.telephone_client || cmd.telephone || '+228 -- -- -- --' }}</p>
               </td>
 
               <!-- Delivery Mode & Address -->
               <td class="px-4 py-2">
-                <p class="font-semibold text-slate-200 text-[10px] uppercase tracking-wider">
+                <p class="font-semibold text-slate-700 text-[10px] uppercase tracking-wider">
                   {{ (cmd.mode_livraison || '').includes('domicile') ? '🚚 Domicile' : '🏬 Retrait Agence' }}
                 </p>
-                <p class="text-[11px] text-slate-400 truncate max-w-[200px]">{{ cmd.adresse_livraison || cmd.ville || 'Lomé, Togo' }}</p>
+                <p class="text-[11px] text-slate-500 truncate max-w-[200px]">{{ cmd.adresse_livraison || cmd.ville || 'Lomé, Togo' }}</p>
               </td>
 
               <!-- Total Price -->
-              <td class="px-4 py-2 font-mono font-bold text-amber-400 text-xs">
+              <td class="px-4 py-2 font-mono font-bold text-emerald-700 text-xs">
                 {{ formatPrice(cmd.montant_total || 0) }} FCFA
               </td>
 
@@ -152,7 +152,7 @@
                 <select 
                   v-model="cmd.statut_commande" 
                   @change="updateStatus(cmd)"
-                  class="px-2.5 py-1 bg-slate-950 border border-slate-700 rounded-xl text-[11px] font-bold text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  class="px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[11px] font-bold text-slate-800 focus:outline-none focus:border-emerald-500 cursor-pointer shadow-xs"
                   :class="getStatutSelectClass(cmd.statut_commande)"
                 >
                   <option value="en_attente">⏳ En Attente</option>
@@ -169,7 +169,7 @@
                 <span class="text-[10px] text-slate-500">{{ formatDate(cmd.created_at) }}</span>
                 <button 
                   @click="openOrderDetail(cmd)" 
-                  class="p-1 text-slate-400 hover:text-emerald-400 transition-colors cursor-pointer"
+                  class="p-1 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
                   title="Voir le détail de la commande"
                 >
                   <Eye class="w-3.5 h-3.5 inline-block" />
@@ -191,68 +191,68 @@
     <!-- ORDER DETAIL MODAL POPUP -->
     <!-- ════════════════════════════════════════════════════════════════ -->
     <Teleport to="body">
-      <div v-if="isOrderDetailOpen && selectedOrder" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
+      <div v-if="isOrderDetailOpen && selectedOrder" class="fixed inset-0 z-[9999] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
           
-          <div class="px-6 py-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between flex-shrink-0">
+          <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between flex-shrink-0">
             <div>
-              <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block">Détails de la Commande Client</span>
-              <h2 class="text-lg font-black text-white font-mono">{{ selectedOrder.code_reference || selectedOrder.reference_commande || `CMD-${selectedOrder.id}` }}</h2>
+              <span class="text-[10px] font-bold text-amber-700 uppercase tracking-widest block">Détails de la Commande Client</span>
+              <h2 class="text-lg font-black text-slate-900 font-mono">{{ selectedOrder.code_reference || selectedOrder.reference_commande || `CMD-${selectedOrder.id}` }}</h2>
             </div>
-            <button @click="isOrderDetailOpen = false" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center cursor-pointer">
+            <button @click="isOrderDetailOpen = false" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center cursor-pointer">
               <X class="w-4 h-4" />
             </button>
           </div>
 
-          <div class="p-6 overflow-y-auto flex-1 custom-modal-scroll space-y-5 text-xs">
+          <div class="p-6 overflow-y-auto flex-1 custom-modal-scroll space-y-5 text-xs text-slate-800">
             
             <!-- Client & Delivery Info Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1.5">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">👤 Informations Client</span>
-                <p class="font-bold text-white text-sm">{{ selectedOrder.nom_client }} {{ selectedOrder.prenom_client || '' }}</p>
-                <p class="font-mono text-emerald-400">📞 {{ selectedOrder.telephone_client || selectedOrder.telephone || '+228 -- -- -- --' }}</p>
-                <p v-if="selectedOrder.email_client" class="text-slate-400">✉️ {{ selectedOrder.email_client }}</p>
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">👤 Informations Client</span>
+                <p class="font-bold text-slate-900 text-sm">{{ selectedOrder.nom_client }} {{ selectedOrder.prenom_client || '' }}</p>
+                <p class="font-mono text-emerald-700 font-bold">📞 {{ selectedOrder.telephone_client || selectedOrder.telephone || '+228 -- -- -- --' }}</p>
+                <p v-if="selectedOrder.email_client" class="text-slate-600">✉️ {{ selectedOrder.email_client }}</p>
               </div>
 
-              <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1.5">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">🚚 Modalités de Livraison</span>
-                <p class="font-bold text-slate-200">
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1.5">
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">🚚 Modalités de Livraison</span>
+                <p class="font-bold text-slate-800">
                   {{ (selectedOrder.mode_livraison || '').includes('domicile') ? 'Livraison à Domicile / Agence' : 'Retrait sur Place' }}
                 </p>
-                <p class="text-slate-300">📍 {{ selectedOrder.adresse_livraison || selectedOrder.ville || 'Lomé - Togo' }}</p>
+                <p class="text-slate-700">📍 {{ selectedOrder.adresse_livraison || selectedOrder.ville || 'Lomé - Togo' }}</p>
                 <p class="text-slate-500 font-mono text-[10px]">Date : {{ formatDate(selectedOrder.created_at) }}</p>
               </div>
             </div>
 
             <!-- Articles List -->
-            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">📦 Produits Commandés</span>
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">📦 Produits Commandés</span>
               
-              <div v-if="selectedOrder.articles && selectedOrder.articles.length > 0" class="divide-y divide-slate-800/80">
+              <div v-if="selectedOrder.articles && selectedOrder.articles.length > 0" class="divide-y divide-slate-200">
                 <div v-for="art in selectedOrder.articles" :key="art.id" class="py-2 flex items-center justify-between">
                   <div>
-                    <p class="font-bold text-white">{{ art.produit?.nom_commercial || art.nom_produit || 'Produit AgroShop' }}</p>
-                    <p class="text-[11px] text-slate-400 font-mono">Qté : {{ art.quantite }} x {{ formatPrice(art.prix_unitaire || 0) }} FCFA</p>
+                    <p class="font-bold text-slate-900">{{ art.produit?.nom_commercial || art.nom_produit || 'Produit AgroShop' }}</p>
+                    <p class="text-[11px] text-slate-500 font-mono">Qté : {{ art.quantite }} x {{ formatPrice(art.prix_unitaire || 0) }} FCFA</p>
                   </div>
-                  <span class="font-mono font-bold text-emerald-400">{{ formatPrice((art.quantite || 1) * (art.prix_unitaire || 0)) }} FCFA</span>
+                  <span class="font-mono font-bold text-emerald-700">{{ formatPrice((art.quantite || 1) * (art.prix_unitaire || 0)) }} FCFA</span>
                 </div>
               </div>
 
-              <div v-else class="text-slate-400 italic">
+              <div v-else class="text-slate-500 italic">
                 Articles inclus dans la commande groupée.
               </div>
 
-              <div class="pt-3 border-t border-slate-800 flex justify-between items-center text-sm font-bold">
-                <span class="text-slate-300 uppercase text-xs">Total de la Commande :</span>
-                <span class="text-amber-400 font-mono text-base">{{ formatPrice(selectedOrder.montant_total || 0) }} FCFA</span>
+              <div class="pt-3 border-t border-slate-200 flex justify-between items-center text-sm font-bold">
+                <span class="text-slate-700 uppercase text-xs">Total de la Commande :</span>
+                <span class="text-emerald-700 font-mono text-base">{{ formatPrice(selectedOrder.montant_total || 0) }} FCFA</span>
               </div>
             </div>
 
           </div>
 
-          <div class="px-6 py-3 border-t border-slate-800 bg-slate-950 flex justify-end">
-            <button @click="isOrderDetailOpen = false" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl cursor-pointer">
+          <div class="px-6 py-3 border-t border-slate-200 bg-slate-50 flex justify-end">
+            <button @click="isOrderDetailOpen = false" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl cursor-pointer">
               Fermer
             </button>
           </div>

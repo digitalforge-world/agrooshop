@@ -210,35 +210,35 @@
     <!-- 1. POPUP FILTER MODAL -->
     <!-- ════════════════════════════════════════════════════════════════ -->
     <Teleport to="body">
-      <div v-if="isFilterModalOpen" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-5 shadow-2xl">
+      <div v-if="isFilterModalOpen" class="fixed inset-0 z-[9999] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 space-y-5 shadow-2xl text-slate-800">
           
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 class="text-base font-black text-white flex items-center gap-2">
-              <Filter class="w-5 h-5 text-emerald-400" />
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+              <Filter class="w-5 h-5 text-emerald-600" />
               <span>Filtrer les Produits du Catalogue</span>
             </h3>
-            <button @click="isFilterModalOpen = false" class="p-1.5 text-slate-400 hover:text-white rounded-xl bg-slate-800 cursor-pointer">
+            <button @click="isFilterModalOpen = false" class="p-1.5 text-slate-500 hover:text-slate-900 rounded-xl bg-slate-100 cursor-pointer">
               <X class="w-4 h-4" />
             </button>
           </div>
 
           <div class="space-y-4 text-xs">
             <div class="space-y-1">
-              <label class="block font-bold text-slate-300 uppercase">Recherche par Nom commercial</label>
+              <label class="block font-bold text-slate-700 uppercase">Recherche par Nom commercial</label>
               <input 
                 v-model="filters.search" 
                 type="text" 
                 placeholder="ex: Urée, NPK, Insecticide..." 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white"
               />
             </div>
 
             <div class="space-y-1">
-              <label class="block font-bold text-slate-300 uppercase">Filtrer par Catégorie</label>
+              <label class="block font-bold text-slate-700 uppercase">Filtrer par Catégorie</label>
               <select 
                 v-model="filters.category" 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer focus:bg-white font-medium"
               >
                 <option value="">Toutes les catégories</option>
                 <option v-for="cat in categoriesList" :key="cat.id" :value="cat.id">
@@ -248,7 +248,7 @@
             </div>
 
             <div class="space-y-1">
-              <label class="block font-bold text-slate-300 uppercase">Filtrer par Statut</label>
+              <label class="block font-bold text-slate-700 uppercase">Filtrer par Statut</label>
               <div class="grid grid-cols-4 gap-2">
                 <button 
                   v-for="st in ['tous', 'actif', 'inactif', 'brouillon']" 
@@ -257,7 +257,7 @@
                   @click="filters.status = st"
                   :class="[
                     'py-2 rounded-xl text-[11px] font-bold capitalize border transition-all cursor-pointer',
-                    filters.status === st ? 'bg-emerald-600 text-white border-emerald-500 shadow-md' : 'bg-slate-950 text-slate-400 border-slate-800'
+                    filters.status === st ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                   ]"
                 >
                   {{ st }}
@@ -266,10 +266,10 @@
             </div>
 
             <div class="space-y-1">
-              <label class="block font-bold text-slate-300 uppercase">État du Stock</label>
+              <label class="block font-bold text-slate-700 uppercase">État du Stock</label>
               <select 
                 v-model="filters.stockState" 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer focus:bg-white font-medium"
               >
                 <option value="tous">Tous les états de stock</option>
                 <option value="normal">Stock suffisant</option>
@@ -279,16 +279,16 @@
             </div>
           </div>
 
-          <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+          <div class="flex items-center justify-between pt-3 border-t border-slate-200">
             <button 
               @click="resetFilters" 
-              class="px-4 py-2 text-xs font-bold text-rose-400 hover:underline cursor-pointer"
+              class="px-4 py-2 text-xs font-bold text-rose-600 hover:underline cursor-pointer"
             >
               Réinitialiser
             </button>
             <button 
               @click="isFilterModalOpen = false" 
-              class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer"
+              class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
             >
               Appliquer les Filtres
             </button>
@@ -302,142 +302,142 @@
     <!-- 2. EXHAUSTIVE ADMIN PRODUCT DETAIL MODAL POPUP -->
     <!-- ════════════════════════════════════════════════════════════════ -->
     <Teleport to="body">
-      <div v-if="isDetailModalOpen && selectedProductDetail" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-        <div class="w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh]">
+      <div v-if="isDetailModalOpen && selectedProductDetail" class="fixed inset-0 z-[9999] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="w-full max-w-3xl bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh] text-slate-800">
           
-          <div class="px-6 py-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between flex-shrink-0">
+          <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between flex-shrink-0">
             <div>
-              <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">Fiche Fiche Administrateur Complète</span>
-              <h2 class="text-xl font-black text-white">{{ selectedProductDetail.nom_commercial }}</h2>
+              <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">Fiche Administrateur Complète</span>
+              <h2 class="text-xl font-black text-slate-900">{{ selectedProductDetail.nom_commercial }}</h2>
             </div>
-            <button @click="isDetailModalOpen = false" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center cursor-pointer">
+            <button @click="isDetailModalOpen = false" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center cursor-pointer">
               <X class="w-4 h-4" />
             </button>
           </div>
 
           <div class="p-6 overflow-y-auto flex-1 custom-modal-scroll space-y-6">
-            <div class="flex flex-col sm:flex-row items-center gap-6 bg-slate-950 p-5 rounded-2xl border border-slate-800">
-              <div class="w-28 h-28 rounded-2xl bg-white p-2 flex items-center justify-center flex-shrink-0 border border-slate-700">
+            <div class="flex flex-col sm:flex-row items-center gap-6 bg-slate-50 p-5 rounded-2xl border border-slate-200">
+              <div class="w-28 h-28 rounded-2xl bg-white p-2 flex items-center justify-center flex-shrink-0 border border-slate-200 shadow-xs">
                 <img :src="getImgUrl(selectedProductDetail.url_image || selectedProductDetail.image_principale?.url_image)" class="w-full h-full object-contain" />
               </div>
               <div class="space-y-1.5 text-center sm:text-left flex-1">
                 <div class="flex items-center justify-center sm:justify-start gap-2">
-                  <span class="bg-emerald-950 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase">
+                  <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase">
                     Statut: {{ selectedProductDetail.statut || 'Actif' }}
                   </span>
-                  <span :class="selectedProductDetail.est_en_vedette || selectedProductDetail.featured ? 'bg-amber-950 text-amber-400 border-amber-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase">
+                  <span :class="selectedProductDetail.est_en_vedette || selectedProductDetail.featured ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-slate-100 text-slate-600 border-slate-200'" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase">
                     {{ selectedProductDetail.est_en_vedette || selectedProductDetail.featured ? '⭐ En Vedette' : 'Standard' }}
                   </span>
                 </div>
-                <h3 class="text-lg font-black text-white">{{ selectedProductDetail.nom_commercial }}</h3>
-                <p class="text-xs font-mono text-slate-400">URL Slug: <span class="text-emerald-400 font-bold">/produits/{{ selectedProductDetail.slug || selectedProductDetail.id }}</span></p>
-                <p class="text-xl font-black text-emerald-400 pt-1">
+                <h3 class="text-lg font-black text-slate-900">{{ selectedProductDetail.nom_commercial }}</h3>
+                <p class="text-xs font-mono text-slate-500">URL Slug: <span class="text-emerald-700 font-bold">/produits/{{ selectedProductDetail.slug || selectedProductDetail.id }}</span></p>
+                <p class="text-xl font-black text-emerald-700 pt-1">
                   {{ formatPrice(selectedProductDetail.prix_unitaire || 0) }} FCFA 
-                  <span class="text-xs text-slate-400 font-mono">/ {{ selectedProductDetail.unite_mesure || 'unité' }}</span>
+                  <span class="text-xs text-slate-500 font-mono">/ {{ selectedProductDetail.unite_mesure || 'unité' }}</span>
                 </p>
               </div>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-950 p-4 rounded-2xl border border-slate-800 text-xs font-mono">
-              <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs font-mono">
+              <div class="p-2.5 bg-white rounded-xl border border-slate-200 shadow-xs">
                 <span class="text-slate-500 text-[10px] block uppercase">Stock Dispo</span>
-                <span class="text-white font-bold text-sm">{{ selectedProductDetail.stock_disponible || 0 }}</span>
+                <span class="text-slate-900 font-bold text-sm">{{ selectedProductDetail.stock_disponible || 0 }}</span>
               </div>
-              <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
+              <div class="p-2.5 bg-white rounded-xl border border-slate-200 shadow-xs">
                 <span class="text-slate-500 text-[10px] block uppercase">Stock Alerte</span>
-                <span class="text-amber-400 font-bold text-sm">{{ selectedProductDetail.stock_alerte || 10 }}</span>
+                <span class="text-amber-700 font-bold text-sm">{{ selectedProductDetail.stock_alerte || 10 }}</span>
               </div>
-              <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
+              <div class="p-2.5 bg-white rounded-xl border border-slate-200 shadow-xs">
                 <span class="text-slate-500 text-[10px] block uppercase">Poids (kg)</span>
-                <span class="text-slate-200 font-bold text-sm">{{ selectedProductDetail.poids ? `${selectedProductDetail.poids} kg` : '50.0 kg' }}</span>
+                <span class="text-slate-800 font-bold text-sm">{{ selectedProductDetail.poids ? `${selectedProductDetail.poids} kg` : '50.0 kg' }}</span>
               </div>
-              <div class="p-2.5 bg-slate-900/60 rounded-xl border border-slate-800">
+              <div class="p-2.5 bg-white rounded-xl border border-slate-200 shadow-xs">
                 <span class="text-slate-500 text-[10px] block uppercase">Dimensions</span>
-                <span class="text-slate-200 font-bold text-xs truncate block">{{ selectedProductDetail.dimensions || '80cm x 50cm x 20cm' }}</span>
+                <span class="text-slate-800 font-bold text-xs truncate block">{{ selectedProductDetail.dimensions || '80cm x 50cm x 20cm' }}</span>
               </div>
             </div>
 
-            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2 text-xs">
-              <h4 class="font-bold text-slate-300 uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
-                <Layers class="w-4 h-4 text-purple-400" />
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2 text-xs">
+              <h4 class="font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-2 flex items-center gap-2">
+                <Layers class="w-4 h-4 text-purple-600" />
                 <span>Catégories Associées</span>
               </h4>
               <div class="flex flex-wrap gap-2 pt-1">
                 <span 
                   v-for="cat in getProductCategories(selectedProductDetail)" 
                   :key="cat.id || cat.slug" 
-                  class="px-3 py-1 bg-slate-900 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                  class="px-3 py-1 bg-white border border-slate-200 text-slate-800 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs"
                 >
-                  <i v-if="cat.icon" :class="[cat.icon, 'text-emerald-400']"></i>
+                  <i v-if="cat.icon" :class="[cat.icon, 'text-emerald-700']"></i>
                   <span>{{ cat.nom }}</span>
                 </span>
               </div>
             </div>
 
-            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4 text-xs">
-              <h4 class="font-bold text-slate-300 uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
-                <Info class="w-4 h-4 text-emerald-400" />
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-4 text-xs">
+              <h4 class="font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-2 flex items-center gap-2">
+                <Info class="w-4 h-4 text-emerald-600" />
                 <span>Informations Générales & Composition</span>
               </h4>
 
               <div class="space-y-1">
-                <span class="font-bold text-slate-400 uppercase text-[10px]">Description détaillée :</span>
-                <p class="text-slate-200 leading-relaxed font-sans">{{ selectedProductDetail.description || 'Produit agricole certifié à haute efficacité. Idéal pour stimuler la croissance vegetative et maximiser le rendement des cultures au Togo.' }}</p>
+                <span class="font-bold text-slate-500 uppercase text-[10px]">Description détaillée :</span>
+                <p class="text-slate-800 leading-relaxed font-sans">{{ selectedProductDetail.description || 'Produit agricole certifié à haute efficacité. Idéal pour stimuler la croissance vegetative et maximiser le rendement des cultures au Togo.' }}</p>
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-800/80">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200">
                 <div class="space-y-1">
-                  <span class="font-bold text-emerald-400 uppercase text-[10px]">Composition :</span>
-                  <p class="text-slate-300">{{ selectedProductDetail.composition || 'Éléments nutritifs majeurs (Azote N, Phosphore P2O5, Potasse K2O) enrichis en oligo-éléments.' }}</p>
+                  <span class="font-bold text-emerald-700 uppercase text-[10px]">Composition :</span>
+                  <p class="text-slate-700">{{ selectedProductDetail.composition || 'Éléments nutritifs majeurs (Azote N, Phosphore P2O5, Potasse K2O) enrichis en oligo-éléments.' }}</p>
                 </div>
                 <div class="space-y-1">
-                  <span class="font-bold text-emerald-400 uppercase text-[10px]">Principes actifs :</span>
-                  <p class="text-slate-300">{{ selectedProductDetail.principes_actifs || 'Formulation minérale à assimilation foliaire et racinaire rapide.' }}</p>
+                  <span class="font-bold text-emerald-700 uppercase text-[10px]">Principes actifs :</span>
+                  <p class="text-slate-700">{{ selectedProductDetail.principes_actifs || 'Formulation minérale à assimilation foliaire et racinaire rapide.' }}</p>
                 </div>
               </div>
             </div>
 
-            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-4 text-xs">
-              <h4 class="font-bold text-slate-300 uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
-                <ShieldAlert class="w-4 h-4 text-amber-400" />
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-4 text-xs">
+              <h4 class="font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-2 flex items-center gap-2">
+                <ShieldAlert class="w-4 h-4 text-amber-600" />
                 <span>Utilisation, Dosage & Sécurité</span>
               </h4>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1">
-                  <span class="font-bold text-slate-400 uppercase text-[10px]">Mode d'emploi :</span>
-                  <p class="text-slate-300">{{ selectedProductDetail.mode_emploi || 'Appliquer de préférence tôt le matin ou en fin d\'après-midi sur sol humide.' }}</p>
+                  <span class="font-bold text-slate-500 uppercase text-[10px]">Mode d'emploi :</span>
+                  <p class="text-slate-700">{{ selectedProductDetail.mode_emploi || 'Appliquer de préférence tôt le matin ou en fin d\'après-midi sur sol humide.' }}</p>
                 </div>
                 <div class="space-y-1">
-                  <span class="font-bold text-slate-400 uppercase text-[10px]">Dosage recommandé :</span>
-                  <p class="text-slate-300">{{ selectedProductDetail.dosage_recommande || '2 à 4 sacs par hectare selon les besoins spécifiques de la culture.' }}</p>
+                  <span class="font-bold text-slate-500 uppercase text-[10px]">Dosage recommandé :</span>
+                  <p class="text-slate-700">{{ selectedProductDetail.dosage_recommande || '2 à 4 sacs par hectare selon les besoins spécifiques de la culture.' }}</p>
                 </div>
                 <div class="space-y-1">
-                  <span class="font-bold text-amber-400 uppercase text-[10px]">Précautions d'usage :</span>
-                  <p class="text-amber-200/90">{{ selectedProductDetail.precautions_usage || 'Conserver dans un endroit sec, frais et bien ventilé à l\'abri de la lumière directe du soleil.' }}</p>
+                  <span class="font-bold text-amber-700 uppercase text-[10px]">Précautions d'usage :</span>
+                  <p class="text-slate-700">{{ selectedProductDetail.precautions_usage || 'Conserver dans un endroit sec, frais et bien ventilé à l\'abri de la lumière directe du soleil.' }}</p>
                 </div>
                 <div class="space-y-1">
-                  <span class="font-bold text-rose-400 uppercase text-[10px]">Contre-indications :</span>
-                  <p class="text-rose-200/90">{{ selectedProductDetail.contre_indications || 'Ne pas appliquer sur sol détrempé ni mélanger directement avec des produits alcalins forts.' }}</p>
+                  <span class="font-bold text-rose-700 uppercase text-[10px]">Contre-indications :</span>
+                  <p class="text-slate-700">{{ selectedProductDetail.contre_indications || 'Ne pas appliquer sur sol détrempé ni mélanger directement avec des produits alcalins forts.' }}</p>
                 </div>
               </div>
             </div>
 
-            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3 text-xs">
-              <h4 class="font-bold text-slate-300 uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
-                <Globe class="w-4 h-4 text-blue-400" />
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 text-xs">
+              <h4 class="font-bold text-slate-800 uppercase tracking-wider border-b border-slate-200 pb-2 flex items-center gap-2">
+                <Globe class="w-4 h-4 text-blue-600" />
                 <span>Référencement SEO Google</span>
               </h4>
               <div class="space-y-2 font-mono">
-                <p class="text-slate-400"><strong class="text-slate-200">Meta Title :</strong> {{ selectedProductDetail.meta_title || `${selectedProductDetail.nom_commercial} - AgroShop Togo` }}</p>
-                <p class="text-slate-400"><strong class="text-slate-200">Meta Description :</strong> {{ selectedProductDetail.meta_description || selectedProductDetail.description || 'Achetez en ligne au Togo au meilleur prix certifié.' }}</p>
+                <p class="text-slate-600"><strong class="text-slate-900">Meta Title :</strong> {{ selectedProductDetail.meta_title || `${selectedProductDetail.nom_commercial} - AgroShop Togo` }}</p>
+                <p class="text-slate-600"><strong class="text-slate-900">Meta Description :</strong> {{ selectedProductDetail.meta_description || selectedProductDetail.description || 'Achetez en ligne au Togo au meilleur prix certifié.' }}</p>
               </div>
             </div>
 
           </div>
 
-          <div class="px-6 py-4 border-t border-slate-800 bg-slate-950 flex items-center justify-between flex-shrink-0">
-            <button @click="isDetailModalOpen = false" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl cursor-pointer">
+          <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between flex-shrink-0">
+            <button @click="isDetailModalOpen = false" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl cursor-pointer">
               Fermer
             </button>
             <NuxtLink :to="getPublicLink(selectedProductDetail)" target="_blank" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-md cursor-pointer flex items-center gap-1.5">
@@ -453,22 +453,22 @@
     <!-- 3. WIZARD MULTI-STEP MODAL POPUP -->
     <!-- ════════════════════════════════════════════════════════════════ -->
     <Teleport to="body">
-      <div v-if="isModalOpen" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-        <div class="w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh] animate-in fade-in zoom-in-95 duration-200">
+      <div v-if="isModalOpen" class="fixed inset-0 z-[9999] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+        <div class="w-full max-w-3xl bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden flex flex-col my-auto max-h-[92vh] animate-in fade-in zoom-in-95 duration-200 text-slate-800">
           
           <!-- Header Bar -->
-          <div class="px-6 py-4 border-b border-slate-800 bg-slate-950 flex-shrink-0 space-y-3">
+          <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex-shrink-0 space-y-3">
             <div class="flex items-center justify-between">
               <div>
-                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">
+                <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-widest block">
                   Étape {{ currentStep }} sur {{ totalSteps }} — {{ stepTitles[currentStep - 1] }}
                 </span>
-                <h2 class="text-lg sm:text-xl font-black text-white">
+                <h2 class="text-lg sm:text-xl font-black text-slate-900">
                   {{ editingId ? 'Modifier le Produit' : 'Ajouter un Nouveau Produit' }}
                 </h2>
               </div>
 
-              <button @click="closeModal" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center cursor-pointer transition-colors">
+              <button @click="closeModal" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center cursor-pointer transition-colors">
                 <X class="w-4 h-4" />
               </button>
             </div>
@@ -481,7 +481,7 @@
                 @click="goToStep(step)"
                 :class="[
                   'h-1.5 rounded-full transition-all cursor-pointer',
-                  step === currentStep ? 'bg-emerald-500 shadow-md shadow-emerald-500/50' : step < currentStep ? 'bg-emerald-800' : 'bg-slate-800'
+                  step === currentStep ? 'bg-emerald-600 shadow-xs' : step < currentStep ? 'bg-emerald-300' : 'bg-slate-200'
                 ]"
                 :title="`Étape ${step}: ${stepTitles[step - 1]}`"
               ></button>
@@ -489,9 +489,9 @@
           </div>
 
           <!-- Step Error Alert -->
-          <div v-if="stepErrorMessage" class="bg-rose-950/80 border-b border-rose-800/80 text-rose-200 px-6 py-2.5 text-xs font-bold flex items-center justify-between">
+          <div v-if="stepErrorMessage" class="bg-rose-50 border-b border-rose-200 text-rose-800 px-6 py-2.5 text-xs font-bold flex items-center justify-between">
             <span>⚠️ {{ stepErrorMessage }}</span>
-            <button @click="stepErrorMessage = ''" class="text-rose-400 hover:text-white">✕</button>
+            <button @click="stepErrorMessage = ''" class="text-rose-600 hover:text-rose-900">✕</button>
           </div>
 
           <!-- Scrollable Modal Content -->
@@ -499,51 +499,51 @@
             
             <!-- ÉTAPE 1: Informations Générales -->
             <div v-if="currentStep === 1" class="space-y-4">
-              <h3 class="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
-                <Info class="w-4 h-4 text-emerald-400" />
+              <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
+                <Info class="w-4 h-4 text-emerald-600" />
                 <span>1. Informations générales</span>
               </h3>
 
               <div class="space-y-4">
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Nom commercial * <span class="text-rose-400">(Obligatoire)</span></label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nom commercial * <span class="text-rose-600">(Obligatoire)</span></label>
                   <input 
                     v-model="form.nom_commercial" 
                     required 
                     type="text" 
                     placeholder="ex: Engrais NPK 15-15-15 SuperFert" 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Description</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Description</label>
                   <textarea 
                     v-model="form.description" 
                     rows="3" 
                     placeholder="Description détaillée du produit..." 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   ></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Composition</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Composition</label>
                     <textarea 
                       v-model="form.composition" 
                       rows="3" 
                       placeholder="Composition chimique du produit..." 
-                      class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                      class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                     ></textarea>
                   </div>
 
                   <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Principes actifs</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Principes actifs</label>
                     <textarea 
                       v-model="form.principes_actifs" 
                       rows="3" 
                       placeholder="Principes actifs..." 
-                      class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                      class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                     ></textarea>
                   </div>
                 </div>
@@ -552,74 +552,74 @@
 
             <!-- ÉTAPE 2: Utilisation et précautions -->
             <div v-else-if="currentStep === 2" class="space-y-4">
-              <h3 class="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
-                <ShieldAlert class="w-4 h-4 text-amber-400" />
+              <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
+                <ShieldAlert class="w-4 h-4 text-amber-600" />
                 <span>2. Utilisation et précautions</span>
               </h3>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Mode d'emploi</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Mode d'emploi</label>
                   <textarea 
                     v-model="form.mode_emploi" 
                     rows="3" 
                     placeholder="Instructions d'utilisation..." 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   ></textarea>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Dosage recommandé</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Dosage recommandé</label>
                   <textarea 
                     v-model="form.dosage_recommande" 
                     rows="3" 
                     placeholder="Dosages et fréquences d'application..." 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   ></textarea>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Précautions d'usage</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Précautions d'usage</label>
                   <textarea 
                     v-model="form.precautions_usage" 
                     rows="3" 
                     placeholder="Précautions à prendre..." 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   ></textarea>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Contre-indications</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contre-indications</label>
                   <textarea 
                     v-model="form.contre_indications" 
                     rows="3" 
                     placeholder="Contre-indications et restrictions..." 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   ></textarea>
                 </div>
               </div>
             </div>
 
-            <!-- ÉTAPE 3: Images du produit (IMAGE PRINCIPALE DÉDIÉE + GALERIE) -->
+            <!-- ÉTAPE 3: Images du produit -->
             <div v-else-if="currentStep === 3" class="space-y-5">
-              <h3 class="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
-                <Image class="w-4 h-4 text-blue-400" />
+              <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
+                <Image class="w-4 h-4 text-blue-600" />
                 <span>3. Image Principale & Galerie du Produit</span>
               </h3>
 
               <!-- Section A: Image Principale Dédiée -->
-              <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
-                <span class="text-xs font-black text-emerald-400 uppercase tracking-wider block">📷 Image Principale Officielle</span>
+              <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                <span class="text-xs font-black text-emerald-700 uppercase tracking-wider block">📷 Image Principale Officielle</span>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-4">
                   <!-- Large Main Image Preview Box -->
-                  <div class="w-32 h-32 rounded-2xl bg-white border border-slate-700 p-2 flex items-center justify-center flex-shrink-0 shadow-lg relative">
+                  <div class="w-32 h-32 rounded-2xl bg-white border border-slate-200 p-2 flex items-center justify-center flex-shrink-0 shadow-xs relative">
                     <img 
                       :src="mainImagePreview || getImgUrl(form.url_image)" 
                       class="w-full h-full object-contain" 
                       @error="(e) => e.target.src = fallbackImage"
                     />
-                    <span class="absolute bottom-1 right-1 bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow">
+                    <span class="absolute bottom-1 right-1 bg-emerald-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow-xs">
                       Principale
                     </span>
                   </div>
@@ -627,8 +627,8 @@
                   <div class="space-y-2.5 flex-1 w-full text-xs">
                     <!-- Option 1: File Upload for Main Image -->
                     <div>
-                      <label class="block font-bold text-slate-300 uppercase mb-1">A. Remplacer par un fichier image :</label>
-                      <label class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl cursor-pointer inline-flex items-center gap-2 transition-colors shadow-md">
+                      <label class="block font-bold text-slate-700 uppercase mb-1">A. Remplacer par un fichier image :</label>
+                      <label class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl cursor-pointer inline-flex items-center gap-2 transition-colors shadow-xs">
                         <Upload class="w-3.5 h-3.5" />
                         <span>Téléverser l'Image Principale</span>
                         <input type="file" accept="image/jpeg,image/png,image/gif,image/webp" @change="handleMainImageUpload" class="hidden" />
@@ -637,12 +637,12 @@
 
                     <!-- Option 2: Text input URL for Main Image -->
                     <div>
-                      <label class="block font-bold text-slate-300 uppercase mb-1">B. Ou saisir un chemin / URL direct :</label>
+                      <label class="block font-bold text-slate-700 uppercase mb-1">B. Ou saisir un chemin / URL direct :</label>
                       <input 
                         v-model="form.url_image" 
                         type="text" 
                         placeholder="storage/produits/votre_image.jpg" 
-                        class="w-full px-3.5 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
+                        class="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 font-mono"
                       />
                     </div>
                   </div>
@@ -652,9 +652,9 @@
               <!-- Section B: Galerie des Images Secondaires -->
               <div class="space-y-3">
                 <div class="flex items-center justify-between">
-                  <label class="block text-xs font-bold text-slate-300 uppercase">Galerie des Images (Secondaires)</label>
-                  <label class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl cursor-pointer inline-flex items-center gap-1.5 transition-colors border border-slate-700">
-                    <Plus class="w-3.5 h-3.5 text-emerald-400" />
+                  <label class="block text-xs font-bold text-slate-700 uppercase">Galerie des Images (Secondaires)</label>
+                  <label class="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl cursor-pointer inline-flex items-center gap-1.5 transition-colors border border-slate-200 shadow-xs">
+                    <Plus class="w-3.5 h-3.5 text-emerald-600" />
                     <span>+ Ajouter des images</span>
                     <input type="file" multiple accept="image/jpeg,image/png,image/gif,image/webp" @change="handleImageUpload" class="hidden" />
                   </label>
@@ -665,9 +665,9 @@
                   <div 
                     v-for="(img, idx) in imagesList" 
                     :key="idx"
-                    class="relative bg-slate-950 p-2 rounded-2xl border border-slate-800 flex flex-col items-center gap-2 group shadow-md"
+                    class="relative bg-slate-50 p-2 rounded-2xl border border-slate-200 flex flex-col items-center gap-2 group shadow-xs"
                   >
-                    <div class="w-full h-24 bg-white rounded-xl p-1 flex items-center justify-center border border-slate-700">
+                    <div class="w-full h-24 bg-white rounded-xl p-1 flex items-center justify-center border border-slate-200">
                       <img :src="img.preview" class="w-full h-full object-contain" />
                     </div>
 
@@ -675,7 +675,7 @@
                       <button 
                         type="button" 
                         @click="setAsMainImage(img)" 
-                        class="px-2 py-1 bg-amber-950/80 hover:bg-amber-900 border border-amber-500/40 text-amber-400 text-[10px] font-bold rounded-lg transition-colors cursor-pointer flex-1 text-center"
+                        class="px-2 py-1 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-800 text-[10px] font-bold rounded-lg transition-colors cursor-pointer flex-1 text-center"
                         title="Définir cette image comme image principale"
                       >
                         ⭐ Principale
@@ -683,7 +683,7 @@
                       <button 
                         type="button" 
                         @click="removeImage(idx)" 
-                        class="p-1 bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-400 text-xs rounded-lg transition-colors cursor-pointer"
+                        class="p-1 bg-rose-50 hover:bg-rose-100 border border-rose-300 text-rose-700 text-xs rounded-lg transition-colors cursor-pointer"
                         title="Supprimer"
                       >
                         ✕
@@ -692,7 +692,7 @@
                   </div>
                 </div>
 
-                <div v-else class="p-3 bg-slate-950/50 rounded-xl border border-slate-800 text-center text-xs text-slate-500 font-mono">
+                <div v-else class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-center text-xs text-slate-500 font-mono">
                   Aucune image supplémentaire dans la galerie
                 </div>
               </div>
@@ -700,29 +700,29 @@
 
             <!-- ÉTAPE 4: Prix et stock -->
             <div v-else-if="currentStep === 4" class="space-y-4">
-              <h3 class="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
-                <DollarSign class="w-4 h-4 text-emerald-400" />
+              <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
+                <DollarSign class="w-4 h-4 text-emerald-600" />
                 <span>4. Prix et stock</span>
               </h3>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Prix unitaire (FCFA) * <span class="text-rose-400">(Obligatoire)</span></label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Prix unitaire (FCFA) * <span class="text-rose-600">(Obligatoire)</span></label>
                   <input 
                     v-model.number="form.prix_unitaire" 
                     required 
                     type="number" 
                     placeholder="ex: 18500" 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Unité de mesure * <span class="text-rose-400">(Obligatoire)</span></label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Unité de mesure * <span class="text-rose-600">(Obligatoire)</span></label>
                   <select 
                     v-model="form.unite_mesure" 
                     required 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer focus:bg-white font-medium"
                   >
                     <option value="">Sélectionner...</option>
                     <option value="sac 50kg">Sac 50kg</option>
@@ -736,86 +736,86 @@
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Stock disponible</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Stock disponible</label>
                   <input 
                     v-model.number="form.stock_disponible" 
                     type="number" 
                     placeholder="0" 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Stock d'alerte</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Stock d'alerte</label>
                   <input 
                     v-model.number="form.stock_alerte" 
                     type="number" 
                     placeholder="10" 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Poids (kg)</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Poids (kg)</label>
                   <input 
                     v-model.number="form.poids" 
                     type="number" 
                     step="0.1" 
                     placeholder="ex: 50" 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Dimensions</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Dimensions</label>
                   <input 
                     v-model="form.dimensions" 
                     type="text" 
                     placeholder="Ex: 25cm x 15cm x 10cm" 
-                    class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                   />
                 </div>
               </div>
             </div>
 
-            <!-- ÉTAPE 5: Catégories BDD (CLICKABLE CARDS WITH EXPLICIT TOGGLE) -->
+            <!-- ÉTAPE 5: Catégories BDD -->
             <div v-else-if="currentStep === 5" class="space-y-4">
-              <h3 class="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
-                <Layers class="w-4 h-4 text-purple-400" />
+              <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
+                <Layers class="w-4 h-4 text-purple-600" />
                 <span>5. Catégories (Base de Données)</span>
               </h3>
 
               <div class="space-y-4">
-                <label class="block text-xs font-bold text-slate-300 uppercase">Cochez les catégories associées au produit :</label>
+                <label class="block text-xs font-bold text-slate-700 uppercase">Cochez les catégories associées au produit :</label>
                 
                 <div v-if="categoriesList.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   <div 
                     v-for="cat in categoriesList" 
                     :key="cat.id"
                     @click="toggleCategory(cat.id)"
-                    class="p-3.5 bg-slate-950 rounded-2xl border flex items-center gap-3 text-xs font-bold text-slate-200 cursor-pointer transition-all active:scale-98"
-                    :class="isCategorySelected(cat.id) ? 'border-emerald-500 bg-emerald-950/30 text-white ring-1 ring-emerald-500/40' : 'border-slate-800 hover:border-slate-700'"
+                    class="p-3.5 bg-white rounded-2xl border flex items-center gap-3 text-xs font-bold cursor-pointer transition-all active:scale-98"
+                    :class="isCategorySelected(cat.id) ? 'border-emerald-500 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-500/30' : 'border-slate-200 text-slate-700 hover:border-slate-300 bg-slate-50/50'"
                   >
                     <div 
                       class="w-5 h-5 rounded-lg border flex items-center justify-center flex-shrink-0 transition-colors"
-                      :class="isCategorySelected(cat.id) ? 'bg-emerald-600 border-emerald-500 text-white' : 'border-slate-700 bg-slate-900'"
+                      :class="isCategorySelected(cat.id) ? 'bg-emerald-600 border-emerald-500 text-white' : 'border-slate-300 bg-white'"
                     >
                       <span v-if="isCategorySelected(cat.id)" class="text-white text-xs font-black">✓</span>
                     </div>
-                    <i v-if="cat.icon" :class="[cat.icon, 'text-emerald-400 text-sm flex-shrink-0']"></i>
+                    <i v-if="cat.icon" :class="[cat.icon, 'text-emerald-600 text-sm flex-shrink-0']"></i>
                     <span class="flex-1">{{ cat.nom }}</span>
                   </div>
                 </div>
 
-                <div v-else class="p-4 bg-slate-950 rounded-xl text-xs text-slate-400 font-mono">
+                <div v-else class="p-4 bg-slate-50 rounded-xl text-xs text-slate-500 font-mono">
                   Chargement des catégories depuis la base de données...
                 </div>
 
                 <div class="pt-2">
-                  <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Catégorie principale</label>
+                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Catégorie principale</label>
                   <select 
                     v-model="form.categorie_principale" 
-                    class="w-full sm:w-1/2 px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                    class="w-full sm:w-1/2 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer focus:bg-white font-medium"
                   >
                     <option :value="null">Aucune</option>
                     <option v-for="cat in categoriesList" :key="cat.id" :value="cat.id">{{ cat.nom }}</option>
@@ -826,58 +826,58 @@
 
             <!-- ÉTAPE 6: Configuration & SEO -->
             <div v-else-if="currentStep === 6" class="space-y-4">
-              <h3 class="text-sm font-extrabold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
-                <Globe class="w-4 h-4 text-blue-400" />
+              <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-slate-200 pb-2">
+                <Globe class="w-4 h-4 text-blue-600" />
                 <span>6. Configuration & SEO</span>
               </h3>
 
               <div class="space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                   <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase mb-2">Statut du produit</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-2">Statut du produit</label>
                     <div class="flex items-center gap-4">
-                      <label class="flex items-center gap-2 text-xs font-bold text-slate-200 cursor-pointer">
-                        <input type="radio" v-model="form.statut" value="actif" class="accent-emerald-500" />
+                      <label class="flex items-center gap-2 text-xs font-bold text-slate-800 cursor-pointer">
+                        <input type="radio" v-model="form.statut" value="actif" class="accent-emerald-600" />
                         <span>Actif</span>
                       </label>
-                      <label class="flex items-center gap-2 text-xs font-bold text-slate-200 cursor-pointer">
-                        <input type="radio" v-model="form.statut" value="inactif" class="accent-emerald-500" />
+                      <label class="flex items-center gap-2 text-xs font-bold text-slate-800 cursor-pointer">
+                        <input type="radio" v-model="form.statut" value="inactif" class="accent-emerald-600" />
                         <span>Inactif</span>
                       </label>
-                      <label class="flex items-center gap-2 text-xs font-bold text-slate-200 cursor-pointer">
-                        <input type="radio" v-model="form.statut" value="rupture" class="accent-emerald-500" />
+                      <label class="flex items-center gap-2 text-xs font-bold text-slate-800 cursor-pointer">
+                        <input type="radio" v-model="form.statut" value="rupture" class="accent-emerald-600" />
                         <span>Rupture</span>
                       </label>
                     </div>
                   </div>
 
-                  <div class="flex items-center gap-3 bg-slate-950 p-3.5 rounded-2xl border border-slate-800">
+                  <div class="flex items-center gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
                     <input 
                       id="est_vedette_modal" 
                       v-model="form.est_en_vedette" 
                       type="checkbox" 
-                      class="w-5 h-5 accent-emerald-500 rounded cursor-pointer"
+                      class="w-5 h-5 accent-emerald-600 rounded cursor-pointer"
                     />
-                    <label for="est_vedette_modal" class="text-xs font-bold text-slate-200 cursor-pointer">
+                    <label for="est_vedette_modal" class="text-xs font-bold text-slate-800 cursor-pointer">
                       ⭐ Produit mis en avant (Accueil)
                     </label>
                   </div>
                 </div>
 
-                <div class="space-y-4 pt-2 border-t border-slate-800">
+                <div class="space-y-4 pt-2 border-t border-slate-200">
                   <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Slug (URL)</label>
+                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Slug (URL)</label>
                     <input 
                       v-model="form.slug" 
                       type="text" 
                       placeholder="Sera généré automatiquement si vide" 
-                      class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                      class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                     />
                   </div>
 
                   <div>
                     <div class="flex justify-between items-center mb-1">
-                      <label class="block text-xs font-bold text-slate-300 uppercase">Meta Title</label>
+                      <label class="block text-xs font-bold text-slate-700 uppercase">Meta Title</label>
                       <span class="text-[10px] font-mono text-slate-500">{{ (form.meta_title || '').length }}/200 caractères</span>
                     </div>
                     <input 
@@ -885,13 +885,13 @@
                       maxlength="200" 
                       type="text" 
                       placeholder="Titre pour Google..." 
-                      class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                      class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                     />
                   </div>
 
                   <div>
                     <div class="flex justify-between items-center mb-1">
-                      <label class="block text-xs font-bold text-slate-300 uppercase">Meta Description</label>
+                      <label class="block text-xs font-bold text-slate-700 uppercase">Meta Description</label>
                       <span class="text-[10px] font-mono text-slate-500">{{ (form.meta_description || '').length }}/160 caractères</span>
                     </div>
                     <textarea 
@@ -899,7 +899,7 @@
                       maxlength="160" 
                       rows="2" 
                       placeholder="Description pour les moteurs de recherche..." 
-                      class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 resize-none"
+                      class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 resize-none focus:bg-white font-medium"
                     ></textarea>
                   </div>
                 </div>
@@ -909,16 +909,16 @@
           </div>
 
           <!-- Wizard Navigation Footer -->
-          <div class="px-6 py-4 border-t border-slate-800 bg-slate-950 flex items-center justify-between flex-shrink-0">
-            <button type="button" @click="currentStep > 1 ? currentStep-- : closeModal()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl cursor-pointer">
+          <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between flex-shrink-0">
+            <button type="button" @click="currentStep > 1 ? currentStep-- : closeModal()" class="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl cursor-pointer">
               <span>{{ currentStep > 1 ? '← Précédent' : '✕ Annuler' }}</span>
             </button>
 
-            <button v-if="currentStep < totalSteps" type="button" @click="nextStep" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg cursor-pointer">
+            <button v-if="currentStep < totalSteps" type="button" @click="nextStep" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 cursor-pointer">
               <span>Suivant →</span>
             </button>
 
-            <button v-else type="button" @click="saveProduct" :disabled="isSaving" class="px-7 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-xl cursor-pointer flex items-center gap-2">
+            <button v-else type="button" @click="saveProduct" :disabled="isSaving" class="px-7 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 cursor-pointer flex items-center gap-2">
               <RefreshCw v-if="isSaving" class="w-3.5 h-3.5 animate-spin" />
               <span>{{ isSaving ? 'Sauvegarde BDD...' : '✓ Terminer & Enregistrer' }}</span>
             </button>

@@ -48,58 +48,58 @@
           <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Articles Publiés</p>
           <h2 class="text-xl font-black text-emerald-700 mt-0.5">{{ publishedCount }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
           <CheckCircle2 class="w-4 h-4" />
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Brouillons</p>
-          <h2 class="text-xl font-black text-amber-400 mt-0.5">{{ draftCount }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Brouillons</p>
+          <h2 class="text-xl font-black text-amber-700 mt-0.5">{{ draftCount }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+        <div class="w-8 h-8 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
           <Clock class="w-4 h-4" />
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Lecteurs / Vues</p>
-          <h2 class="text-xl font-black text-blue-400 font-mono mt-0.5">{{ formatNumber(totalViewsCount) }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Total Lecteurs / Vues</p>
+          <h2 class="text-xl font-black text-blue-700 font-mono mt-0.5">{{ formatNumber(totalViewsCount) }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+        <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
           <Eye class="w-4 h-4" />
         </div>
       </div>
     </div>
 
     <!-- Articles Table Container -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex-1 flex flex-col min-h-0">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden flex-1 flex flex-col min-h-0">
       
       <!-- Action & Filter Bar -->
-      <div class="p-3 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
+      <div class="p-3 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
         <div class="relative flex-1 max-w-md">
           <input 
             v-model="searchQuery" 
             type="text" 
             placeholder="Rechercher par titre, extrait ou mot-clé..." 
-            class="w-full pl-8 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+            class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white"
           />
-          <Search class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2" />
+          <Search class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" />
         </div>
 
         <div class="flex items-center gap-2">
           <select 
             v-model="statusFilter" 
-            class="px-2.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+            class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium focus:bg-white"
           >
             <option value="tous">Tous les articles</option>
             <option value="publie">✅ Publiés</option>
             <option value="brouillon">⏳ Brouillons</option>
           </select>
 
-          <span class="text-xs font-mono text-slate-400">
+          <span class="text-xs font-mono text-slate-500">
             {{ filteredArticles.length }} article(s)
           </span>
         </div>
@@ -107,15 +107,15 @@
 
       <!-- Scrollable Table Body -->
       <div v-if="isLoading" class="py-16 text-center text-xs font-mono text-slate-500">
-        <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+        <div class="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
         Chargement des articles de blog...
       </div>
 
       <div v-else-if="filteredArticles.length > 0" class="overflow-y-auto flex-1 custom-modal-scroll">
-        <table class="w-full text-left text-xs text-slate-300 relative">
+        <table class="w-full text-left text-xs text-slate-700 relative">
           
           <!-- Sticky Header -->
-          <thead class="bg-slate-950/95 backdrop-blur-md text-slate-400 uppercase font-mono text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-800">
+          <thead class="bg-slate-50 text-slate-600 uppercase font-mono text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-200">
             <tr>
               <th class="px-4 py-2 text-left">Article & Image</th>
               <th class="px-4 py-2 text-left">Extrait / Résumé</th>
@@ -127,13 +127,13 @@
           </thead>
 
           <!-- Compact Body Rows -->
-          <tbody class="divide-y divide-slate-800/60 font-medium">
-            <tr v-for="art in filteredArticles" :key="art.id" class="hover:bg-slate-800/40 transition-colors">
+          <tbody class="divide-y divide-slate-100 font-medium">
+            <tr v-for="art in filteredArticles" :key="art.id" class="hover:bg-slate-50/80 transition-colors">
               
               <!-- Article Thumbnail & Title -->
               <td class="px-4 py-2">
                 <div class="flex items-center gap-2.5">
-                  <div class="w-9 h-9 rounded-lg bg-slate-950 border border-slate-800 overflow-hidden flex-shrink-0">
+                  <div class="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
                     <img 
                       :src="getImgUrl(art.image_principale)" 
                       :alt="art.titre"
@@ -142,21 +142,21 @@
                     />
                   </div>
                   <div class="min-w-0">
-                    <p class="font-bold text-white text-xs truncate max-w-[200px] sm:max-w-[260px]">{{ art.titre }}</p>
+                    <p class="font-bold text-slate-900 text-xs truncate max-w-[200px] sm:max-w-[260px]">{{ art.titre }}</p>
                     <p class="text-[10px] text-slate-500 font-mono truncate max-w-[200px]">/blog/{{ art.slug }}</p>
                   </div>
                 </div>
               </td>
 
               <!-- Abstract / Excerpt -->
-              <td class="px-4 py-2 text-slate-400 text-xs">
+              <td class="px-4 py-2 text-slate-600 text-xs">
                 <p class="truncate max-w-[240px]">{{ art.extrait || art.contenu || 'Article agronomique AgroShop' }}</p>
               </td>
 
               <!-- Views Count -->
-              <td class="px-4 py-2 text-center font-mono font-bold text-emerald-400 text-xs whitespace-nowrap">
-                <div class="inline-flex items-center gap-1 bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800/80">
-                  <Eye class="w-3 h-3 text-emerald-500" />
+              <td class="px-4 py-2 text-center font-mono font-bold text-emerald-700 text-xs whitespace-nowrap">
+                <div class="inline-flex items-center gap-1 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-200">
+                  <Eye class="w-3 h-3 text-emerald-600" />
                   <span>{{ formatNumber(art.vues || 0) }}</span>
                 </div>
               </td>
@@ -164,7 +164,7 @@
               <!-- Status Badge -->
               <td class="px-4 py-2 text-center whitespace-nowrap">
                 <span 
-                  :class="art.statut === 'publie' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'"
+                  :class="art.statut === 'publie' ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-amber-50 text-amber-800 border-amber-200'"
                   class="px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider inline-block"
                 >
                   {{ art.statut === 'publie' ? 'Publié' : 'Brouillon' }}
@@ -172,7 +172,7 @@
               </td>
 
               <!-- Publication Date -->
-              <td class="px-4 py-2 text-center font-mono text-[11px] text-slate-400 whitespace-nowrap">
+              <td class="px-4 py-2 text-center font-mono text-[11px] text-slate-500 whitespace-nowrap">
                 {{ formatDate(art.date_publication) }}
               </td>
 
@@ -182,7 +182,7 @@
                   <NuxtLink 
                     :to="`/blog/${art.slug}`" 
                     target="_blank" 
-                    class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer" 
+                    class="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer" 
                     title="Voir l'article public"
                   >
                     <ExternalLink class="w-3.5 h-3.5" />
@@ -190,7 +190,7 @@
 
                   <button 
                     @click="openEditArticleModal(art)" 
-                    class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-[11px] font-bold transition-colors cursor-pointer inline-flex items-center gap-1" 
+                    class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-[11px] font-bold transition-colors cursor-pointer inline-flex items-center gap-1 border border-slate-200" 
                     title="Éditer l'article"
                   >
                     <span>✏️ Éditer</span>
@@ -198,7 +198,7 @@
 
                   <button 
                     @click="deleteArticle(art)" 
-                    class="p-1.5 bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 border border-rose-800/40 rounded-lg text-[11px] font-bold transition-colors cursor-pointer" 
+                    class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-[11px] font-bold transition-colors cursor-pointer" 
                     title="Supprimer l'article"
                   >
                     🗑️
@@ -221,15 +221,15 @@
     <!-- 1. ADD / EDIT ARTICLE MODAL POPUP -->
     <!-- ════════════════════════════════════════════════════════════════ -->
     <Teleport to="body">
-      <div v-if="isArticleModalOpen" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4 shadow-2xl max-h-[92vh] flex flex-col">
+      <div v-if="isArticleModalOpen" class="fixed inset-0 z-[9999] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-2xl max-h-[92vh] flex flex-col text-slate-800">
           
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-shrink-0">
-            <h3 class="text-base font-black text-white flex items-center gap-2">
-              <FileText class="w-5 h-5 text-emerald-400" />
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3 flex-shrink-0">
+            <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+              <FileText class="w-5 h-5 text-emerald-600" />
               <span>{{ editingArticleId ? 'Modifier l\'Article' : 'Rédiger un Nouvel Article' }}</span>
             </h3>
-            <button @click="isArticleModalOpen = false" class="p-1.5 text-slate-400 hover:text-white rounded-xl bg-slate-800 cursor-pointer">
+            <button @click="isArticleModalOpen = false" class="p-1.5 text-slate-500 hover:text-slate-900 rounded-xl bg-slate-100 cursor-pointer">
               <X class="w-4 h-4" />
             </button>
           </div>
@@ -237,22 +237,22 @@
           <form @submit.prevent="saveArticle" class="space-y-4 text-xs overflow-y-auto custom-modal-scroll flex-1 pr-1">
             
             <div>
-              <label class="block font-bold text-slate-300 uppercase mb-1">Titre de l'Article *</label>
+              <label class="block font-bold text-slate-700 uppercase mb-1">Titre de l'Article *</label>
               <input 
                 v-model="articleForm.titre" 
                 required 
                 type="text" 
                 placeholder="ex: Guide Complet de la Fertilisation NPK pour le Maïs..." 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
               />
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block font-bold text-slate-300 uppercase mb-1">Statut de Publication</label>
+                <label class="block font-bold text-slate-700 uppercase mb-1">Statut de Publication</label>
                 <select 
                   v-model="articleForm.statut" 
-                  class="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer focus:bg-white font-medium"
                 >
                   <option value="publie">✅ Publié immédiatement</option>
                   <option value="brouillon">⏳ Enregistrer comme Brouillon</option>
@@ -260,74 +260,74 @@
               </div>
 
               <div>
-                <label class="block font-bold text-slate-300 uppercase mb-1">URL / Image Principale</label>
+                <label class="block font-bold text-slate-700 uppercase mb-1">URL / Image Principale</label>
                 <input 
                   v-model="articleForm.image_principale" 
                   type="text" 
                   placeholder="/images/hero-produits-agroshop.png" 
-                  class="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white font-mono focus:outline-none focus:border-emerald-500"
+                  class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                 />
               </div>
             </div>
 
             <div>
-              <label class="block font-bold text-slate-300 uppercase mb-1">Chapeau / Extrait Résumé</label>
+              <label class="block font-bold text-slate-700 uppercase mb-1">Chapeau / Extrait Résumé</label>
               <textarea 
                 v-model="articleForm.extrait" 
                 rows="2" 
                 placeholder="Résumé court affiché sur les cartes du blog..." 
-                class="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500"
+                class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
               ></textarea>
             </div>
 
             <div>
-              <label class="block font-bold text-slate-300 uppercase mb-1">Contenu Complet de l'Article *</label>
+              <label class="block font-bold text-slate-700 uppercase mb-1">Contenu Complet de l'Article *</label>
               <textarea 
                 v-model="articleForm.contenu" 
                 required 
                 rows="7" 
                 placeholder="Rédigez ici le corps de votre article agronomique..." 
-                class="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 leading-relaxed font-sans"
+                class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 leading-relaxed font-sans focus:bg-white font-medium"
               ></textarea>
             </div>
 
             <!-- SEO Google Options -->
-            <div class="border-t border-slate-800 pt-3 space-y-3">
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">🌐 Référencement SEO Google</span>
+            <div class="border-t border-slate-200 pt-3 space-y-3">
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">🌐 Référencement SEO Google</span>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label class="block text-[10px] text-slate-400 uppercase mb-1">Meta Title</label>
+                  <label class="block text-[10px] text-slate-500 uppercase mb-1">Meta Title</label>
                   <input 
                     v-model="articleForm.meta_title" 
                     type="text" 
                     placeholder="Titre SEO..." 
-                    class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs"
+                    class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs focus:bg-white font-medium"
                   />
                 </div>
                 <div>
-                  <label class="block text-[10px] text-slate-400 uppercase mb-1">Meta Description</label>
+                  <label class="block text-[10px] text-slate-500 uppercase mb-1">Meta Description</label>
                   <input 
                     v-model="articleForm.meta_description" 
                     type="text" 
                     placeholder="Description pour les moteurs de recherche..." 
-                    class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs"
+                    class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs focus:bg-white font-medium"
                   />
                 </div>
               </div>
             </div>
 
-            <div class="flex items-center justify-between pt-3 border-t border-slate-800 flex-shrink-0">
+            <div class="flex items-center justify-between pt-3 border-t border-slate-200 flex-shrink-0">
               <button 
                 type="button" 
                 @click="isArticleModalOpen = false" 
-                class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white cursor-pointer"
+                class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 cursor-pointer"
               >
                 Annuler
               </button>
               <button 
                 type="submit" 
                 :disabled="isSaving"
-                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-2"
+                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all cursor-pointer flex items-center gap-2"
               >
                 <RefreshCw v-if="isSaving" class="w-3.5 h-3.5 animate-spin" />
                 <span>{{ isSaving ? 'Sauvegarde BDD...' : '✓ Enregistrer l\'Article' }}</span>

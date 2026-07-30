@@ -42,35 +42,35 @@
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex items-center justify-between">
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Clients Enregistrés</p>
-          <h2 class="text-2xl font-black text-blue-400 mt-1">142</h2>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Clients Enregistrés</p>
+          <h2 class="text-2xl font-black text-blue-700 mt-1">142</h2>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
           <Users class="w-5 h-5" />
         </div>
       </div>
     </div>
 
     <!-- Users Table -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-      <div class="p-5 border-b border-slate-800 flex items-center justify-between">
-        <h2 class="text-sm font-bold text-white uppercase tracking-wider">Liste des Administrateurs Système</h2>
+    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Liste des Administrateurs Système</h2>
         <div class="relative w-64">
           <input 
             v-model="searchQuery" 
             type="text" 
             placeholder="Rechercher par nom ou email..." 
-            class="w-full pl-9 pr-4 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+            class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white"
           />
-          <Search class="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+          <Search class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
         </div>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs text-slate-300">
-          <thead class="bg-slate-950/80 uppercase text-[10px] font-mono tracking-wider text-slate-400 border-b border-slate-800">
+        <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-600 border-b border-slate-200">
             <tr>
               <th class="px-6 py-4">Nom & Prénom</th>
               <th class="px-6 py-4">Adresse Email</th>
@@ -79,30 +79,30 @@
               <th class="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-800/60 font-medium">
-            <tr v-for="user in filteredUsers" :key="user.id" class="hover:bg-slate-800/40 transition-colors">
+          <tbody class="divide-y divide-slate-100 font-medium">
+            <tr v-for="user in filteredUsers" :key="user.id" class="hover:bg-slate-50/80 transition-colors">
               <td class="px-6 py-4 flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-emerald-600/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold">
+                <div class="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold">
                   {{ user.prenom[0] }}{{ user.nom[0] }}
                 </div>
                 <div>
-                  <p class="font-bold text-white text-sm">{{ user.prenom }} {{ user.nom }}</p>
+                  <p class="font-bold text-slate-900 text-sm">{{ user.prenom }} {{ user.nom }}</p>
                 </div>
               </td>
-              <td class="px-6 py-4 font-mono text-slate-400">{{ user.email }}</td>
+              <td class="px-6 py-4 font-mono text-slate-600">{{ user.email }}</td>
               <td class="px-6 py-4">
-                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border bg-purple-500/10 text-purple-400 border-purple-500/20 capitalize">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border bg-purple-50 text-purple-800 border-purple-200 capitalize">
                   {{ user.role.replace('_', ' ') }}
                 </span>
               </td>
               <td class="px-6 py-4">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
                   Actif
                 </span>
               </td>
               <td class="px-6 py-4 text-right">
-                <button @click="editUser(user)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-bold transition-colors">
+                <button @click="editUser(user)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 rounded-lg text-xs font-bold transition-colors cursor-pointer">
                   Gérer
                 </button>
               </td>

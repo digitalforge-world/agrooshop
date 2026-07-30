@@ -171,36 +171,36 @@
     <!-- 1. ADD / EDIT CATEGORY MODAL -->
     <!-- ════════════════════════════════════════════════════════════════ -->
     <Teleport to="body">
-      <div v-if="isCategoryModalOpen" class="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-5 shadow-2xl">
+      <div v-if="isCategoryModalOpen" class="fixed inset-0 z-[9999] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-6 space-y-5 shadow-2xl text-slate-800">
           
-          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 class="text-base font-black text-white flex items-center gap-2">
-              <FolderTree class="w-5 h-5 text-emerald-400" />
+          <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <h3 class="text-base font-black text-slate-900 flex items-center gap-2">
+              <FolderTree class="w-5 h-5 text-emerald-600" />
               <span>{{ editingCatId ? 'Modifier la Catégorie' : 'Créer une Catégorie ou Sous-Catégorie' }}</span>
             </h3>
-            <button @click="isCategoryModalOpen = false" class="p-1.5 text-slate-400 hover:text-white rounded-xl bg-slate-800 cursor-pointer">
+            <button @click="isCategoryModalOpen = false" class="p-1.5 text-slate-500 hover:text-slate-900 rounded-xl bg-slate-100 cursor-pointer">
               <X class="w-4 h-4" />
             </button>
           </div>
 
           <form @submit.prevent="saveCategory" class="space-y-4 text-xs">
             <div>
-              <label class="block font-bold text-slate-300 uppercase mb-1">Nom de la Catégorie *</label>
+              <label class="block font-bold text-slate-700 uppercase mb-1">Nom de la Catégorie *</label>
               <input 
                 v-model="catForm.nom" 
                 required 
                 type="text" 
                 placeholder="ex: Engrais NPK, Urée, Insecticides..." 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
               />
             </div>
 
             <div>
-              <label class="block font-bold text-slate-300 uppercase mb-1">Catégorie Parente (Pour créer une sous-catégorie)</label>
+              <label class="block font-bold text-slate-700 uppercase mb-1">Catégorie Parente (Pour créer une sous-catégorie)</label>
               <select 
                 v-model="catForm.parent_id" 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer focus:bg-white font-medium"
               >
                 <option :value="null">-- Aucune (Catégorie Principale Racine) --</option>
                 <option v-for="mainCat in mainCategories" :key="mainCat.id" :value="mainCat.id">
@@ -210,49 +210,49 @@
             </div>
 
             <div>
-              <label class="block font-bold text-slate-300 uppercase mb-1">Description</label>
+              <label class="block font-bold text-slate-700 uppercase mb-1">Description</label>
               <textarea 
                 v-model="catForm.description" 
                 rows="2" 
                 placeholder="Description courte..." 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
               ></textarea>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
               <div>
-                <label class="block font-bold text-slate-300 uppercase mb-1">Classe d'Icône (FontAwesome)</label>
+                <label class="block font-bold text-slate-700 uppercase mb-1">Classe d'Icône (FontAwesome)</label>
                 <input 
                   v-model="catForm.icon" 
                   type="text" 
                   placeholder="fa-solid fa-leaf" 
-                  class="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white font-mono focus:outline-none focus:border-emerald-500"
+                  class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                 />
               </div>
 
               <div>
-                <label class="block font-bold text-slate-300 uppercase mb-1">Slug URL (Optionnel)</label>
+                <label class="block font-bold text-slate-700 uppercase mb-1">Slug URL (Optionnel)</label>
                 <input 
                   v-model="catForm.slug" 
                   type="text" 
                   placeholder="Généré auto si vide" 
-                  class="w-full px-3.5 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white font-mono focus:outline-none focus:border-emerald-500"
+                  class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                 />
               </div>
             </div>
 
-            <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+            <div class="flex items-center justify-between pt-4 border-t border-slate-200">
               <button 
                 type="button" 
                 @click="isCategoryModalOpen = false" 
-                class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white cursor-pointer"
+                class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 cursor-pointer"
               >
                 Annuler
               </button>
               <button 
                 type="submit" 
                 :disabled="isSaving"
-                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer flex items-center gap-2"
+                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all cursor-pointer flex items-center gap-2"
               >
                 <RefreshCw v-if="isSaving" class="w-3.5 h-3.5 animate-spin" />
                 <span>{{ isSaving ? 'Sauvegarde...' : '✓ Enregistrer la Catégorie' }}</span>

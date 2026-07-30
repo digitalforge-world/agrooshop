@@ -49,16 +49,16 @@
     </div>
 
     <!-- Full Actions Table Container (Independently Scrollable) -->
-    <div class="flex-1 min-h-0 bg-slate-900 border border-slate-800 rounded-3xl p-5 flex flex-col shadow-2xl overflow-hidden">
+    <div class="flex-1 min-h-0 bg-white border border-slate-200 rounded-3xl p-5 flex flex-col shadow-xs overflow-hidden">
       
       <div v-if="isLoading" class="flex-1 flex flex-col items-center justify-center text-xs text-slate-500 font-mono">
-        <div class="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mb-2"></div>
+        <div class="w-7 h-7 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mb-2"></div>
         Chargement du journal d'activités...
       </div>
 
-      <div v-else-if="logs.length > 0" class="flex-1 overflow-y-auto rounded-2xl border border-slate-800/80">
-        <table class="w-full text-left text-xs text-slate-300">
-          <thead class="bg-slate-950 text-slate-400 uppercase font-mono text-[10px] tracking-wider border-b border-slate-800 sticky top-0 z-10">
+      <div v-else-if="logs.length > 0" class="flex-1 overflow-y-auto rounded-2xl border border-slate-200">
+        <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-50 text-slate-600 uppercase font-mono text-[10px] tracking-wider border-b border-slate-200 sticky top-0 z-10">
             <tr>
               <th class="px-5 py-3.5">Heure / Date</th>
               <th class="px-5 py-3.5">Adresse IP (Pays)</th>
@@ -67,21 +67,21 @@
               <th class="px-5 py-3.5">Détails de l'Interaction</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-800/60 font-medium">
-            <tr v-for="log in logs" :key="log.id" class="hover:bg-slate-800/40 transition-colors">
-              <td class="px-5 py-3.5 text-slate-400 font-mono text-[11px] whitespace-nowrap">
+          <tbody class="divide-y divide-slate-100 font-medium">
+            <tr v-for="log in logs" :key="log.id" class="hover:bg-slate-50/80 transition-colors">
+              <td class="px-5 py-3.5 text-slate-500 font-mono text-[11px] whitespace-nowrap">
                 {{ formatDate(log.created_at) }}
               </td>
               <td class="px-5 py-3.5 font-mono whitespace-nowrap">
                 <button 
                   @click="openIpModal(log.ip_adresse)" 
-                  class="text-emerald-400 font-bold hover:underline cursor-pointer flex items-center gap-1.5"
+                  class="text-emerald-700 font-bold hover:underline cursor-pointer flex items-center gap-1.5"
                 >
-                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
                   <span>{{ log.ip_formatted || `${log.ip_adresse} (🇹🇬)` }}</span>
                 </button>
               </td>
-              <td class="px-5 py-3.5 font-mono text-white whitespace-nowrap">
+              <td class="px-5 py-3.5 font-mono text-slate-900 whitespace-nowrap">
                 {{ log.page_visitee }}
               </td>
               <td class="px-5 py-3.5 whitespace-nowrap">
@@ -92,7 +92,7 @@
                   {{ log.type_action }}
                 </span>
               </td>
-              <td class="px-5 py-3.5 text-slate-300 font-mono text-[11px]">
+              <td class="px-5 py-3.5 text-slate-600 font-mono text-[11px]">
                 {{ log.details || '-' }}
               </td>
             </tr>
@@ -108,41 +108,41 @@
 
     <!-- Modal 1: Journal Filter Modal -->
     <Teleport to="body">
-      <div v-if="isFilterModalOpen" class="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="w-full max-w-xl bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 shadow-2xl overflow-hidden flex flex-col">
+      <div v-if="isFilterModalOpen" class="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-xl bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-2xl overflow-hidden flex flex-col text-slate-800">
           
-          <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-4">
             <div>
-              <h3 class="text-lg font-black text-white flex items-center gap-2">
-                <SlidersHorizontal class="w-5 h-5 text-emerald-400" />
+              <h3 class="text-lg font-black text-slate-900 flex items-center gap-2">
+                <SlidersHorizontal class="w-5 h-5 text-emerald-600" />
                 <span>Filtrer le Journal des Clics</span>
               </h3>
-              <p class="text-xs text-slate-400">Combinez date, types d'actions et adresses IP pour afiner le rapport</p>
+              <p class="text-xs text-slate-500">Combinez date, types d'actions et adresses IP pour afiner le rapport</p>
             </div>
-            <button @click="isFilterModalOpen = false" class="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800 cursor-pointer">
+            <button @click="isFilterModalOpen = false" class="p-2 text-slate-500 hover:text-slate-900 rounded-xl bg-slate-100 cursor-pointer">
               <X class="w-5 h-5" />
             </button>
           </div>
 
           <!-- Quick Presets -->
           <div class="space-y-2">
-            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Périodes Préconisées</label>
+            <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Périodes Préconisées</label>
             <div class="grid grid-cols-3 gap-2">
               <button 
                 @click="setThisMonth" 
-                class="py-2.5 px-3 bg-slate-950 hover:bg-emerald-950/60 hover:border-emerald-500/40 border border-slate-800 text-slate-200 text-xs font-bold rounded-xl transition-all cursor-pointer text-center"
+                class="py-2.5 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer text-center"
               >
                 Ce Mois-ci
               </button>
               <button 
                 @click="setLastMonth" 
-                class="py-2.5 px-3 bg-slate-950 hover:bg-emerald-950/60 hover:border-emerald-500/40 border border-slate-800 text-slate-200 text-xs font-bold rounded-xl transition-all cursor-pointer text-center"
+                class="py-2.5 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer text-center"
               >
                 Mois Dernier
               </button>
               <button 
                 @click="setLast30Days" 
-                class="py-2.5 px-3 bg-slate-950 hover:bg-emerald-950/60 hover:border-emerald-500/40 border border-slate-800 text-slate-200 text-xs font-bold rounded-xl transition-all cursor-pointer text-center"
+                class="py-2.5 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-bold rounded-xl transition-all cursor-pointer text-center"
               >
                 30 Derniers Jours
               </button>
@@ -152,19 +152,19 @@
           <!-- Date pickers -->
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
-              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Date de Début</label>
+              <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Date de Début</label>
               <input 
                 v-model="startDate" 
                 type="date" 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
               />
             </div>
             <div class="space-y-1.5">
-              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Date de Fin</label>
+              <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Date de Fin</label>
               <input 
                 v-model="endDate" 
                 type="date" 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
               />
             </div>
           </div>
@@ -172,10 +172,10 @@
           <!-- Action type & IP Filters -->
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1.5">
-              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Type d'Action</label>
+              <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Type d'Action</label>
               <select 
                 v-model="actionFilter" 
-                class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500"
+                class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer focus:bg-white font-medium"
               >
                 <option value="">Toutes les actions</option>
                 <option value="visite_page">Page vue (visite_page)</option>
@@ -190,31 +190,31 @@
             </div>
 
             <div class="space-y-1.5">
-              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Adresse IP</label>
+              <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Adresse IP</label>
               <div class="relative">
                 <input 
                   v-model="ipFilter" 
                   type="text" 
                   placeholder="Ex: 127.0.0.1" 
-                  class="w-full pl-8 pr-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                  class="w-full pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
                 />
-                <Search class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-3" />
+                <Search class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-3" />
               </div>
             </div>
           </div>
 
           <!-- Modal Action Footer Buttons -->
-          <div class="flex items-center justify-between pt-4 border-t border-slate-800">
+          <div class="flex items-center justify-between pt-4 border-t border-slate-200">
             <button 
               @click="resetFilters" 
-              class="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white transition-colors cursor-pointer"
+              class="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
             >
               Réinitialiser les Filtres
             </button>
 
             <button 
               @click="applyFilterModal" 
-              class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/30 transition-all cursor-pointer"
+              class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
             >
               Appliquer les Filtres
             </button>
@@ -226,46 +226,46 @@
 
     <!-- Modal 2: IP Details Modal -->
     <Teleport to="body">
-      <div v-if="selectedIp" class="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="w-full max-w-4xl bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-6 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+      <div v-if="selectedIp" class="fixed inset-0 z-[100] bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="w-full max-w-4xl bg-white border border-slate-200 rounded-3xl p-6 space-y-6 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col text-slate-800">
           
-          <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+          <div class="flex items-center justify-between border-b border-slate-200 pb-4">
             <div>
-              <h3 class="text-lg font-black text-white flex items-center gap-2">
+              <h3 class="text-lg font-black text-slate-900 flex items-center gap-2">
                 <span>Historique IP :</span>
-                <span class="text-emerald-400 font-mono">{{ modalData?.ip_formatted || selectedIp }}</span>
+                <span class="text-emerald-700 font-mono">{{ modalData?.ip_formatted || selectedIp }}</span>
               </h3>
-              <p class="text-xs text-slate-400">Synthèse de toutes les interactions de cet utilisateur</p>
+              <p class="text-xs text-slate-500">Synthèse de toutes les interactions de cet utilisateur</p>
             </div>
-            <button @click="selectedIp = null" class="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800 cursor-pointer">
+            <button @click="selectedIp = null" class="p-2 text-slate-500 hover:text-slate-900 rounded-xl bg-slate-100 cursor-pointer">
               <X class="w-5 h-5" />
             </button>
           </div>
 
           <!-- IP Stats -->
           <div class="grid grid-cols-4 gap-3">
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-              <p class="text-[10px] font-bold text-slate-400 uppercase">Pages Vues</p>
-              <p class="text-lg font-black text-white font-mono mt-1">{{ modalData?.stats?.nb_pages || 0 }}</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+              <p class="text-[10px] font-bold text-slate-500 uppercase">Pages Vues</p>
+              <p class="text-lg font-black text-slate-900 font-mono mt-1">{{ modalData?.stats?.nb_pages || 0 }}</p>
             </div>
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-              <p class="text-[10px] font-bold text-slate-400 uppercase">Clics Produits</p>
-              <p class="text-lg font-black text-blue-400 font-mono mt-1">{{ modalData?.stats?.nb_clics_produits || 0 }}</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+              <p class="text-[10px] font-bold text-slate-500 uppercase">Clics Produits</p>
+              <p class="text-lg font-black text-blue-700 font-mono mt-1">{{ modalData?.stats?.nb_clics_produits || 0 }}</p>
             </div>
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-              <p class="text-[10px] font-bold text-slate-400 uppercase">Ajouts Panier</p>
-              <p class="text-lg font-black text-amber-400 font-mono mt-1">{{ modalData?.stats?.nb_ajouts_panier || 0 }}</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+              <p class="text-[10px] font-bold text-slate-500 uppercase">Ajouts Panier</p>
+              <p class="text-lg font-black text-amber-700 font-mono mt-1">{{ modalData?.stats?.nb_ajouts_panier || 0 }}</p>
             </div>
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-              <p class="text-[10px] font-bold text-slate-400 uppercase">WhatsApp</p>
-              <p class="text-lg font-black text-emerald-400 font-mono mt-1">{{ modalData?.stats?.nb_whatsapp || 0 }}</p>
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+              <p class="text-[10px] font-bold text-slate-500 uppercase">WhatsApp</p>
+              <p class="text-lg font-black text-emerald-700 font-mono mt-1">{{ modalData?.stats?.nb_whatsapp || 0 }}</p>
             </div>
           </div>
 
           <!-- IP Log Table -->
-          <div v-if="modalData?.logs?.length > 0" class="flex-1 overflow-y-auto rounded-xl border border-slate-800">
-            <table class="w-full text-left text-xs text-slate-300">
-              <thead class="bg-slate-950 text-slate-400 uppercase font-mono text-[10px] tracking-wider border-b border-slate-800 sticky top-0 z-10">
+          <div v-if="modalData?.logs?.length > 0" class="flex-1 overflow-y-auto rounded-xl border border-slate-200">
+            <table class="w-full text-left text-xs text-slate-700">
+              <thead class="bg-slate-50 text-slate-600 uppercase font-mono text-[10px] tracking-wider border-b border-slate-200 sticky top-0 z-10">
                 <tr>
                   <th class="px-4 py-3">Heure / Date</th>
                   <th class="px-4 py-3">Page Visitée</th>
@@ -273,12 +273,12 @@
                   <th class="px-4 py-3">Détails de l'Interaction</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-800/60 font-medium">
-                <tr v-for="item in modalData.logs" :key="item.id" class="hover:bg-slate-800/40 transition-colors">
-                  <td class="px-4 py-3 text-slate-400 font-mono text-[11px] whitespace-nowrap">
+              <tbody class="divide-y divide-slate-100 font-medium">
+                <tr v-for="item in modalData.logs" :key="item.id" class="hover:bg-slate-50/80 transition-colors">
+                  <td class="px-4 py-3 text-slate-500 font-mono text-[11px] whitespace-nowrap">
                     {{ formatDate(item.created_at) }}
                   </td>
-                  <td class="px-4 py-3 font-mono text-white whitespace-nowrap">
+                  <td class="px-4 py-3 font-mono text-slate-900 whitespace-nowrap">
                     {{ item.page_visitee }}
                   </td>
                   <td class="px-4 py-3 whitespace-nowrap">
@@ -286,7 +286,7 @@
                       {{ item.type_action }}
                     </span>
                   </td>
-                  <td class="px-4 py-3 text-slate-300 font-mono text-[11px]">
+                  <td class="px-4 py-3 text-slate-600 font-mono text-[11px]">
                     {{ item.details || '-' }}
                   </td>
                 </tr>
