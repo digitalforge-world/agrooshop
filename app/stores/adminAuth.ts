@@ -17,7 +17,11 @@ export const useAdminAuthStore = defineStore('adminAuth', () => {
     path: '/',
     sameSite: 'lax'
   })
-  const admin = ref<AdminUser | null>(null)
+  const admin = useCookie<AdminUser | null>('agro_admin_user', { 
+    maxAge: 60 * 60 * 24 * 7,
+    path: '/',
+    sameSite: 'lax'
+  })
   const isLoading = ref(false)
   const authError = ref<string | null>(null)
 
@@ -78,10 +82,13 @@ export const useAdminAuthStore = defineStore('adminAuth', () => {
         admin.value = adminData
         return true
       }
-    } catch (e) {
-      // Token invalide : on le purge pour forcer une reconnexion
-      token.value = null
-      admin.value = null
+    } catch (e: any) {
+      // Seul un vrai statut 401 ou 403 d'un token invalide/expiré purge la session
+      const status = e?.response?.status || e?.statusCode || e?.status
+      if (status === 401 || status === 403) {
+        token.value = null
+        admin.value = null
+      }
     }
     return false
   }

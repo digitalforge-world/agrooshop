@@ -17,25 +17,24 @@ export interface Boutique {
 }
 
 export const useGestionnaireAuthStore = defineStore('gestionnaireAuth', () => {
-  const token = useCookie<string | null>('agro_gestionnaire_token', { maxAge: 60 * 60 * 24 * 7 })
-  const user = ref<GestionnaireUser | null>(null)
-  // Toutes les boutiques gérées par ce gestionnaire
-  const boutiques = ref<Boutique[]>([])
-  // Boutique actuellement active (sélectionnée)
-  const activeBoutiqueId = useCookie<number | null>('agro_active_boutique', { maxAge: 60 * 60 * 24 * 7 })
+  const token = useCookie<string | null>('agro_gestionnaire_token', { maxAge: 60 * 60 * 24 * 7, path: '/', sameSite: 'lax' })
+  const user = useCookie<GestionnaireUser | null>('agro_gestionnaire_user', { maxAge: 60 * 60 * 24 * 7, path: '/', sameSite: 'lax' })
+  const boutiques = useCookie<Boutique[]>('agro_gestionnaire_boutiques', { maxAge: 60 * 60 * 24 * 7, path: '/', sameSite: 'lax', default: () => [] })
+  const activeBoutiqueId = useCookie<number | null>('agro_active_boutique', { maxAge: 60 * 60 * 24 * 7, path: '/', sameSite: 'lax' })
   const isLoading = ref(false)
   const authError = ref<string | null>(null)
 
   const isLoggedIn = computed(() => !!token.value)
   // Boutique active = celle sélectionnée, ou la première par défaut
   const boutique = computed(() => {
-    if (activeBoutiqueId.value && boutiques.value.length > 0) {
-      return boutiques.value.find(b => b.id === activeBoutiqueId.value) || boutiques.value[0]
+    const list = boutiques.value || []
+    if (activeBoutiqueId.value && list.length > 0) {
+      return list.find(b => b.id === activeBoutiqueId.value) || list[0]
     }
-    return boutiques.value[0] || null
+    return list[0] || null
   })
   // Le gestionnaire gère-t-il plusieurs boutiques ?
-  const hasMultipleBoutiques = computed(() => boutiques.value.length > 1)
+  const hasMultipleBoutiques = computed(() => (boutiques.value || []).length > 1)
 
   const config = useRuntimeConfig()
 
@@ -48,17 +47,18 @@ export const useGestionnaireAuthStore = defineStore('gestionnaireAuth', () => {
         body: { email: emailVal, password: passwordVal }
       })
 
-      const tokenVal = res?.token
-      const userVal = res?.gestionnaire
-      const boutiquesVal: Boutique[] = res?.boutiques || (res?.boutique ? [res.boutique] : [])
+      const tokenVal = res?.token || res?.data?.token
+      const userVal = res?.gestionnaire || res?.data?.gestionnaire
+      const boutiquesVal: Boutique[] = res?.boutiques || res?.data?.boutiques || (res?.boutique ? [res.boutique] : [])
 
       if (tokenVal) {
         token.value = tokenVal
         user.value = userVal
         boutiques.value = boutiquesVal
         // Sélectionner la première boutique par défaut
-        if (boutiquesVal.length > 0 && !activeBoutiqueId.value) {
-          activeBoutiqueId.value = boutiquesVal[0].id
+        const firstBoutique = boutiquesVal[0]
+        if (firstBoutique && !activeBoutiqueId.value) {
+          activeBoutiqueId.value = firstBoutique.id
         }
         return true
       } else {
@@ -73,6 +73,28 @@ export const useGestionnaireAuthStore = defineStore('gestionnaireAuth', () => {
     }
   }
 
+  async function fetchMe() {
+    if (!token.value) return false
+    try {
+      const res = await $fetch<any>(`${config.public.apiBaseUrl}/gestionnaire/me`, {
+        headers: { Authorization: `Bearer ${token.value}` }
+      })
+      const userVal = res?.gestionnaire || res?.data?.gestionnaire || res?.data?.user
+      const boutiquesVal = res?.boutiques || res?.data?.boutiques || []
+      if (userVal) {
+        user.value = userVal
+        if (boutiquesVal.length > 0) boutiques.value = boutiquesVal
+        return true
+      }
+    } catch (e: any) {
+      const status = e?.response?.status || e?.statusCode || e?.status
+      if (status === 401 || status === 403) {
+        logout()
+      }
+    }
+    return false
+  }
+
   function selectBoutique(boutiqueId: number) {
     activeBoutiqueId.value = boutiqueId
   }
@@ -82,6 +104,8 @@ export const useGestionnaireAuthStore = defineStore('gestionnaireAuth', () => {
     user.value = null
     boutiques.value = []
     activeBoutiqueId.value = null
+    const router = useRouter()
+    router.push('/gestionnaire/login')
   }
 
   const adminUser = computed(() => user.value)
@@ -98,6 +122,7 @@ export const useGestionnaireAuthStore = defineStore('gestionnaireAuth', () => {
     isLoggedIn,
     adminUser,
     login,
+    fetchMe,
     logout,
     selectBoutique,
   }
