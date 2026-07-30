@@ -62,7 +62,7 @@
         <table class="w-full text-left text-xs text-slate-700">
           <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-500 border-b border-slate-200">
             <tr>
-              <th class="px-6 py-4">Nom de la Boutique</th>
+              <th class="px-6 py-4">Nom de la Boutique N</th>
               <th class="px-6 py-4">Type(s) de Boutique</th>
               <th class="px-6 py-4">Localisation</th>
               <th class="px-6 py-4">Statut</th>
