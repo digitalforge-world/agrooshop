@@ -124,14 +124,36 @@
                 </button>
               </td>
               <td class="px-6 py-4 text-right">
-                <button @click="openModal(boutique)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-colors mr-2">
-                  Éditer
-                </button>
-                <button @click="toggleStatut(boutique)" class="px-3 py-1.5 text-xs font-bold rounded-lg transition-colors"
-                  :class="boutique.is_active ? 'bg-red-50 hover:bg-red-100 text-red-700 border border-red-200' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200'"
-                >
-                  {{ boutique.is_active ? 'Désactiver' : 'Activer' }}
-                </button>
+                <div class="inline-flex items-center gap-1.5 justify-end">
+                  <!-- Bouton Approvisionner -->
+                  <button 
+                    @click="openApprovisionnementModal(boutique)" 
+                    :disabled="!boutique.is_active"
+                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl text-xs transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-xs"
+                    title="Approvisionner le stock de cette boutique"
+                  >
+                    <Truck class="w-3.5 h-3.5" />
+                    <span>Approvisionner</span>
+                  </button>
+
+                  <button 
+                    @click="openModal(boutique)" 
+                    class="p-2 bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 rounded-xl transition-all cursor-pointer border border-slate-200/60 hover:border-emerald-200 shadow-2xs"
+                    title="Éditer la boutique"
+                  >
+                    <Pencil class="w-4 h-4" />
+                  </button>
+
+                  <button 
+                    @click="toggleStatut(boutique)" 
+                    class="p-2 rounded-xl transition-all cursor-pointer border shadow-2xs"
+                    :class="boutique.is_active ? 'bg-red-50 hover:bg-red-100 text-red-600 border-red-200' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border-emerald-200'"
+                    :title="boutique.is_active ? 'Désactiver la boutique' : 'Activer la boutique'"
+                  >
+                    <Power v-if="boutique.is_active" class="w-4 h-4" />
+                    <CheckCircle2 v-else class="w-4 h-4" />
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -409,6 +431,176 @@
             </div>
           </div>
         </div>
+    <!-- ===================== MODAL Approvisionnement de Boutique ===================== -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div v-if="showApprovisionnementModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs" @click.self="closeApprovisionnementModal">
+          <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+            
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between flex-shrink-0">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
+                  <Truck class="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 class="text-base font-bold text-slate-900">Approvisionner : {{ selectedBoutiqueForAppro?.nom }}</h2>
+                  <p class="text-[11px] text-slate-500">Cochez les produits du catalogue à approvisionner et ajustez les quantités.</p>
+                </div>
+              </div>
+              <button @click="closeApprovisionnementModal" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">
+                <X class="w-5 h-5" />
+              </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto flex-1 space-y-4">
+              
+              <!-- Filtre et stats rapides -->
+              <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                <div class="relative w-full sm:w-72">
+                  <input 
+                    v-model="searchProduitQuery" 
+                    type="text" 
+                    placeholder="Rechercher un produit..." 
+                    class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 transition-colors"
+                  />
+                  <Search class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                </div>
+
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                  <button 
+                    type="button" 
+                    @click="toggleAllProduits" 
+                    class="text-xs font-bold text-emerald-700 hover:underline cursor-pointer"
+                  >
+                    {{ allProduitsSelected ? 'Tout décocher' : 'Tout cocher' }}
+                  </button>
+                  <div class="text-xs text-slate-600 font-medium">
+                    <span class="font-bold text-emerald-700">{{ selectedProduitsCount }}</span> produit(s) coché(s) | Total : <span class="font-bold font-mono text-slate-900">{{ totalQuantiteAjoutee }}</span> unités
+                  </div>
+                </div>
+              </div>
+
+              <!-- Loading state -->
+              <div v-if="loadingProduits" class="py-12 text-center text-slate-500">
+                <div class="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                Chargement des produits du catalogue...
+              </div>
+
+              <!-- Empty list state -->
+              <div v-else-if="filteredProduitsAppro.length === 0" class="py-10 text-center text-slate-400">
+                <Package class="w-8 h-8 mx-auto mb-2 text-slate-300" />
+                <p class="text-xs">Aucun produit ne correspond à votre recherche</p>
+              </div>
+
+              <!-- Liste des produits -->
+              <div v-else class="border border-slate-200 rounded-xl overflow-hidden divide-y divide-slate-100">
+                <div 
+                  v-for="p in filteredProduitsAppro" 
+                  :key="p.id" 
+                  class="p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-colors"
+                  :class="p.selected ? 'bg-emerald-50/40' : 'hover:bg-slate-50'"
+                >
+                  <!-- Checkbox + Info Produit -->
+                  <div class="flex items-center gap-3 cursor-pointer select-none" @click="p.selected = !p.selected">
+                    <input 
+                      type="checkbox" 
+                      v-model="p.selected" 
+                      @click.stop 
+                      class="w-4 h-4 text-emerald-600 rounded border-slate-300 accent-emerald-600 cursor-pointer"
+                    />
+                    <div>
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <p class="text-xs font-bold text-slate-900">{{ p.nom_commercial }}</p>
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                          {{ p.categorie_nom }}
+                        </span>
+                        <span v-if="p.deja_associe" class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                          Stock actuel: {{ p.stock_actuel }} {{ p.unite_mesure }}
+                        </span>
+                      </div>
+                      <p class="text-[11px] font-mono text-amber-700 font-semibold mt-0.5">
+                        {{ p.prix_unitaire?.toLocaleString('fr-FR') }} FCFA / {{ p.unite_mesure || 'unité' }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Contrôle de Quantité si coché -->
+                  <div v-if="p.selected" class="flex items-center gap-3 self-end sm:self-auto bg-white p-2 rounded-xl border border-emerald-200 shadow-2xs">
+                    <div class="flex flex-col">
+                      <label class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Quantité à ajouter</label>
+                      <div class="flex items-center gap-1 mt-0.5">
+                        <button 
+                          type="button" 
+                          @click="p.quantite = Math.max(1, (p.quantite || 1) - 1)" 
+                          class="w-6 h-6 bg-slate-100 hover:bg-slate-200 rounded-md flex items-center justify-center font-bold text-xs text-slate-700 cursor-pointer"
+                        >-</button>
+                        <input 
+                          type="number" 
+                          v-model.number="p.quantite" 
+                          min="1" 
+                          class="w-16 px-1.5 py-0.5 text-center font-mono font-bold text-xs text-slate-900 border border-slate-200 rounded-md focus:outline-none focus:border-emerald-600"
+                        />
+                        <button 
+                          type="button" 
+                          @click="p.quantite = (p.quantite || 1) + 1" 
+                          class="w-6 h-6 bg-slate-100 hover:bg-slate-200 rounded-md flex items-center justify-center font-bold text-xs text-slate-700 cursor-pointer"
+                        >+</button>
+                      </div>
+                    </div>
+
+                    <div class="flex flex-col border-l border-slate-100 pl-3">
+                      <label class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Seuil Alerte</label>
+                      <input 
+                        type="number" 
+                        v-model.number="p.stock_alerte" 
+                        min="1" 
+                        class="w-14 px-1.5 py-0.5 text-center font-mono font-bold text-xs text-slate-700 border border-slate-200 rounded-md focus:outline-none focus:border-emerald-600 mt-0.5"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Error message -->
+              <div v-if="approError" class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-3 text-xs flex items-center gap-2">
+                <AlertCircle class="w-4 h-4 flex-shrink-0" />
+                {{ approError }}
+              </div>
+
+              <!-- Success message -->
+              <div v-if="approSuccess" class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 text-xs flex items-center gap-2">
+                <CheckCircle class="w-4 h-4 flex-shrink-0 text-emerald-600" />
+                {{ approSuccess }}
+              </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-slate-100 flex items-center justify-between gap-3 bg-slate-50 rounded-b-2xl flex-shrink-0">
+              <button 
+                type="button" 
+                @click="closeApprovisionnementModal" 
+                class="px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors cursor-pointer"
+              >
+                Annuler
+              </button>
+              
+              <button 
+                type="button" 
+                @click="submitApprovisionnement" 
+                :disabled="submittingAppro || selectedProduitsCount === 0" 
+                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-xs rounded-xl transition-all shadow-md shadow-emerald-900/10 flex items-center gap-2 cursor-pointer"
+              >
+                <span v-if="submittingAppro" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                <Truck v-else class="w-4 h-4" />
+                <span>{{ submittingAppro ? 'Approvisionnement...' : `Approvisionner (${selectedProduitsCount} produit(s))` }}</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
       </Transition>
     </Teleport>
 
@@ -417,7 +609,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Store, Plus, Search, CheckCircle, X, Hammer, Sprout, AlertCircle, Sparkles, BarChart3, Package, AlertTriangle } from 'lucide-vue-next'
+import { Store, Plus, Search, CheckCircle, X, Hammer, Sprout, AlertCircle, Sparkles, BarChart3, Package, AlertTriangle, Pencil, Power, CheckCircle2, Truck } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 definePageMeta({
@@ -598,6 +790,112 @@ const openPrevision = async (boutique) => {
     console.warn('Prevision fetch error', e)
   } finally {
     previsionLoading.value = false
+  }
+}
+
+// ---- Approvisionnement de Boutique ----
+const showApprovisionnementModal = ref(false)
+const selectedBoutiqueForAppro = ref(null)
+const produitsAppro = ref([])
+const loadingProduits = ref(false)
+const searchProduitQuery = ref('')
+const submittingAppro = ref(false)
+const approError = ref(null)
+const approSuccess = ref(null)
+
+const openApprovisionnementModal = async (boutique) => {
+  selectedBoutiqueForAppro.value = boutique
+  showApprovisionnementModal.value = true
+  loadingProduits.value = true
+  approError.value = null
+  approSuccess.value = null
+  searchProduitQuery.value = ''
+  produitsAppro.value = []
+
+  try {
+    const res = await adminFetch(`/admin/boutiques/${boutique.id}/produits-approvisionnement`)
+    const list = res?.data || []
+    produitsAppro.value = list.map(p => ({
+      ...p,
+      selected: false,
+      quantite: 10,
+      stock_alerte: p.stock_alerte || 10
+    }))
+  } catch (e) {
+    approError.value = "Impossible de charger les produits du catalogue."
+  } finally {
+    loadingProduits.value = false
+  }
+}
+
+const closeApprovisionnementModal = () => {
+  showApprovisionnementModal.value = false
+  selectedBoutiqueForAppro.value = null
+  approError.value = null
+  approSuccess.value = null
+}
+
+const filteredProduitsAppro = computed(() => {
+  if (!searchProduitQuery.value) return produitsAppro.value
+  const q = searchProduitQuery.value.toLowerCase()
+  return produitsAppro.value.filter(p => 
+    p.nom_commercial?.toLowerCase().includes(q) || 
+    p.categorie_nom?.toLowerCase().includes(q)
+  )
+})
+
+const selectedProduitsCount = computed(() => {
+  return produitsAppro.value.filter(p => p.selected).length
+})
+
+const totalQuantiteAjoutee = computed(() => {
+  return produitsAppro.value
+    .filter(p => p.selected)
+    .reduce((acc, p) => acc + (Number(p.quantite) || 0), 0)
+})
+
+const allProduitsSelected = computed(() => {
+  return filteredProduitsAppro.value.length > 0 && filteredProduitsAppro.value.every(p => p.selected)
+})
+
+const toggleAllProduits = () => {
+  const targetState = !allProduitsSelected.value
+  filteredProduitsAppro.value.forEach(p => { p.selected = targetState })
+}
+
+const submitApprovisionnement = async () => {
+  const itemsToSubmit = produitsAppro.value
+    .filter(p => p.selected && Number(p.quantite) > 0)
+    .map(p => ({
+      produit_id: p.id,
+      quantite: Number(p.quantite),
+      stock_alerte: Number(p.stock_alerte) || 10
+    }))
+
+  if (itemsToSubmit.length === 0) {
+    approError.value = "Veuillez cocher au moins un produit avec une quantité valide."
+    return
+  }
+
+  submittingAppro.value = true
+  approError.value = null
+  approSuccess.value = null
+
+  try {
+    const res = await adminFetch(`/admin/boutiques/${selectedBoutiqueForAppro.value.id}/approvisionner`, {
+      method: 'POST',
+      body: { items: itemsToSubmit }
+    })
+
+    approSuccess.value = res?.message || "Boutique approvisionnée avec succès !"
+    fetchBoutiques() // Rafraîchir la liste principale
+    setTimeout(() => {
+      closeApprovisionnementModal()
+    }, 1500)
+  } catch (e) {
+    approError.value = e?.data?.message || e?.message || "Erreur lors de l'approvisionnement."
+  } finally {
+    submittingAppro.value = false
   }
 }
 </script>
