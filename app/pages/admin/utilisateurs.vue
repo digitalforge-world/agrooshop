@@ -4,16 +4,16 @@
     <!-- Page Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-black text-white flex items-center gap-2">
-          <Users class="w-6 h-6 text-emerald-400" />
+        <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+          <Users class="w-6 h-6 text-emerald-600" />
           <span>Gestion des Utilisateurs & Administrateurs</span>
         </h1>
-        <p class="text-xs text-slate-400 mt-1">Gérez les accès, rôles et privilèges de la plateforme AgroShop Togo</p>
+        <p class="text-xs text-slate-600 mt-1">Gérez les accès, rôles et privilèges de la plateforme AgroShop Togo</p>
       </div>
 
       <button 
         @click="openAddUserModal" 
-        class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/30 flex items-center gap-2 transition-all cursor-pointer self-start sm:self-auto"
+        class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 flex items-center gap-2 transition-all cursor-pointer self-start sm:self-auto"
       >
         <UserPlus class="w-4 h-4" />
         <span>Nouvel Administrateur</span>
@@ -22,22 +22,22 @@
 
     <!-- Stats badges -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex items-center justify-between">
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Super Administrateurs</p>
-          <h2 class="text-2xl font-black text-white mt-1">2</h2>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Super Administrateurs</p>
+          <h2 class="text-2xl font-black text-slate-900 mt-1">2</h2>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+        <div class="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-purple-600">
           <ShieldCheck class="w-5 h-5" />
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex items-center justify-between">
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Administrateurs Actifs</p>
-          <h2 class="text-2xl font-black text-emerald-400 mt-1">3</h2>
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Administrateurs Actifs</p>
+          <h2 class="text-2xl font-black text-emerald-700 mt-1">3</h2>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
           <UserCheck class="w-5 h-5" />
         </div>
       </div>

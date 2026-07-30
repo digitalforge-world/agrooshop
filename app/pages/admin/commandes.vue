@@ -4,18 +4,18 @@
     <!-- Title & Action Bar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
       <div>
-        <h1 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
-          <ShoppingCart class="w-6 h-6 text-amber-400" />
+        <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2.5">
+          <ShoppingCart class="w-6 h-6 text-amber-600" />
           <span>Gestion des Commandes Clients</span>
         </h1>
-        <p class="text-xs text-slate-400 mt-0.5">Suivez la validation, la préparation et les livraisons des commandes passées sur AgroShop.</p>
+        <p class="text-xs text-slate-600 mt-0.5">Suivez la validation, la préparation et les livraisons des commandes passées sur AgroShop.</p>
       </div>
 
       <div class="flex items-center gap-2.5">
         <button 
           @click="fetchOrders" 
           :disabled="isLoading" 
-          class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-slate-300 transition-colors cursor-pointer"
+          class="p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-slate-600 transition-colors cursor-pointer"
           title="Actualiser les commandes"
         >
           <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isLoading }" />
@@ -25,93 +25,90 @@
 
     <!-- Stats Summary KPI Bar -->
     <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 flex-shrink-0">
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Commandes</p>
-          <h2 class="text-xl font-black text-white mt-0.5">{{ orders.length }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Total Commandes</p>
+          <h2 class="text-xl font-black text-slate-900 mt-0.5">{{ orders.length }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+        <div class="w-8 h-8 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
           <ShoppingCart class="w-4 h-4" />
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">En Attente / En Cours</p>
-          <h2 class="text-xl font-black text-blue-400 mt-0.5">{{ pendingOrdersCount }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">En Attente / En Cours</p>
+          <h2 class="text-xl font-black text-blue-700 mt-0.5">{{ pendingOrdersCount }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+        <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
           <Clock class="w-4 h-4" />
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Commandes Livrées</p>
-          <h2 class="text-xl font-black text-emerald-400 mt-0.5">{{ deliveredOrdersCount }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Commandes Livrées</p>
+          <h2 class="text-xl font-black text-emerald-700 mt-0.5">{{ deliveredOrdersCount }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
           <CheckCircle2 class="w-4 h-4" />
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Chiffre d'Affaires Total</p>
-          <h2 class="text-lg font-black text-amber-400 font-mono mt-0.5">{{ formatPrice(totalSalesAmount) }} FCFA</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Chiffre d'Affaires Total</p>
+          <h2 class="text-lg font-black text-emerald-700 mt-0.5">{{ formatPrice(totalRevenue) }} FCFA</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
           <DollarSign class="w-4 h-4" />
         </div>
       </div>
     </div>
 
     <!-- Orders Table Container -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex-1 flex flex-col min-h-0">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden flex-1 flex flex-col min-h-0">
       
-      <!-- Filter Bar -->
-      <div class="p-3 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
-        <div class="relative flex-1 max-w-md">
-          <input 
-            v-model="searchQuery" 
-            type="text" 
-            placeholder="Rechercher par réf (CMD-...), client ou téléphone..." 
-            class="w-full pl-8 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
-          />
-          <Search class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2" />
-        </div>
-
+      <!-- Table Filters Header -->
+      <div class="p-3 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
         <div class="flex items-center gap-2">
+          <div class="relative w-full sm:w-64">
+            <input 
+              v-model="searchQuery" 
+              type="text" 
+              placeholder="Rechercher réf, client, tel..." 
+              class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500"
+            />
+            <Search class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" />
+          </div>
+
           <select 
-            v-model="statusFilter" 
-            class="px-2.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+            v-model="filterStatut" 
+            class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
           >
             <option value="tous">Tous les statuts</option>
-            <option value="en_attente">⏳ En Attente</option>
-            <option value="confirmee">✔️ Confirmée</option>
-            <option value="preparee">📦 Préparée</option>
-            <option value="expediee">🚚 Expédiée / En Livraison</option>
-            <option value="livree">✅ Livrée</option>
-            <option value="annulee">❌ Annulée</option>
+            <option value="en_attente">En attente</option>
+            <option value="validee">Validée</option>
+            <option value="en_cours">En cours de livraison</option>
+            <option value="livree">Livrée</option>
+            <option value="annulee">Annulée</option>
           </select>
+        </div>
 
-          <span class="text-xs font-mono text-slate-400">
-            {{ filteredOrders.length }} résultat(s)
-          </span>
+        <div class="text-xs font-mono text-slate-500">
+          <span>{{ filteredOrders.length }} commande(s) trouvée(s)</span>
         </div>
       </div>
 
-      <!-- Scrollable Orders Table Body -->
+      <!-- Table Body -->
       <div v-if="isLoading" class="py-16 text-center text-xs font-mono text-slate-500">
-        <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-        Chargement des commandes en BDD...
+        <div class="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+        Chargement des commandes...
       </div>
 
-      <div v-else-if="filteredOrders.length > 0" class="overflow-y-auto flex-1 custom-modal-scroll">
-        <table class="w-full text-left text-xs text-slate-300 relative">
-          
-          <!-- Sticky Header -->
-          <thead class="bg-slate-950/95 backdrop-blur-md text-slate-400 uppercase font-mono text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-800">
+      <div v-else class="overflow-y-auto flex-1 custom-modal-scroll">
+        <table class="w-full text-left text-xs text-slate-700 relative">
+          <thead class="bg-slate-50 text-slate-600 uppercase font-mono text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-200">
             <tr>
               <th class="px-4 py-2">Référence</th>
               <th class="px-4 py-2">Client & Contact</th>

@@ -4,17 +4,17 @@
     <!-- Title & Action Bar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
       <div>
-        <h1 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
-          <FileText class="w-6 h-6 text-emerald-400" />
+        <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2.5">
+          <FileText class="w-6 h-6 text-emerald-600" />
           <span>Gestion du Blog & Conseils Agronomiques</span>
         </h1>
-        <p class="text-xs text-slate-400 mt-0.5">Publiez, éditez et gérez les articles, dossiers d'experts et guides de fertilisation.</p>
+        <p class="text-xs text-slate-600 mt-0.5">Publiez, éditez et gérez les articles, dossiers d'experts et guides de fertilisation.</p>
       </div>
 
       <div class="flex items-center gap-2.5">
         <button 
           @click="openAddArticleModal" 
-          class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/30 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+          class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
         >
           <Plus class="w-3.5 h-3.5" />
           <span>+ Nouvel Article</span>
@@ -23,7 +23,7 @@
         <button 
           @click="fetchArticles" 
           :disabled="isLoading" 
-          class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-slate-300 transition-colors cursor-pointer"
+          class="p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-slate-600 transition-colors cursor-pointer"
           title="Actualiser les articles"
         >
           <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isLoading }" />
@@ -33,20 +33,20 @@
 
     <!-- Stats KPI Summary Bar -->
     <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 flex-shrink-0">
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Articles</p>
-          <h2 class="text-xl font-black text-white mt-0.5">{{ articles.length }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Total Articles</p>
+          <h2 class="text-xl font-black text-slate-900 mt-0.5">{{ articles.length }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
           <FileText class="w-4 h-4" />
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Articles Publiés</p>
-          <h2 class="text-xl font-black text-emerald-400 mt-0.5">{{ publishedCount }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Articles Publiés</p>
+          <h2 class="text-xl font-black text-emerald-700 mt-0.5">{{ publishedCount }}</h2>
         </div>
         <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
           <CheckCircle2 class="w-4 h-4" />

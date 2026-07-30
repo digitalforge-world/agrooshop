@@ -4,11 +4,11 @@
     <!-- Title & Top Action Bar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
       <div>
-        <h1 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
-          <Package class="w-6 h-6 text-emerald-400" />
+        <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2.5">
+          <Package class="w-6 h-6 text-emerald-600" />
           <span>Gestion du Catalogue Produits</span>
         </h1>
-        <p class="text-xs text-slate-400 mt-0.5">Consultez, filtrez, modifiez et gérez vos produits agricoles certifiés.</p>
+        <p class="text-xs text-slate-600 mt-0.5">Consultez, filtrez, modifiez et gérez vos produits agricoles certifiés.</p>
       </div>
 
       <!-- Action Buttons Area -->
@@ -16,18 +16,18 @@
         <!-- Filter Modal Trigger Button -->
         <button 
           @click="isFilterModalOpen = true" 
-          class="px-3 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-slate-200 font-bold text-xs shadow-md flex items-center gap-2 transition-all cursor-pointer active:scale-95"
-          :class="{ 'border-emerald-500 text-emerald-400 ring-1 ring-emerald-500/30': isFilterActive }"
+          class="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-bold text-xs shadow-xs flex items-center gap-2 transition-all cursor-pointer active:scale-95"
+          :class="{ 'border-emerald-500 text-emerald-700 ring-1 ring-emerald-500/30': isFilterActive }"
         >
-          <Filter class="w-3.5 h-3.5 text-emerald-400" />
+          <Filter class="w-3.5 h-3.5 text-emerald-600" />
           <span>🎛️ Filtrer le Catalogue</span>
-          <span v-if="isFilterActive" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span v-if="isFilterActive" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
         </button>
 
         <!-- Add Product Wizard Modal Trigger Button -->
         <button 
           @click="openAddModal" 
-          class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/30 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
+          class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
         >
           <Plus class="w-3.5 h-3.5" />
           <span>+ Nouveau Produit</span>
@@ -37,7 +37,7 @@
         <button 
           @click="fetchProducts" 
           :disabled="isLoading"
-          class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-slate-300 transition-colors cursor-pointer"
+          class="p-2 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-slate-600 transition-colors cursor-pointer"
           title="Actualiser la liste"
         >
           <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isLoading }" />
@@ -46,25 +46,25 @@
     </div>
 
     <!-- Table Header KPI Bar -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-2.5 flex flex-wrap items-center justify-between gap-3 flex-shrink-0 shadow-lg">
+    <div class="bg-white border border-slate-200 rounded-2xl p-2.5 flex flex-wrap items-center justify-between gap-3 flex-shrink-0 shadow-xs">
       <div class="flex items-center gap-2.5 text-xs font-mono">
-        <span class="px-2.5 py-0.5 bg-slate-950 rounded-lg border border-slate-800 text-slate-300">
-          Total Produits : <strong class="text-white">{{ products.length }}</strong>
+        <span class="px-2.5 py-0.5 bg-slate-100 rounded-lg border border-slate-200 text-slate-700">
+          Total Produits : <strong class="text-slate-900">{{ products.length }}</strong>
         </span>
-        <span class="px-2.5 py-0.5 bg-emerald-950/60 rounded-lg border border-emerald-500/30 text-emerald-400">
-          Actifs : <strong class="text-emerald-300">{{ activeProductsCount }}</strong>
+        <span class="px-2.5 py-0.5 bg-emerald-50 rounded-lg border border-emerald-200 text-emerald-700">
+          Actifs : <strong class="text-emerald-800 font-bold">{{ activeProductsCount }}</strong>
         </span>
-        <span class="px-2.5 py-0.5 bg-rose-950/60 rounded-lg border border-rose-500/30 text-rose-400">
-          ⚠️ Stock en Baisse : <strong class="text-rose-300">{{ lowStockProductsCount }}</strong>
+        <span class="px-2.5 py-0.5 bg-rose-50 rounded-lg border border-rose-200 text-rose-700">
+          ⚠️ Stock en Baisse : <strong class="text-rose-800 font-bold">{{ lowStockProductsCount }}</strong>
         </span>
       </div>
 
       <div class="flex items-center gap-2 text-xs">
-        <span class="text-slate-400 font-mono text-[11px]">{{ filteredProducts.length }} résultat(s)</span>
+        <span class="text-slate-500 font-mono text-[11px]">{{ filteredProducts.length }} résultat(s)</span>
         <button 
           v-if="isFilterActive" 
           @click="resetFilters" 
-          class="text-[10px] font-bold text-rose-400 hover:underline cursor-pointer"
+          class="text-[10px] font-bold text-rose-600 hover:underline cursor-pointer"
         >
           Réinitialiser
         </button>
@@ -72,40 +72,40 @@
     </div>
 
     <!-- Products Table Container -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex-1 flex flex-col min-h-0">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden flex-1 flex flex-col min-h-0">
       
       <div v-if="isLoading" class="py-16 text-center text-xs font-mono text-slate-500">
-        <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+        <div class="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
         Chargement du catalogue produits...
       </div>
 
       <div v-else-if="filteredProducts.length > 0" class="overflow-y-auto flex-1 custom-modal-scroll">
-        <table class="w-full text-left text-xs text-slate-300 relative">
+        <table class="w-full text-left text-xs text-slate-700 relative">
           
           <!-- Sticky Header -->
-          <thead class="bg-slate-950/95 backdrop-blur-md text-slate-400 uppercase font-mono text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-800">
+          <thead class="bg-slate-50 text-slate-600 uppercase font-mono text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-200">
             <tr>
-              <th class="px-4 py-2">Produit</th>
-              <th class="px-4 py-2">Catégorie BDD</th>
-              <th class="px-4 py-2">Prix Unitaire</th>
-              <th class="px-4 py-2">État du Stock</th>
-              <th class="px-4 py-2">En Vedette</th>
-              <th class="px-4 py-2 text-right">Actions</th>
+              <th class="px-4 py-2.5">Produit</th>
+              <th class="px-4 py-2.5">Catégorie BDD</th>
+              <th class="px-4 py-2.5">Prix Unitaire</th>
+              <th class="px-4 py-2.5">État du Stock</th>
+              <th class="px-4 py-2.5">En Vedette</th>
+              <th class="px-4 py-2.5 text-right">Actions</th>
             </tr>
           </thead>
 
           <!-- Table Body -->
-          <tbody class="divide-y divide-slate-800/60 font-medium">
+          <tbody class="divide-y divide-slate-100 font-medium">
             <tr 
               v-for="prod in filteredProducts" 
               :key="prod.id" 
-              class="hover:bg-slate-800/40 transition-colors"
-              :class="{ 'bg-rose-950/10': (prod.stock_disponible || 0) <= (prod.stock_alerte || 10) }"
+              class="hover:bg-slate-50/80 transition-colors"
+              :class="{ 'bg-rose-50/40': (prod.stock_disponible || 0) <= (prod.stock_alerte || 10) }"
             >
               
               <!-- Product Image & Clean Name -->
-              <td class="px-4 py-1.5 flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-lg bg-white border border-slate-700 overflow-hidden flex-shrink-0 p-0.5 flex items-center justify-center">
+              <td class="px-4 py-2 flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 overflow-hidden flex-shrink-0 p-0.5 flex items-center justify-center">
                   <img 
                     :src="getImgUrl(prod.url_image || prod.image_principale?.url_image)" 
                     :alt="prod.nom_commercial"
@@ -114,65 +114,65 @@
                   />
                 </div>
                 <div>
-                  <p class="font-bold text-white text-xs">{{ prod.nom_commercial }}</p>
+                  <p class="font-bold text-slate-900 text-xs">{{ prod.nom_commercial }}</p>
                 </div>
               </td>
 
               <!-- Category Badge -->
-              <td class="px-4 py-1.5 font-sans text-xs">
+              <td class="px-4 py-2 font-sans text-xs">
                 <div class="flex flex-wrap gap-1">
                   <span 
                     v-for="c in getProductCategories(prod)" 
                     :key="c.id || c.slug"
-                    class="px-2 py-0.5 bg-slate-800 border border-slate-700 rounded-md text-[10px] text-emerald-400 font-bold flex items-center gap-1"
+                    class="px-2 py-0.5 bg-emerald-50 border border-emerald-200 rounded-md text-[10px] text-emerald-800 font-bold flex items-center gap-1"
                   >
-                    <i v-if="c.icon" :class="[c.icon, 'text-emerald-400 text-[10px]']"></i>
+                    <i v-if="c.icon" :class="[c.icon, 'text-emerald-700 text-[10px]']"></i>
                     <span>{{ c.nom }}</span>
                   </span>
                 </div>
               </td>
 
               <!-- Price -->
-              <td class="px-4 py-1.5 font-mono font-bold text-emerald-400 text-xs">
+              <td class="px-4 py-2 font-mono font-bold text-emerald-700 text-xs">
                 {{ formatPrice(prod.prix_unitaire || 0) }} FCFA
               </td>
 
               <!-- Stock & Low Stock Badge -->
-              <td class="px-4 py-1.5 font-mono text-xs">
+              <td class="px-4 py-2 font-mono text-xs">
                 <span 
                   v-if="(prod.stock_disponible || 0) <= 0" 
-                  class="px-2 py-0.5 rounded-full text-[9px] font-black bg-rose-950 text-rose-400 border border-rose-500/40 uppercase"
+                  class="px-2 py-0.5 rounded-full text-[9px] font-black bg-rose-100 text-rose-700 border border-rose-300 uppercase"
                 >
                   🔴 Rupture
                 </span>
                 <span 
                   v-else-if="(prod.stock_disponible || 0) <= (prod.stock_alerte || 10)" 
-                  class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-950 text-amber-400 border border-amber-500/40 uppercase animate-pulse"
+                  class="px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-100 text-amber-800 border border-amber-300 uppercase animate-pulse"
                 >
                   ⚠️ Stock Baisse ({{ prod.stock_disponible }})
                 </span>
-                <span v-else class="text-slate-200">
+                <span v-else class="text-slate-800 font-semibold">
                   {{ prod.stock_disponible }} dispo.
                 </span>
               </td>
 
               <!-- Featured Toggle -->
-              <td class="px-4 py-1.5">
+              <td class="px-4 py-2">
                 <button 
                   @click="toggleFeatured(prod)"
                   class="px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase transition-all flex items-center gap-1 cursor-pointer"
-                  :class="prod.est_en_vedette || prod.featured ? 'bg-amber-950 text-amber-400 border border-amber-500/40' : 'bg-slate-800 text-slate-400 border border-slate-700'"
+                  :class="prod.est_en_vedette || prod.featured ? 'bg-amber-100 text-amber-800 border border-amber-300' : 'bg-slate-100 text-slate-500 border border-slate-200'"
                 >
-                  <Star class="w-3 h-3" :class="{ 'fill-current': prod.est_en_vedette || prod.featured }" />
+                  <Star class="w-3 h-3" :class="{ 'fill-current text-amber-600': prod.est_en_vedette || prod.featured }" />
                   <span>{{ prod.est_en_vedette || prod.featured ? 'En Vedette' : 'Standard' }}</span>
                 </button>
               </td>
 
               <!-- Actions -->
-              <td class="px-4 py-1.5 text-right font-mono space-x-1.5">
+              <td class="px-4 py-2 text-right font-mono space-x-1.5">
                 <button 
                   @click="openDetailModal(prod)" 
-                  class="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                  class="p-1 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
                   title="Voir la fiche complète en modal"
                 >
                   <Eye class="w-3.5 h-3.5 inline-block" />

@@ -4,14 +4,14 @@
     <!-- Title & Top Header Action Buttons -->
     <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
       <div>
-        <h1 class="text-2xl sm:text-3xl font-black text-white flex items-center gap-3">
-          <Activity class="w-7 h-7 text-emerald-400" />
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-3">
+          <Activity class="w-7 h-7 text-emerald-600" />
           <span>Analytique & Clics des Visiteurs</span>
         </h1>
         <div class="flex items-center gap-2 mt-1">
-          <p class="text-xs text-slate-400">Rapports d'activité et comportements des clients enregistrés par IP</p>
+          <p class="text-xs text-slate-600">Rapports d'activité et comportements des clients enregistrés par IP</p>
           <!-- Active Date Filter Pill Badge -->
-          <span v-if="startDate || endDate" class="px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-mono font-bold rounded-full flex items-center gap-1">
+          <span v-if="startDate || endDate" class="px-2.5 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-mono font-bold rounded-full flex items-center gap-1">
             <Calendar class="w-3 h-3" />
             <span>{{ startDate || 'Début' }} ➔ {{ endDate || 'Fin' }}</span>
           </span>
@@ -24,17 +24,17 @@
         <!-- Button 1: Filtrer par Date (Opens Filter Modal) -->
         <button 
           @click="isFilterModalOpen = true" 
-          class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700/80 shadow-md flex items-center gap-2 transition-all cursor-pointer active:scale-95"
+          class="px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 shadow-xs flex items-center gap-2 transition-all cursor-pointer active:scale-95"
         >
-          <Calendar class="w-4 h-4 text-emerald-400" />
+          <Calendar class="w-4 h-4 text-emerald-600" />
           <span>Filtrer par Date</span>
-          <span v-if="startDate || endDate" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span v-if="startDate || endDate" class="w-2 h-2 rounded-full bg-emerald-500"></span>
         </button>
 
         <!-- Button 2: Journal des Actions → -->
         <NuxtLink 
           to="/admin/visites/journal" 
-          class="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-900/30 flex items-center gap-2 transition-all cursor-pointer active:scale-95"
+          class="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-600/20 flex items-center gap-2 transition-all cursor-pointer active:scale-95"
         >
           <ListFilter class="w-4 h-4" />
           <span>Journal des Actions →</span>
@@ -44,7 +44,7 @@
         <button 
           @click="fetchVisits" 
           :disabled="isLoading"
-          class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/30 flex items-center gap-2 transition-all cursor-pointer active:scale-95"
+          class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 flex items-center gap-2 transition-all cursor-pointer active:scale-95"
         >
           <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': isLoading }" />
           <span>Actualiser</span>

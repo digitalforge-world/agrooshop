@@ -4,16 +4,16 @@
     <!-- Page Header Bar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
       <div>
-        <h1 class="text-xl sm:text-2xl font-black text-white flex items-center gap-2.5">
-          <FolderTree class="w-6 h-6 text-emerald-400" />
+        <h1 class="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2.5">
+          <FolderTree class="w-6 h-6 text-emerald-600" />
           <span>Gestion des Catégories & Sous-Catégories</span>
         </h1>
-        <p class="text-xs text-slate-400 mt-0.5">Organisez l'arborescence complète de vos familles et sous-familles de produits agricoles.</p>
+        <p class="text-xs text-slate-600 mt-0.5">Organisez l'arborescence complète de vos familles et sous-familles de produits agricoles.</p>
       </div>
 
       <button 
         @click="openAddCategoryModal" 
-        class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-900/30 flex items-center gap-1.5 transition-all cursor-pointer self-start sm:self-auto active:scale-95"
+        class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 flex items-center gap-1.5 transition-all cursor-pointer self-start sm:self-auto active:scale-95"
       >
         <Plus class="w-3.5 h-3.5" />
         <span>Nouvelle Catégorie</span>
@@ -22,45 +22,45 @@
 
     <!-- Stats Summary KPI Bar -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 flex-shrink-0">
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Catégories & Sous-Catégories</p>
-          <h2 class="text-xl font-black text-white mt-0.5">{{ categories.length }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Total Catégories & Sous-Catégories</p>
+          <h2 class="text-xl font-black text-slate-900 mt-0.5">{{ categories.length }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
           <FolderTree class="w-4 h-4" />
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Catégories Principales (Racines)</p>
-          <h2 class="text-xl font-black text-emerald-400 mt-0.5">{{ mainCategories.length }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Catégories Principales (Racines)</p>
+          <h2 class="text-xl font-black text-emerald-700 mt-0.5">{{ mainCategories.length }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+        <div class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
           <Tag class="w-4 h-4" />
         </div>
       </div>
 
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-md">
+      <div class="bg-white border border-slate-200 rounded-2xl p-3 flex items-center justify-between shadow-xs">
         <div>
-          <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Sous-Catégories Déclinées</p>
-          <h2 class="text-xl font-black text-amber-400 mt-0.5">{{ subCategories.length }}</h2>
+          <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Sous-Catégories Déclinées</p>
+          <h2 class="text-xl font-black text-amber-700 mt-0.5">{{ subCategories.length }}</h2>
         </div>
-        <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+        <div class="w-8 h-8 rounded-lg bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
           <Layers class="w-4 h-4" />
         </div>
       </div>
     </div>
 
     <!-- Categories List Table Container -->
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex-1 flex flex-col min-h-0">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden flex-1 flex flex-col min-h-0">
       
       <!-- Table Action Bar -->
-      <div class="p-3 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
+      <div class="p-3 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 flex-shrink-0">
         <div class="flex items-center gap-2.5">
-          <h2 class="text-xs font-bold text-white uppercase tracking-wider">Arborescence Officielle BDD</h2>
-          <button @click="fetchCategories" :disabled="isLoading" class="p-1 text-slate-400 hover:text-white" title="Rafraîchir">
+          <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Arborescence Officielle BDD</h2>
+          <button @click="fetchCategories" :disabled="isLoading" class="p-1 text-slate-500 hover:text-slate-900" title="Rafraîchir">
             <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': isLoading }" />
           </button>
         </div>
@@ -71,14 +71,14 @@
               v-model="searchQuery" 
               type="text" 
               placeholder="Filtrer une catégorie..." 
-              class="w-full pl-8 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+              class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500"
             />
-            <Search class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2" />
+            <Search class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" />
           </div>
 
           <select 
             v-model="filterType" 
-            class="px-2.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+            class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
           >
             <option value="tous">Toutes les catégories</option>
             <option value="principales">Principales uniquement</option>
@@ -89,31 +89,31 @@
 
       <!-- Scrollable Table Body -->
       <div v-if="isLoading" class="py-16 text-center text-xs font-mono text-slate-500">
-        <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+        <div class="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
         Chargement de l'arborescence BDD...
       </div>
 
       <div v-else class="overflow-y-auto flex-1 custom-modal-scroll">
-        <table class="w-full text-left text-xs text-slate-300 relative">
+        <table class="w-full text-left text-xs text-slate-700 relative">
           
           <!-- Sticky Header -->
-          <thead class="bg-slate-950/95 backdrop-blur-md text-slate-400 uppercase font-mono text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-800">
+          <thead class="bg-slate-50 text-slate-600 uppercase font-mono text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-200">
             <tr>
-              <th class="px-4 py-2">Nom de la Catégorie</th>
-              <th class="px-4 py-2">Catégorie Parente (Famille)</th>
-              <th class="px-4 py-2">Slug URL</th>
-              <th class="px-4 py-2">Type</th>
-              <th class="px-4 py-2 text-right">Actions</th>
+              <th class="px-4 py-2.5">Nom de la Catégorie</th>
+              <th class="px-4 py-2.5">Catégorie Parente (Famille)</th>
+              <th class="px-4 py-2.5">Slug URL</th>
+              <th class="px-4 py-2.5">Type</th>
+              <th class="px-4 py-2.5 text-right">Actions</th>
             </tr>
           </thead>
 
           <!-- Compact Table Body Rows -->
-          <tbody class="divide-y divide-slate-800/60 font-medium">
-            <tr v-for="cat in filteredCategories" :key="cat.id" class="hover:bg-slate-800/40 transition-colors">
+          <tbody class="divide-y divide-slate-100 font-medium">
+            <tr v-for="cat in filteredCategories" :key="cat.id" class="hover:bg-slate-50/80 transition-colors">
               
               <!-- Name & Description -->
-              <td class="px-4 py-1.5 flex items-center gap-2.5">
-                <div class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-emerald-400 font-bold text-xs flex-shrink-0">
+              <td class="px-4 py-2 flex items-center gap-2.5">
+                <div class="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 font-bold text-xs flex-shrink-0">
                   <i v-if="cat.icon" :class="cat.icon"></i>
                   <span v-else>{{ cat.nom ? cat.nom[0] : 'C' }}</span>
                 </div>
