@@ -17,10 +17,20 @@
         <h1 class="page-title">Tableau de Bord</h1>
         <p class="page-subtitle">Vue d'ensemble des performances AgroShop en temps réel</p>
       </div>
-      <button @click="fetchDashboardData" :disabled="isLoading" class="btn-refresh">
-        <RefreshCw class="btn-refresh-icon" :class="{ spinning: isLoading }" />
-        <span>Actualiser</span>
-      </button>
+      <div class="top-bar-actions">
+        <button @click="openAiModal" class="btn-ai-header">
+          <Brain class="w-4 h-4 text-purple-300 animate-pulse" />
+          <span>Insights IA</span>
+          <span v-if="aiInsights.ai_insights.alertes?.length" class="ai-badge-count">
+            {{ aiInsights.ai_insights.alertes.length }}
+          </span>
+        </button>
+
+        <button @click="fetchDashboardData" :disabled="isLoading" class="btn-refresh">
+          <RefreshCw class="btn-refresh-icon" :class="{ spinning: isLoading }" />
+          <span>Actualiser</span>
+        </button>
+      </div>
     </div>
 
     <!-- ═══════════════════════════════════════════════════ -->
@@ -161,157 +171,7 @@
 
     </div>
 
-    <!-- ═══════════════════════════════════════════════════ -->
-    <!-- AI INSIGHTS CARD                                    -->
-    <!-- ═══════════════════════════════════════════════════ -->
-    <div class="ai-insights-panel">
-      <div class="ai-insights-header">
-        <div class="flex items-center gap-3">
-          <div class="ai-badge-icon">
-            <Brain class="w-5 h-5" />
-          </div>
-          <div>
-            <h2 class="ai-insights-title">
-              <Sparkles class="w-4 h-4 inline-block mr-1.5 text-amber-400" />
-              Insights IA — Analyse Prédictive
-            </h2>
-            <p class="ai-insights-subtitle">Analyse automatique des tendances et recommandations intelligentes</p>
-          </div>
-        </div>
-        <button 
-          @click="fetchAiInsights" 
-          :disabled="aiInsights.loading"
-          class="ai-refresh-btn"
-        >
-          <RefreshCw class="w-3.5 h-3.5 mr-1.5" :class="{ spinning: aiInsights.loading }" />
-          Actualiser
-        </button>
-      </div>
 
-      <div v-if="aiInsights.loading" class="py-10 text-center text-xs font-mono text-slate-500">
-        <div class="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-        Analyse IA en cours...
-      </div>
-
-      <div v-else class="ai-insights-body">
-        <!-- 3 AI KPI stats: CA 30j, Prévision, Tendance -->
-        <div class="ai-kpi-grid">
-          <div class="ai-kpi-card">
-            <div class="ai-kpi-label">CA 30 derniers jours</div>
-            <div class="ai-kpi-value ai-kpi-green">{{ formatPrice(aiInsights.ca_30j) }} <span class="ai-kpi-currency">FCFA</span></div>
-          </div>
-          <div class="ai-kpi-card">
-            <div class="ai-kpi-label">Prévision 30j (IA)</div>
-            <div class="ai-kpi-value ai-kpi-blue">{{ formatPrice(aiInsights.prevision_30j) }} <span class="ai-kpi-currency">FCFA</span></div>
-          </div>
-          <div class="ai-kpi-card">
-            <div class="ai-kpi-label">Tendance</div>
-            <div class="flex items-center gap-2">
-              <TrendingUp v-if="aiInsights.tendance_pct >= 0" class="w-5 h-5 text-emerald-500" />
-              <TrendingDown v-else class="w-5 h-5 text-rose-500" />
-              <span :class="aiInsights.tendance_pct >= 0 ? 'ai-kpi-green' : 'ai-kpi-red'" class="ai-kpi-value">
-                {{ aiInsights.tendance_pct >= 0 ? '+' : '' }}{{ aiInsights.tendance_pct }}%
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tendances / Alertes / Opportunités columns -->
-        <div class="ai-columns-grid">
-          <!-- Tendances -->
-          <div class="ai-col-card">
-            <div class="ai-col-header ai-col-header-blue">
-              <TrendingUp class="w-4 h-4" />
-              <span>Tendances du marché</span>
-            </div>
-            <div class="ai-col-body">
-              <div v-if="aiInsights.ai_insights.tendances?.length > 0" class="ai-list">
-                <div v-for="(t, i) in aiInsights.ai_insights.tendances.slice(0, 4)" :key="i" class="ai-list-item">
-                  <span class="ai-dot ai-dot-blue"></span>
-                  <span>{{ t }}</span>
-                </div>
-              </div>
-              <div v-else class="ai-empty">Aucune tendance détectée</div>
-            </div>
-          </div>
-
-          <!-- Alertes -->
-          <div class="ai-col-card">
-            <div class="ai-col-header ai-col-header-amber">
-              <Zap class="w-4 h-4" />
-              <span>Alertes critiques</span>
-            </div>
-            <div class="ai-col-body">
-              <div v-if="aiInsights.ai_insights.alertes?.length > 0" class="ai-list">
-                <div v-for="(a, i) in aiInsights.ai_insights.alertes.slice(0, 4)" :key="i" class="ai-list-item">
-                  <span class="ai-dot ai-dot-amber"></span>
-                  <span>{{ a }}</span>
-                </div>
-              </div>
-              <div v-else class="ai-empty">✅ Aucune alerte critique</div>
-            </div>
-          </div>
-
-          <!-- Opportunités -->
-          <div class="ai-col-card">
-            <div class="ai-col-header ai-col-header-green">
-              <Target class="w-4 h-4" />
-              <span>Opportunités</span>
-            </div>
-            <div class="ai-col-body">
-              <div v-if="aiInsights.ai_insights.opportunites?.length > 0" class="ai-list">
-                <div v-for="(o, i) in aiInsights.ai_insights.opportunites.slice(0, 4)" :key="i" class="ai-list-item">
-                  <span class="ai-dot ai-dot-green"></span>
-                  <span>{{ o }}</span>
-                </div>
-              </div>
-              <div v-else class="ai-empty">Analyse en cours...</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Top produits + Rupture -->
-        <div class="ai-columns-grid">
-          <div class="ai-col-card">
-            <div class="ai-col-header">
-              <Package class="w-4 h-4 text-purple-500" />
-              <span>🏆 Top produits (IA)</span>
-            </div>
-            <div class="ai-col-body">
-              <div v-if="aiInsights.top_produits?.length > 0" class="ai-list ai-dense-list">
-                <div v-for="(p, i) in aiInsights.top_produits.slice(0, 5)" :key="p.id || i" class="ai-dense-item">
-                  <span class="ai-rank">#{{ i + 1 }}</span>
-                  <div class="flex-1 min-w-0">
-                    <div class="ai-dense-name">{{ p.nom_commercial || p.nom }}</div>
-                  </div>
-                  <div class="ai-dense-amount">{{ formatPrice(p.chiffre_affaires || p.total_vente || 0) }}</div>
-                </div>
-              </div>
-              <div v-else class="ai-empty">Aucune donnée top produits</div>
-            </div>
-          </div>
-
-          <div class="ai-col-card">
-            <div class="ai-col-header">
-              <AlertTriangle class="w-4 h-4 text-rose-500" />
-              <span>⚠️ Produits en rupture prévue</span>
-            </div>
-            <div class="ai-col-body">
-              <div v-if="aiInsights.produits_rupture?.length > 0" class="ai-list ai-dense-list">
-                <div v-for="(p, i) in aiInsights.produits_rupture.slice(0, 5)" :key="p.id || i" class="ai-dense-item">
-                  <div class="w-2 h-2 rounded-full bg-rose-500 flex-shrink-0 mt-1.5"></div>
-                  <div class="flex-1 min-w-0">
-                    <div class="ai-dense-name">{{ p.nom_commercial || p.nom }}</div>
-                    <div class="text-[10px] text-rose-600 font-mono">Stock: {{ p.stock_disponible ?? p.stock ?? '?' }}</div>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="ai-empty">✅ Aucune rupture prévue</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- ═══════════════════════════════════════════════════ -->
     <!-- MIDDLE ROW 1: Sales Chart + Performance Gauge       -->
@@ -619,6 +479,176 @@
       </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- AI INSIGHTS MODAL                                   -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="isAiModalOpen" class="ai-modal-overlay" @click.self="closeAiModal">
+          <div class="ai-modal-container">
+            <!-- Modal Header -->
+            <div class="ai-modal-header">
+              <div class="flex items-center gap-3">
+                <div class="ai-badge-icon">
+                  <Brain class="w-5 h-5 text-purple-200" />
+                </div>
+                <div>
+                  <h2 class="ai-insights-title text-xl font-bold flex items-center gap-2">
+                    <Sparkles class="w-5 h-5 text-amber-400" />
+                    Insights IA — Analyse Prédictive
+                  </h2>
+                  <p class="ai-insights-subtitle text-xs text-slate-300">Analyse automatique des tendances et recommandations intelligentes</p>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-2">
+                <button 
+                  @click="fetchAiInsights" 
+                  :disabled="aiInsights.loading"
+                  class="ai-refresh-btn"
+                  title="Actualiser les données IA"
+                >
+                  <RefreshCw class="w-3.5 h-3.5 mr-1.5" :class="{ spinning: aiInsights.loading }" />
+                  Actualiser
+                </button>
+                <button @click="closeAiModal" class="ai-modal-close-btn" title="Fermer (Échap)">
+                  <X class="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="ai-modal-body">
+              <div v-if="aiInsights.loading" class="py-16 text-center text-xs font-mono text-slate-400">
+                <div class="w-8 h-8 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                Génération de l'analyse IA et prédictions en cours...
+              </div>
+
+              <div v-else class="space-y-6">
+                <!-- 3 AI KPI stats: CA 30j, Prévision, Tendance -->
+                <div class="ai-kpi-grid">
+                  <div class="ai-kpi-card">
+                    <div class="ai-kpi-label">CA 30 derniers jours</div>
+                    <div class="ai-kpi-value ai-kpi-green">{{ formatPrice(aiInsights.ca_30j) }} <span class="ai-kpi-currency">FCFA</span></div>
+                  </div>
+                  <div class="ai-kpi-card">
+                    <div class="ai-kpi-label">Prévision 30j (IA)</div>
+                    <div class="ai-kpi-value ai-kpi-blue">{{ formatPrice(aiInsights.prevision_30j) }} <span class="ai-kpi-currency">FCFA</span></div>
+                  </div>
+                  <div class="ai-kpi-card">
+                    <div class="ai-kpi-label">Tendance</div>
+                    <div class="flex items-center gap-2">
+                      <TrendingUp v-if="aiInsights.tendance_pct >= 0" class="w-5 h-5 text-emerald-400" />
+                      <TrendingDown v-else class="w-5 h-5 text-rose-400" />
+                      <span :class="aiInsights.tendance_pct >= 0 ? 'ai-kpi-green' : 'ai-kpi-red'" class="ai-kpi-value">
+                        {{ aiInsights.tendance_pct >= 0 ? '+' : '' }}{{ aiInsights.tendance_pct }}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tendances / Alertes / Opportunités columns -->
+                <div class="ai-columns-grid">
+                  <!-- Tendances -->
+                  <div class="ai-col-card">
+                    <div class="ai-col-header ai-col-header-blue">
+                      <TrendingUp class="w-4 h-4" />
+                      <span>Tendances du marché</span>
+                    </div>
+                    <div class="ai-col-body">
+                      <div v-if="aiInsights.ai_insights.tendances?.length > 0" class="ai-list">
+                        <div v-for="(t, i) in aiInsights.ai_insights.tendances.slice(0, 4)" :key="i" class="ai-list-item">
+                          <span class="ai-dot ai-dot-blue"></span>
+                          <span>{{ t }}</span>
+                        </div>
+                      </div>
+                      <div v-else class="ai-empty">Aucune tendance détectée</div>
+                    </div>
+                  </div>
+
+                  <!-- Alertes -->
+                  <div class="ai-col-card">
+                    <div class="ai-col-header ai-col-header-amber">
+                      <Zap class="w-4 h-4" />
+                      <span>Alertes critiques</span>
+                    </div>
+                    <div class="ai-col-body">
+                      <div v-if="aiInsights.ai_insights.alertes?.length > 0" class="ai-list">
+                        <div v-for="(a, i) in aiInsights.ai_insights.alertes.slice(0, 4)" :key="i" class="ai-list-item">
+                          <span class="ai-dot ai-dot-amber"></span>
+                          <span>{{ a }}</span>
+                        </div>
+                      </div>
+                      <div v-else class="ai-empty">✅ Aucune alerte critique</div>
+                    </div>
+                  </div>
+
+                  <!-- Opportunités -->
+                  <div class="ai-col-card">
+                    <div class="ai-col-header ai-col-header-green">
+                      <Target class="w-4 h-4" />
+                      <span>Opportunités</span>
+                    </div>
+                    <div class="ai-col-body">
+                      <div v-if="aiInsights.ai_insights.opportunites?.length > 0" class="ai-list">
+                        <div v-for="(o, i) in aiInsights.ai_insights.opportunites.slice(0, 4)" :key="i" class="ai-list-item">
+                          <span class="ai-dot ai-dot-green"></span>
+                          <span>{{ o }}</span>
+                        </div>
+                      </div>
+                      <div v-else class="ai-empty">Analyse en cours...</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Top produits + Rupture -->
+                <div class="ai-columns-grid">
+                  <div class="ai-col-card">
+                    <div class="ai-col-header">
+                      <Package class="w-4 h-4 text-purple-400" />
+                      <span>🏆 Top produits (IA)</span>
+                    </div>
+                    <div class="ai-col-body">
+                      <div v-if="aiInsights.top_produits?.length > 0" class="ai-list ai-dense-list">
+                        <div v-for="(p, i) in aiInsights.top_produits.slice(0, 5)" :key="p.id || i" class="ai-dense-item">
+                          <span class="ai-rank">#{{ i + 1 }}</span>
+                          <div class="flex-1 min-w-0">
+                            <div class="ai-dense-name">{{ p.nom_commercial || p.nom }}</div>
+                          </div>
+                          <div class="ai-dense-amount">{{ formatPrice(p.chiffre_affaires || p.total_vente || 0) }}</div>
+                        </div>
+                      </div>
+                      <div v-else class="ai-empty">Aucune donnée top produits</div>
+                    </div>
+                  </div>
+
+                  <div class="ai-col-card">
+                    <div class="ai-col-header">
+                      <AlertTriangle class="w-4 h-4 text-rose-400" />
+                      <span>⚠️ Produits en rupture prévue</span>
+                    </div>
+                    <div class="ai-col-body">
+                      <div v-if="aiInsights.produits_rupture?.length > 0" class="ai-list ai-dense-list">
+                        <div v-for="(p, i) in aiInsights.produits_rupture.slice(0, 5)" :key="p.id || i" class="ai-dense-item">
+                          <div class="w-2 h-2 rounded-full bg-rose-500 flex-shrink-0 mt-1.5"></div>
+                          <div class="flex-1 min-w-0">
+                            <div class="ai-dense-name">{{ p.nom_commercial || p.nom }}</div>
+                            <div class="text-[10px] text-rose-400 font-mono">Stock: {{ p.stock_disponible ?? p.stock ?? '?' }}</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-else class="ai-empty">✅ Aucune rupture prévue</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
   </div>
 </template>
 
@@ -627,7 +657,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import {
   TrendingUp, ShoppingCart, DollarSign, Package, RefreshCw,
   AlertTriangle, Clock, CreditCard, MapPin, Sparkles, Brain,
-  Zap, Target, TrendingDown
+  Zap, Target, TrendingDown, X
 } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
@@ -687,6 +717,19 @@ const aiInsights = ref({
   top_produits: [],
   produits_rupture: []
 })
+
+const isAiModalOpen = ref(false)
+
+const openAiModal = () => {
+  isAiModalOpen.value = true
+  if (!aiInsights.value.ca_30j && !aiInsights.value.loading) {
+    fetchAiInsights()
+  }
+}
+
+const closeAiModal = () => {
+  isAiModalOpen.value = false
+}
 
 // ── Computed for Category Total ──
 const totalVentesCategories = computed(() => {
@@ -2125,5 +2168,122 @@ onMounted(() => {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* Top bar actions container */
+.top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* AI Header Trigger Button */
+.btn-ai-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #2e1065 0%, #1e1b4b 50%, #0f172a 100%);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #e9d5ff;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(126, 34, 206, 0.25);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.btn-ai-header:hover {
+  background: linear-gradient(135deg, #3b0764 0%, #2e1065 50%, #1e1b4b 100%);
+  border-color: rgba(192, 132, 252, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(126, 34, 206, 0.35);
+  color: #ffffff;
+}
+
+.ai-badge-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: #ef4444;
+  color: #ffffff;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 800;
+  font-family: monospace;
+}
+
+/* AI Modal Styles */
+.ai-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ai-modal-container {
+  width: 100%;
+  max-width: 1000px;
+  max-height: 90vh;
+  background: #111827;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(126, 34, 206, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #f8fafc;
+}
+
+.ai-modal-header {
+  padding: 18px 24px;
+  background: linear-gradient(90deg, #1e1b4b 0%, #0f172a 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-modal-close-btn {
+  padding: 6px;
+  border-radius: 10px;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ai-modal-close-btn:hover {
+  color: #ffffff;
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.ai-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Transitions */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

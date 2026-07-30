@@ -98,6 +98,25 @@
       <!-- Right Products Grid -->
       <main class="lg:col-span-9 space-y-6 min-h-[750px]">
         
+        <!-- AI Agronomist Advice Banner -->
+        <div v-if="catalogStore.aiAdvice" class="bg-gradient-to-br from-purple-950 via-indigo-900 to-slate-900 p-5 rounded-2xl border border-purple-500/30 text-white shadow-lg space-y-2 relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 text-amber-300 font-extrabold text-xs uppercase tracking-wider">
+              <Sparkles class="w-4 h-4 text-amber-400 animate-pulse" />
+              <span>Conseil de l'Agronome IA AgroShop</span>
+            </div>
+            <button @click="catalogStore.setAiAdvice(null)" class="text-xs text-purple-300 hover:text-white font-bold cursor-pointer">
+              ✕ Masquer
+            </button>
+          </div>
+          <p class="text-xs sm:text-sm text-purple-100 leading-relaxed font-medium">
+            {{ catalogStore.aiAdvice }}
+          </p>
+          <div class="text-[10px] text-purple-300/80 font-mono italic" v-if="catalogStore.searchQuery">
+            Diagnostiqué pour : "{{ catalogStore.searchQuery }}"
+          </div>
+        </div>
+
         <!-- Active Filter Pills Bar -->
         <div v-if="catalogStore.selectedCategory || catalogStore.searchQuery || catalogStore.minPrice || catalogStore.maxPrice" class="flex flex-wrap items-center gap-2 bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200/80">
           <span class="text-xs font-bold text-emerald-800">Filtres actifs :</span>
@@ -251,6 +270,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { Sparkles } from 'lucide-vue-next'
 import { useCatalogStore } from '~/stores/catalog'
 import ProductCard from '~/components/ProductCard.vue'
 
@@ -317,7 +337,7 @@ const applyFiltersAndSort = () => {
     })
   }
 
-  if (catalogStore.searchQuery) {
+  if (catalogStore.searchQuery && !catalogStore.isAiActive) {
     const q = catalogStore.searchQuery.toLowerCase()
     list = list.filter(p => 
       p.nom_commercial?.toLowerCase().includes(q) || 
@@ -348,6 +368,32 @@ const applyFiltersAndSort = () => {
 const fetchProducts = async () => {
   loading.value = true
   try {
+    // Si la recherche contient du texte, on interroge d'abord la recherche IA
+    if (catalogStore.searchQuery && catalogStore.searchQuery.trim().length > 2) {
+      try {
+        const aiRes = await $fetch(`${config.public.apiBaseUrl}/produits/recherche-ia`, {
+          method: 'POST',
+          body: { query: catalogStore.searchQuery }
+        })
+        if (aiRes?.status === 'success') {
+          if (aiRes.conseil_ia) {
+            catalogStore.setAiAdvice(aiRes.conseil_ia)
+          }
+          const aiList = extractProductList(aiRes)
+          if (aiList && aiList.length > 0) {
+            rawProducts.value = aiList
+            applyFiltersAndSort()
+            loading.value = false
+            return
+          }
+        }
+      } catch (errAi) {
+        console.warn('Echec recherche IA, fallback recherche classique', errAi)
+      }
+    } else {
+      catalogStore.setAiAdvice(null)
+    }
+
     let url = `${config.public.apiBaseUrl}/produits?sort=${catalogStore.sort}&per_page=50`
     if (catalogStore.selectedCategory) {
       url += `&category=${catalogStore.selectedCategory}`

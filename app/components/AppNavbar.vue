@@ -32,7 +32,7 @@
           />
         </NuxtLink>
 
-        <!-- Modern Clean Desktop Search Bar -->
+        <!-- Modern Clean Desktop Search Bar with AI Indicator -->
         <div class="hidden md:flex flex-1 max-w-xl mx-6">
           <div class="relative w-full flex items-center">
             <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -42,15 +42,21 @@
               v-model="searchQuery"
               @keyup.enter="handleSearch"
               type="text"
-              placeholder="Rechercher un produit, engrais, semences..."
-              class="w-full pl-10 pr-28 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-emerald-600 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 transition-all"
+              placeholder="Rechercher un produit ou poser une question à l'IA..."
+              class="w-full pl-10 pr-36 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-emerald-600 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 transition-all"
             />
-            <button 
-              @click="handleSearch" 
-              class="absolute right-1.5 px-4 py-1.5 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold rounded-full transition-colors cursor-pointer shadow-xs flex items-center gap-1"
-            >
-              <span>Rechercher</span>
-            </button>
+            <div class="absolute right-1.5 flex items-center gap-1.5">
+              <span class="px-2 py-0.5 bg-purple-100 text-purple-800 border border-purple-300 rounded-full text-[10px] font-extrabold flex items-center gap-1 shadow-2xs">
+                <Sparkles class="w-3 h-3 text-purple-600 animate-pulse" />
+                <span>IA</span>
+              </span>
+              <button 
+                @click="handleSearch" 
+                class="px-3.5 py-1.5 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold rounded-full transition-colors cursor-pointer shadow-xs flex items-center gap-1"
+              >
+                <span>Chercher</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -212,7 +218,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { 
   Leaf, Search, ShoppingCart, Truck, ShieldCheck, Banknote,
-  Menu, ChevronDown, Beaker, Bug, Droplets, Sprout, Tractor, Wrench
+  Menu, ChevronDown, Beaker, Bug, Droplets, Sprout, Tractor, Wrench, Sparkles
 } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'
 import { useCatalogStore } from '~/stores/catalog'
