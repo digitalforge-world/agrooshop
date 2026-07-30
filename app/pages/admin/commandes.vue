@@ -106,7 +106,7 @@
         Chargement des commandes...
       </div>
 
-      <div v-else class="overflow-y-auto flex-1 custom-modal-scroll">
+      <div v-else-if="filteredOrders.length > 0" class="overflow-y-auto flex-1 custom-modal-scroll">
         <table class="w-full text-left text-xs text-slate-700 relative">
           <thead class="bg-slate-50 text-slate-600 uppercase font-mono text-[10px] tracking-wider sticky top-0 z-10 border-b border-slate-200">
             <tr>
@@ -285,7 +285,7 @@ const config = useRuntimeConfig()
 const isLoading = ref(true)
 const orders = ref([])
 const searchQuery = ref('')
-const statusFilter = ref('tous')
+const filterStatut = ref('tous')
 
 const isOrderDetailOpen = ref(false)
 const selectedOrder = ref(null)
@@ -316,7 +316,7 @@ const deliveredOrdersCount = computed(() => {
 
 const validStatuses = ['confirmee', 'preparee', 'expediee', 'livree']
 
-const totalSalesAmount = computed(() => {
+const totalRevenue = computed(() => {
   return orders.value
     .filter(o => validStatuses.includes(o.statut_commande))
     .reduce((acc, o) => acc + Number(o.montant_total || 0), 0)
@@ -324,8 +324,8 @@ const totalSalesAmount = computed(() => {
 
 const filteredOrders = computed(() => {
   return orders.value.filter(o => {
-    if (statusFilter.value !== 'tous') {
-      if (o.statut_commande !== statusFilter.value) return false
+    if (filterStatut.value !== 'tous') {
+      if (o.statut_commande !== filterStatut.value) return false
     }
 
     if (searchQuery.value.trim()) {
