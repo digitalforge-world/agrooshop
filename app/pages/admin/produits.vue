@@ -171,6 +171,15 @@
               <!-- Actions -->
               <td class="px-4 py-2 text-right font-mono space-x-1.5">
                 <button 
+                  @click="openAffecterBoutiquesModal(prod)" 
+                  class="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-[10px] font-bold transition-all cursor-pointer inline-flex items-center gap-1 shadow-2xs"
+                  title="Affecter ce produit aux boutiques"
+                >
+                  <Truck class="w-3 h-3 text-emerald-600" />
+                  <span>Boutiques</span>
+                </button>
+
+                <button 
                   @click="openDetailModal(prod)" 
                   class="p-1 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
                   title="Voir la fiche complète en modal"
@@ -1039,12 +1048,113 @@
       </div>
     </Teleport>
 
+    <!-- MODAL AFFECTATION DU PRODUIT AUX BOUTIQUES -->
+    <Teleport to="body">
+      <div v-if="isAffecterBoutiquesModalOpen" class="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4" @click.self="isAffecterBoutiquesModalOpen = false">
+        <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-3xl p-6 shadow-2xl space-y-5 text-slate-800 max-h-[90vh] flex flex-col">
+          
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4 flex-shrink-0">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
+                <Truck class="w-5 h-5" />
+              </div>
+              <div>
+                <h3 class="text-base font-black text-slate-900">Affecter le Produit aux Boutiques</h3>
+                <p class="text-xs text-slate-500">Produit : <span class="font-bold text-slate-800">{{ selectedProductForBoutiques?.nom_commercial }}</span></p>
+              </div>
+            </div>
+            <button @click="isAffecterBoutiquesModalOpen = false" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">
+              <X class="w-5 h-5" />
+            </button>
+          </div>
+
+          <div v-if="loadingBoutiquesAffectation" class="py-12 text-center text-slate-500 text-xs font-mono">
+            <div class="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            Chargement des boutiques et des stocks...
+          </div>
+
+          <div v-else class="overflow-y-auto flex-1 space-y-4 pr-1">
+            <p class="text-xs text-slate-600">Cochez les boutiques dans lesquelles ce produit doit être disponible et définissez le stock de départ :</p>
+
+            <div class="space-y-3">
+              <div 
+                v-for="b in boutiquesAffectationList" 
+                :key="b.id"
+                class="p-4 rounded-2xl border transition-all"
+                :class="b.affecte ? 'bg-emerald-50/40 border-emerald-300' : 'bg-slate-50 border-slate-200 opacity-80'"
+              >
+                <div class="flex items-center justify-between gap-4">
+                  <div class="flex items-center gap-3 cursor-pointer select-none" @click="b.affecte = !b.affecte">
+                    <input 
+                      type="checkbox" 
+                      v-model="b.affecte" 
+                      @click.stop
+                      class="w-4 h-4 text-emerald-600 rounded border-slate-300 accent-emerald-600 cursor-pointer"
+                    />
+                    <div>
+                      <p class="text-xs font-bold text-slate-900">{{ b.nom }}</p>
+                      <p class="text-[10px] text-slate-500">{{ b.adresse || 'Lomé, Togo' }}</p>
+                    </div>
+                  </div>
+
+                  <div v-if="b.affecte" class="flex items-center gap-3">
+                    <div class="flex flex-col">
+                      <label class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Stock Boutique</label>
+                      <input 
+                        type="number" 
+                        v-model.number="b.stock_disponible" 
+                        min="0"
+                        class="w-20 px-2 py-1 bg-white border border-emerald-300 rounded-lg text-xs font-mono font-bold text-slate-900 text-center focus:outline-none focus:border-emerald-600"
+                      />
+                    </div>
+                    <div class="flex flex-col">
+                      <label class="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Seuil Alerte</label>
+                      <input 
+                        type="number" 
+                        v-model.number="b.stock_alerte" 
+                        min="1"
+                        class="w-16 px-2 py-1 bg-white border border-slate-200 rounded-lg text-xs font-mono font-bold text-slate-700 text-center focus:outline-none focus:border-emerald-600"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="affectationSuccess" class="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 text-xs flex items-center gap-2">
+              <CheckCircle2 class="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              {{ affectationSuccess }}
+            </div>
+
+            <div v-if="affectationError" class="bg-red-50 border border-red-200 text-red-700 rounded-xl p-3 text-xs flex items-center gap-2">
+              <AlertCircle class="w-4 h-4 text-red-600 flex-shrink-0" />
+              {{ affectationError }}
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100 flex justify-end gap-3 flex-shrink-0">
+            <button @click="isAffecterBoutiquesModalOpen = false" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer">
+              Annuler
+            </button>
+            <button 
+              @click="submitAffectationBoutiques" 
+              :disabled="savingBoutiquesAffectation"
+              class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-2"
+            >
+              <span>{{ savingBoutiquesAffectation ? 'Enregistrement...' : '✅ Enregistrer l\'affectation' }}</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </Teleport>
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Package, Search, RefreshCw, Star, Eye, Plus, Pencil, Trash2, Save, Info, ShieldAlert, Image, Upload, DollarSign, Layers, Globe, X, Filter, AlertTriangle, Sparkles, CheckCircle2, AlertCircle, Zap } from 'lucide-vue-next'
+import { Package, Search, RefreshCw, Star, Eye, Plus, Pencil, Trash2, Save, Info, ShieldAlert, Image, Upload, DollarSign, Layers, Globe, X, Filter, AlertTriangle, Sparkles, CheckCircle2, AlertCircle, Zap, Truck } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 definePageMeta({
@@ -1082,6 +1192,75 @@ const isAiValidating = ref(false)
 const aiValidationWarnings = ref([])
 const aiValidationInfos = ref([])
 const aiFicheMessage = ref('')
+
+// State Affectation Boutiques
+const isAffecterBoutiquesModalOpen = ref(false)
+const selectedProductForBoutiques = ref(null)
+const boutiquesAffectationList = ref([])
+const loadingBoutiquesAffectation = ref(false)
+const savingBoutiquesAffectation = ref(false)
+const affectationSuccess = ref(null)
+const affectationError = ref(null)
+
+const openAffecterBoutiquesModal = async (prod) => {
+  selectedProductForBoutiques.value = prod
+  isAffecterBoutiquesModalOpen.value = true
+  loadingBoutiquesAffectation.value = true
+  affectationSuccess.value = null
+  affectationError.value = null
+  boutiquesAffectationList.value = []
+
+  try {
+    const res = await $fetch(`${config.public.apiBaseUrl}/admin/produits/${prod.id}/boutiques`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    })
+    const list = res?.data || []
+    boutiquesAffectationList.value = list.map(b => ({
+      ...b,
+      stock_disponible: b.stock_disponible || 10,
+      stock_alerte: b.stock_alerte || 5
+    }))
+  } catch (e) {
+    affectationError.value = "Impossible de charger la liste des boutiques."
+  } finally {
+    loadingBoutiquesAffectation.value = false
+  }
+}
+
+const submitAffectationBoutiques = async () => {
+  const selectedBoutiques = boutiquesAffectationList.value
+    .filter(b => b.affecte)
+    .map(b => ({
+      boutique_id: b.id,
+      stock_disponible: Number(b.stock_disponible) || 0,
+      stock_alerte: Number(b.stock_alerte) || 5
+    }))
+
+  if (selectedBoutiques.length === 0) {
+    affectationError.value = "Veuillez cocher au moins une boutique à affecter."
+    return
+  }
+
+  savingBoutiquesAffectation.value = true
+  affectationSuccess.value = null
+  affectationError.value = null
+
+  try {
+    const res = await $fetch(`${config.public.apiBaseUrl}/admin/produits/${selectedProductForBoutiques.value.id}/affecter-boutiques`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${authStore.token}`, Accept: 'application/json' },
+      body: { boutiques: selectedBoutiques }
+    })
+    affectationSuccess.value = res?.message || "Produit affecté aux boutiques avec succès !"
+    setTimeout(() => {
+      isAffecterBoutiquesModalOpen.value = false
+    }, 1500)
+  } catch (e) {
+    affectationError.value = e?.data?.message || e?.message || "Erreur lors de l'affectation."
+  } finally {
+    savingBoutiquesAffectation.value = false
+  }
+}
 
 const triggerConfirmModal = (title, message, actionFn) => {
   confirmTitle.value = title
