@@ -142,7 +142,7 @@ import { useMedia } from '~/composables/useMedia'
 
 definePageMeta({
   layout: 'admin',
-  middleware: 'admin'
+  middleware: 'admin-auth'
 })
 
 useHead({ title: 'Partenaires - AgroShop Admin' })
