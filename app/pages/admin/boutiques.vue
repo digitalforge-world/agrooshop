@@ -87,7 +87,15 @@
             <tr v-for="boutique in filteredBoutiques" :key="boutique.id" class="hover:bg-emerald-50/30 transition-colors">
               <td class="px-6 py-4">
                 <p class="font-bold text-slate-900 text-sm">{{ boutique.nom }}</p>
-                <p class="text-[11px] text-slate-400">Créée le {{ new Date(boutique.created_at).toLocaleDateString('fr-FR') }}</p>
+                <div class="flex items-center gap-2 mt-1 flex-wrap">
+                  <span class="text-[11px] text-slate-400">Créée le {{ new Date(boutique.created_at).toLocaleDateString('fr-FR') }}</span>
+                  <span v-if="boutique.produits_count > 0" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 inline-flex items-center gap-1">
+                    📦 {{ boutique.produits_count }} produit(s) en stock
+                  </span>
+                  <span v-else class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200 inline-flex items-center gap-1">
+                    ⚠️ 0 produit attribué
+                  </span>
+                </div>
               </td>
               <td class="px-6 py-4">
                 <div class="flex flex-wrap gap-1.5">
