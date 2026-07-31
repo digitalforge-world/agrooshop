@@ -38,28 +38,28 @@
             <tr v-else-if="filteredStock.length === 0">
               <td colspan="6" class="px-6 py-10 text-center text-slate-500">Aucun produit dans ce stock</td>
             </tr>
-            <tr v-for="item in filteredStock" :key="item.produit_id" class="hover:bg-slate-800/40 transition-colors"
-              :class="item.quantite_en_stock <= item.stock_alerte ? 'bg-red-950/10' : ''"
-            >
-              <td class="px-6 py-4">
-                <p class="font-bold text-white text-sm">{{ item.produit?.nom_commercial }}</p>
-                <p class="text-[10px] text-slate-500">{{ item.produit?.unite_mesure }}</p>
-              </td>
-              <td class="px-6 py-4 text-slate-400">{{ item.produit?.categorie?.nom || '—' }}</td>
-              <td class="px-6 py-4">
-                <span :class="item.quantite_en_stock <= item.stock_alerte ? 'text-red-400 font-black' : 'text-emerald-400 font-bold'" class="text-sm">
-                  {{ item.quantite_en_stock }}
-                </span>
-                <span v-if="item.quantite_en_stock <= item.stock_alerte" class="ml-2 text-[10px] text-red-400 bg-red-900/30 px-1.5 py-0.5 rounded font-bold">ALERTE</span>
-              </td>
-              <td class="px-6 py-4 text-slate-400">{{ item.stock_alerte }}</td>
-              <td class="px-6 py-4 font-mono text-amber-400 font-bold">{{ formatPrice(item.produit?.prix_unitaire) }} FCFA</td>
-              <td class="px-6 py-4 text-right">
-                <button @click="ajusterStock(item)" class="px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 rounded-lg text-xs font-bold transition-colors border border-emerald-500/20">
-                  Ajuster
-                </button>
-              </td>
-            </tr>
+              <tr v-for="item in filteredStock" :key="item.produit_id" class="hover:bg-slate-800/40 transition-colors"
+                :class="(item.quantite_en_stock ?? item.stock_disponible ?? 0) <= (item.stock_alerte || 10) ? 'bg-red-950/10' : ''"
+              >
+                <td class="px-6 py-4">
+                  <p class="font-bold text-white text-sm">{{ item.produit?.nom_commercial }}</p>
+                  <p class="text-[10px] text-slate-500">{{ item.produit?.unite_mesure }}</p>
+                </td>
+                <td class="px-6 py-4 text-slate-400">{{ item.produit?.categorie?.nom || '—' }}</td>
+                <td class="px-6 py-4">
+                  <span :class="(item.quantite_en_stock ?? item.stock_disponible ?? 0) <= (item.stock_alerte || 10) ? 'text-red-400 font-black' : 'text-emerald-400 font-bold'" class="text-sm">
+                    {{ item.quantite_en_stock ?? item.stock_disponible ?? 0 }}
+                  </span>
+                  <span v-if="(item.quantite_en_stock ?? item.stock_disponible ?? 0) <= (item.stock_alerte || 10)" class="ml-2 text-[10px] text-red-400 bg-red-900/30 px-1.5 py-0.5 rounded font-bold">ALERTE</span>
+                </td>
+                <td class="px-6 py-4 text-slate-400">{{ item.stock_alerte || 10 }}</td>
+                <td class="px-6 py-4 font-mono text-amber-400 font-bold">{{ formatPrice(item.produit?.prix_unitaire) }} FCFA</td>
+                <td class="px-6 py-4 text-right">
+                  <button @click="ajusterStock(item)" class="px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 rounded-lg text-xs font-bold transition-colors border border-emerald-500/20">
+                    Ajuster
+                  </button>
+                </td>
+              </tr>
           </tbody>
         </table>
       </div>
