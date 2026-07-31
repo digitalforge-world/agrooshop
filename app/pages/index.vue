@@ -161,8 +161,9 @@
         <div class="overflow-hidden">
           <div class="animate-marquee">
             <template v-for="n in 2" :key="n">
-              <div v-for="(p, idx) in partners" :key="`${n}-${idx}`" class="flex-shrink-0 mx-10">
-                <span class="text-base font-bold text-gray-300 hover:text-emerald-600 transition-colors whitespace-nowrap cursor-default">{{ p }}</span>
+              <div v-for="(p, idx) in partners" :key="`${n}-${idx}`" class="flex-shrink-0 mx-10 flex items-center justify-center h-16">
+                <img v-if="p.logo_url" :src="getImageUrl(p.logo_url)" :alt="p.nom" class="h-12 w-auto object-contain grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 cursor-pointer" />
+                <span v-else class="text-base font-bold text-gray-300 hover:text-emerald-600 transition-colors whitespace-nowrap cursor-default">{{ p.nom }}</span>
               </div>
             </template>
           </div>
@@ -292,7 +293,7 @@ const categoryCards = [
 ]
 
 // Partners
-const partners = ['YARA International', 'Bayer CropScience', 'Bejo Zaden', 'STIHL', 'Netafim', 'Syngenta', 'GSN Semences', 'BASF']
+const partners = ref([])
 
 // Testimonials
 const testimonials = [
@@ -358,6 +359,17 @@ onMounted(async () => {
     }
   } catch (e) {
     console.warn('API blog offline', e)
+  }
+
+  try {
+    const partRes = await $fetch(`${config.public.apiBaseUrl}/partenaires`)
+    if (partRes?.data) {
+      partners.value = partRes.data
+    }
+  } catch (e) {
+    console.warn('API partenaires offline', e)
+    // Fallback if needed
+    partners.value = [{ nom: 'YARA International' }, { nom: 'Bayer CropScience' }, { nom: 'Bejo Zaden' }]
   }
 
   isLoading.value = false

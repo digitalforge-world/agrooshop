@@ -61,6 +61,16 @@
             <span>Toutes les Commandes</span>
           </NuxtLink>
 
+          <!-- 4.5. Partenaires -->
+          <NuxtLink 
+            to="/admin/partenaires" 
+            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all"
+            :class="route.path.startsWith('/admin/partenaires') ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/40 font-black' : 'text-emerald-100/70 hover:bg-emerald-900/50 hover:text-white'"
+          >
+            <Handshake class="w-4 h-4" />
+            <span>Partenaires</span>
+          </NuxtLink>
+
           <!-- MULTI-BOUTIQUES -->
           <div class="pt-3 pb-1">
             <p class="px-3.5 text-[10px] font-bold tracking-wider text-emerald-400/60 uppercase">Multi-Boutiques</p>
@@ -207,7 +217,8 @@ import {
   ShoppingCart,
   Store,
   UserCog,
-  FileSpreadsheet, 
+  FileSpreadsheet,
+  Handshake, 
   FileText, 
   Users, 
   Activity,
