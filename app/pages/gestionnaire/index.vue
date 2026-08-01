@@ -319,7 +319,7 @@ definePageMeta({
 useHead({ title: 'Mon Dashboard - AgroShop Gestionnaire' })
 
 const store = useGestionnaireAuthStore()
-const config = useRuntimeConfig()
+const { gestionnaireFetch } = useGestionnaireFetch()
 
 const stats = ref({ ca_du_jour: 0, ventes_du_jour: 0, produits_en_stock: 0 })
 const generatingReport = ref(null)
@@ -341,7 +341,7 @@ const aiRapportForm = ref({
 })
 
 const aiGeneratingRapport = ref(false)
-const aiRapportResult = ref<any>(null)
+const aiRapportResult = ref(null)
 
 // ===== SUGGESTION REAPPRO STATE =====
 const showReappro = ref(false)
@@ -355,9 +355,7 @@ const reapproData = ref({
 
 const fetchStats = async () => {
   try {
-    const res = await $fetch(`${config.public.apiBaseUrl}/gestionnaire/dashboard`, {
-      headers: { Authorization: `Bearer ${store.token}`, Accept: 'application/json' }
-    })
+    const res = await gestionnaireFetch('/gestionnaire/dashboard')
     stats.value = res?.data || res || stats.value
     aiRapportForm.value.ca = stats.value.ca_du_jour || 0
     aiRapportForm.value.nb_commandes = stats.value.ventes_du_jour || 0
@@ -370,9 +368,8 @@ const genererRapport = async (type) => {
   generatingReport.value = type
   reportSuccess.value = null
   try {
-    const res = await $fetch(`${config.public.apiBaseUrl}/gestionnaire/rapports/generer`, {
+    const res = await gestionnaireFetch('/gestionnaire/rapports/generer', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${store.token}`, Accept: 'application/json' },
       body: { type_rapport: type }
     })
     reportSuccess.value = res?.message || `Rapport ${type} généré et envoyé à l'administrateur avec succès !`
@@ -406,9 +403,8 @@ const generateAiRapport = async () => {
       stocks: aiRapportForm.value.stocks
     }
 
-    const res = await $fetch(`${config.public.apiBaseUrl}/gestionnaire/ai/rapports/generer`, {
+    const res = await gestionnaireFetch('/gestionnaire/ai/rapports/generer', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${store.token}`, Accept: 'application/json' },
       body
     })
     aiRapportResult.value = res?.data || res
@@ -424,7 +420,7 @@ const exportRapportPdf = () => {
   try {
     const r = aiRapportResult.value
     const content = `
-RAPORT D'ACTIVITÉ — ${r.titre || 'Rapport'}
+RAPPORT D'ACTIVITÉ — ${r.titre || 'Rapport'}
 Date: ${aiRapportForm.value.date}
 Gestionnaire: ${store.user?.prenom || ''} ${store.user?.nom || ''}
 Boutique: ${store.boutique?.nom || ''}
@@ -468,9 +464,7 @@ const fetchReappro = async () => {
   if (!boutique_id) return
   reapproLoading.value = true
   try {
-    const res = await $fetch(`${config.public.apiBaseUrl}/admin/ai/boutiques/${boutique_id}/suggerer-reappro`, {
-      headers: { Authorization: `Bearer ${store.token}`, Accept: 'application/json' }
-    })
+    const res = await gestionnaireFetch(`/admin/ai/boutiques/${boutique_id}/suggerer-reappro`)
     const d = res?.data || res
     reapproData.value.nombre_prioritaires = d.nombre_prioritaires || d.prioritaires?.length || 0
     reapproData.value.total_estime = d.total_estime || d.cout_total || 0
