@@ -177,10 +177,10 @@
 
         <!-- Buttons (Hidden in print) -->
         <div class="mt-6 flex gap-3 print:hidden">
-          <button @click="printReceipt" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors">
-            <Printer class="w-4 h-4" /> Imprimer le Reçu
+          <button @click="downloadPdfReceipt" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer">
+            <Download class="w-4 h-4" /> 📄 Imprimer / Télécharger Reçu PDF
           </button>
-          <button @click="showReceiptModal = false" class="py-3 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl transition-colors">
+          <button @click="showReceiptModal = false" class="py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors cursor-pointer">
             Fermer
           </button>
         </div>
@@ -193,7 +193,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { ShoppingCart, Search, X, CheckCircle, Printer } from 'lucide-vue-next'
+import { ShoppingCart, Search, X, CheckCircle, Printer, Download } from 'lucide-vue-next'
 import { useGestionnaireAuthStore } from '~/stores/gestionnaireAuth'
 
 definePageMeta({
@@ -298,9 +298,16 @@ const validerVente = async () => {
   }
 }
 
+const downloadPdfReceipt = () => {
+  if (!receiptData.value?.id) return
+  const config = useRuntimeConfig()
+  const pdfUrl = `${config.public.apiBaseUrl}/commandes/${receiptData.value.id}/recu-pdf`
+  window.open(pdfUrl, '_blank')
+}
+
 const printReceipt = () => {
   if (process.client) {
-    window.print()
+    downloadPdfReceipt()
   }
 }
 
