@@ -98,24 +98,40 @@
       <!-- Right Products Grid -->
       <main class="lg:col-span-9 space-y-6 min-h-[750px]">
         
-        <!-- AI Agronomist Advice Banner -->
-        <div v-if="catalogStore.aiAdvice" class="bg-gradient-to-br from-purple-950 via-indigo-900 to-slate-900 p-5 rounded-2xl border border-purple-500/30 text-white shadow-lg space-y-2 relative overflow-hidden">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 text-amber-300 font-extrabold text-xs uppercase tracking-wider">
-              <Sparkles class="w-4 h-4 text-amber-400 animate-pulse" />
-              <span>Conseil de l'Agronome AgroShop</span>
+        <!-- Floating Agronomist Advice Modal (Top Right, non-disruptive) -->
+        <ClientOnly>
+          <Teleport to="body">
+            <div 
+              v-if="catalogStore.aiAdvice" 
+              class="fixed top-20 right-4 sm:right-6 z-50 max-w-md w-[calc(100%-2rem)] sm:w-[420px] bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 p-5 rounded-3xl border border-emerald-500/40 text-white shadow-2xl space-y-3 relative overflow-hidden backdrop-blur-md animate-in slide-in-from-top-4 duration-300"
+            >
+              <!-- Decorative background ambient glow -->
+              <div class="absolute -top-10 -right-10 w-28 h-28 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+              <div class="flex items-center justify-between border-b border-emerald-800/60 pb-2.5">
+                <div class="flex items-center gap-2 text-emerald-300 font-black text-xs uppercase tracking-wider">
+                  <Sprout class="w-4 h-4 text-emerald-400" />
+                  <span>CONSEIL DE L'AGRONOME AGROSHOP</span>
+                </div>
+                <button 
+                  @click="catalogStore.setAiAdvice(null)" 
+                  class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-emerald-200 hover:text-white flex items-center justify-center text-xs font-bold cursor-pointer transition-colors"
+                  title="Fermer le conseil"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <p class="text-xs sm:text-sm text-emerald-100 leading-relaxed font-medium">
+                {{ catalogStore.aiAdvice }}
+              </p>
+
+              <div class="flex items-center justify-between pt-1 text-[11px] text-emerald-300/80 font-mono" v-if="catalogStore.searchQuery">
+                <span>🌱 Recommandation sur-mesure pour : "{{ catalogStore.searchQuery }}"</span>
+              </div>
             </div>
-            <button @click="catalogStore.setAiAdvice(null)" class="text-xs text-purple-300 hover:text-white font-bold cursor-pointer">
-              ✕ Masquer
-            </button>
-          </div>
-          <p class="text-xs sm:text-sm text-purple-100 leading-relaxed font-medium">
-            {{ catalogStore.aiAdvice }}
-          </p>
-          <div class="text-[10px] text-purple-300/80 font-mono italic" v-if="catalogStore.searchQuery">
-            Diagnostiqué pour : "{{ catalogStore.searchQuery }}"
-          </div>
-        </div>
+          </Teleport>
+        </ClientOnly>
 
         <!-- Active Filter Pills Bar -->
         <div v-if="catalogStore.selectedCategory || catalogStore.searchQuery || catalogStore.minPrice || catalogStore.maxPrice" class="flex flex-wrap items-center gap-2 bg-emerald-50/80 p-3.5 rounded-2xl border border-emerald-200/80">
@@ -270,7 +286,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { Sparkles } from 'lucide-vue-next'
+import { Sparkles, Sprout } from 'lucide-vue-next'
 import { useCatalogStore } from '~/stores/catalog'
 import ProductCard from '~/components/ProductCard.vue'
 

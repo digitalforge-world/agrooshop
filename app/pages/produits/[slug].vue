@@ -253,7 +253,7 @@
             <h2 class="text-lg font-black text-slate-900 flex items-center gap-2">
               Produits qui pourraient vous intéresser
             </h2>
-            <p class="text-xs text-slate-500">Suggestions IA basées sur ce produit et votre panier</p>
+            <p class="text-xs text-slate-500">Recommandations d'experts basées sur ce produit et vos besoins</p>
           </div>
         </div>
         <div v-if="aiRecommendations.loading" class="py-10 text-center text-xs font-mono text-slate-500">
