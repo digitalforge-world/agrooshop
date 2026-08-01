@@ -133,6 +133,16 @@
               </td>
               <td class="px-6 py-4 text-right">
                 <div class="inline-flex items-center gap-1.5 justify-end">
+                  <!-- Bouton Rapport Stock & Ventes -->
+                  <button 
+                    @click="openRapportBoutiqueModal(boutique)" 
+                    class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold rounded-xl text-xs transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-xs"
+                    title="Voir le stock restant et le détail des ventes de cette boutique"
+                  >
+                    <Eye class="w-3.5 h-3.5" />
+                    <span>Stock & Ventes</span>
+                  </button>
+
                   <!-- Bouton Approvisionner -->
                   <button 
                     @click="openApprovisionnementModal(boutique)" 
@@ -615,12 +625,178 @@
       </Transition>
     </Teleport>
 
+    <!-- ===================== MODAL RAPPORT STOCK & VENTES BOUTIQUE ===================== -->
+    <Teleport to="body">
+      <Transition name="modal-fade">
+        <div v-if="showRapportModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs" @click.self="showRapportModal = false">
+          <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            
+            <!-- Header -->
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between flex-shrink-0">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700">
+                  <Eye class="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
+                    Bilan Stock & Ventes — {{ selectedBoutiqueForRapport?.nom }}
+                  </h2>
+                  <p class="text-[11px] text-slate-500">Localisation: {{ selectedBoutiqueForRapport?.localisation || selectedBoutiqueForRapport?.adresse || 'Lomé, Togo' }}</p>
+                </div>
+              </div>
+              <button @click="showRapportModal = false" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">
+                <X class="w-5 h-5" />
+              </button>
+            </div>
+
+            <!-- Loading -->
+            <div v-if="loadingRapport" class="p-12 text-center text-slate-500 font-mono text-xs flex-shrink-0">
+              <div class="w-7 h-7 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+              Chargement des stocks et de l'historique des ventes...
+            </div>
+
+            <div v-else class="overflow-y-auto p-5 space-y-6 flex-1">
+              
+              <!-- 4 KPI Cards -->
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-blue-50/60 border border-blue-200 rounded-xl p-3.5">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Chiffre d'Affaires</p>
+                  <p class="text-lg font-black text-blue-900 font-mono mt-1">{{ Number(rapportData.kpi?.chiffre_affaires_total || 0).toLocaleString('fr-FR') }} <span class="text-[10px] font-normal">FCFA</span></p>
+                </div>
+                <div class="bg-emerald-50/60 border border-emerald-200 rounded-xl p-3.5">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Ventes Effectuées</p>
+                  <p class="text-lg font-black text-emerald-900 font-mono mt-1">{{ rapportData.kpi?.nombre_commandes || 0 }} <span class="text-[10px] font-normal">reçus</span></p>
+                </div>
+                <div class="bg-purple-50/60 border border-purple-200 rounded-xl p-3.5">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-purple-700">Articles Vendus</p>
+                  <p class="text-lg font-black text-purple-900 font-mono mt-1">{{ rapportData.kpi?.total_articles_vendus || 0 }} <span class="text-[10px] font-normal">unités</span></p>
+                </div>
+                <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-3.5">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Valeur Stock Restant</p>
+                  <p class="text-lg font-black text-amber-900 font-mono mt-1">{{ Number(rapportData.kpi?.valeur_stock_restant || 0).toLocaleString('fr-FR') }} <span class="text-[10px] font-normal">FCFA</span></p>
+                </div>
+              </div>
+
+              <!-- Tabs Navigation -->
+              <div class="flex border-b border-slate-200">
+                <button 
+                  @click="activeRapportTab = 'products'" 
+                  class="px-4 py-2.5 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 cursor-pointer"
+                  :class="activeRapportTab === 'products' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-700'"
+                >
+                  <Package class="w-4 h-4" />
+                  <span>Stock Restant & Ventes par Produit ({{ rapportData.produits?.length || 0 }})</span>
+                </button>
+                <button 
+                  @click="activeRapportTab = 'sales'" 
+                  class="px-4 py-2.5 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 cursor-pointer"
+                  :class="activeRapportTab === 'sales' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-700'"
+                >
+                  <ShoppingCart class="w-4 h-4" />
+                  <span>Historique des Ventes / Caisses ({{ rapportData.commandes?.length || 0 }})</span>
+                </button>
+              </div>
+
+              <!-- TAB 1: Stock Restant vs Ventes par Produit -->
+              <div v-if="activeRapportTab === 'products'" class="space-y-3">
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                  <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-500 border-b border-slate-200">
+                      <tr>
+                        <th class="px-4 py-3">Produit</th>
+                        <th class="px-4 py-3">Catégorie</th>
+                        <th class="px-4 py-3 text-center">Stock Restant</th>
+                        <th class="px-4 py-3 text-center">Total Vendu</th>
+                        <th class="px-4 py-3 text-right">CA Généré (FCFA)</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 font-medium">
+                      <tr v-if="!rapportData.produits || rapportData.produits.length === 0">
+                        <td colspan="5" class="px-4 py-8 text-center text-slate-400">Aucun produit affecté à cette boutique</td>
+                      </tr>
+                      <tr v-for="p in rapportData.produits" :key="p.produit_id" class="hover:bg-slate-50">
+                        <td class="px-4 py-3">
+                          <p class="font-bold text-slate-900">{{ p.nom_commercial }}</p>
+                          <p class="text-[10px] text-slate-400 font-mono">{{ p.prix_unitaire?.toLocaleString('fr-FR') }} FCFA / {{ p.unite_mesure || 'unité' }}</p>
+                        </td>
+                        <td class="px-4 py-3 text-slate-500">{{ p.categorie_nom }}</td>
+                        <td class="px-4 py-3 text-center">
+                          <span :class="p.stock_restant <= p.stock_alerte ? 'bg-red-100 text-red-800 border-red-300 font-black' : 'bg-emerald-100 text-emerald-800 border-emerald-200 font-bold'" class="px-2.5 py-1 rounded-full text-xs border font-mono">
+                            {{ p.stock_restant }} {{ p.unite_mesure }}
+                          </span>
+                        </td>
+                        <td class="px-4 py-3 text-center font-mono font-bold text-purple-700 text-sm">
+                          {{ p.quantite_vendue }}
+                        </td>
+                        <td class="px-4 py-3 text-right font-mono font-bold text-blue-700">
+                          {{ Number(p.chiffre_affaires || 0).toLocaleString('fr-FR') }} FCFA
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- TAB 2: Historique des Ventes / Caisses -->
+              <div v-if="activeRapportTab === 'sales'" class="space-y-3">
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                  <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-500 border-b border-slate-200">
+                      <tr>
+                        <th class="px-4 py-3">Réf. Vente</th>
+                        <th class="px-4 py-3">Date & Heure</th>
+                        <th class="px-4 py-3">Client</th>
+                        <th class="px-4 py-3">Articles</th>
+                        <th class="px-4 py-3 text-right">Total Payé</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 font-medium">
+                      <tr v-if="!rapportData.commandes || rapportData.commandes.length === 0">
+                        <td colspan="5" class="px-4 py-8 text-center text-slate-400">Aucune vente enregistrée dans cette boutique</td>
+                      </tr>
+                      <tr v-for="cmd in rapportData.commandes" :key="cmd.id" class="hover:bg-slate-50">
+                        <td class="px-4 py-3 font-mono font-bold text-emerald-700">{{ cmd.code_reference }}</td>
+                        <td class="px-4 py-3 text-slate-500 text-[11px]">{{ new Date(cmd.created_at).toLocaleString('fr-FR') }}</td>
+                        <td class="px-4 py-3">
+                          <p class="font-bold text-slate-900">{{ cmd.nom_client || 'Client Comptoir' }}</p>
+                          <p class="text-[10px] text-slate-400">{{ cmd.telephone }}</p>
+                        </td>
+                        <td class="px-4 py-3">
+                          <div class="space-y-0.5">
+                            <p v-for="art in cmd.articles" :key="art.nom_commercial" class="text-[11px] text-slate-700">
+                              • <span class="font-bold">{{ art.quantite }}x</span> {{ art.nom_commercial }}
+                            </p>
+                          </div>
+                        </td>
+                        <td class="px-4 py-3 text-right font-mono font-black text-amber-700 text-sm">
+                          {{ Number(cmd.montant_total || 0).toLocaleString('fr-FR') }} FCFA
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="p-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50 rounded-b-2xl flex-shrink-0">
+              <button @click="showRapportModal = false" class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl transition-colors border border-slate-200 cursor-pointer">
+                Fermer
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Store, Plus, Search, CheckCircle, X, Hammer, Sprout, AlertCircle, Sparkles, BarChart3, Package, AlertTriangle, Pencil, Power, CheckCircle2, Truck } from 'lucide-vue-next'
+import { Store, Plus, Search, CheckCircle, X, Hammer, Sprout, AlertCircle, Sparkles, BarChart3, Package, AlertTriangle, Pencil, Power, CheckCircle2, Truck, Eye, ShoppingCart, TrendingUp } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 definePageMeta({
@@ -652,6 +828,34 @@ const form = ref(defaultForm())
 const showPrevisionModal = ref(false)
 const previsionLoading = ref(false)
 const selectedBoutiqueForPrevision = ref(null)
+
+// Rapport Stock & Ventes State
+const showRapportModal = ref(false)
+const loadingRapport = ref(false)
+const selectedBoutiqueForRapport = ref(null)
+const activeRapportTab = ref('products')
+const rapportData = ref({
+  kpi: { chiffre_affaires_total: 0, nombre_commandes: 0, total_articles_vendus: 0, valeur_stock_restant: 0 },
+  produits: [],
+  commandes: []
+})
+
+const openRapportBoutiqueModal = async (boutique) => {
+  selectedBoutiqueForRapport.value = boutique
+  showRapportModal.value = true
+  loadingRapport.value = true
+  activeRapportTab.value = 'products'
+  rapportData.value = { kpi: {}, produits: [], commandes: [] }
+
+  try {
+    const res = await adminFetch(`/admin/boutiques/${boutique.id}/rapport-ventes`)
+    rapportData.value = res?.data || res
+  } catch (e) {
+    console.error('Erreur chargement rapport boutique', e)
+  } finally {
+    loadingRapport.value = false
+  }
+}
 const previsionData = ref({
   nombre_prioritaires: 0,
   total_estime: 0,
