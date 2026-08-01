@@ -4,7 +4,7 @@
     <button
       @click="toggleChat"
       class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-2xl shadow-emerald-900/50 flex items-center justify-center text-white hover:scale-110 transition-transform"
-      title="Assistant IA AgroShop"
+      title="Assistant AgroShop"
     >
       <span v-if="!isOpen"><Bot class="w-7 h-7" /></span>
       <span v-else><X class="w-7 h-7" /></span>
@@ -123,7 +123,7 @@ const suggestions = [
 const messages = ref([
   {
     role: 'assistant',
-    content: 'Bonjour ! Je suis votre assistant IA AgroShop. Je connais les stocks et les ventes de toutes vos boutiques en temps réel. Comment puis-je vous aider ? 🌱'
+    content: 'Bonjour ! Je suis votre assistant AgroShop. Je connais les stocks et les ventes de toutes vos boutiques en temps réel. Comment puis-je vous aider ? 🌱'
   }
 ])
 

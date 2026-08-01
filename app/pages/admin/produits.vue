@@ -516,7 +516,7 @@
               <div class="bg-gradient-to-br from-emerald-50 via-white to-emerald-50 border border-emerald-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <p class="text-[11px] font-black uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
-                    <span>🤖</span> Assistant IA — Fiche Technique Automatique
+                    <span></span> Assistan — Fiche Technique Automatique
                   </p>
                   <p class="text-xs text-slate-600 mt-1">
                     Saisissez le Nom commercial (et les Catégories à l'étape 5), puis laissez l'IA rédiger description, composition, mode d'emploi, dosages et SEO.
@@ -1983,7 +1983,7 @@ const validerSaisieIA = async () => {
     aiValidationWarnings.value = res?.data?.warnings || []
     aiValidationInfos.value = res?.data?.infos || []
   } catch (e) {
-    console.warn('Validation IA error', e)
+    console.warn('Validation error', e)
   } finally {
     isAiValidating.value = false
   }

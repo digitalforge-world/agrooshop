@@ -103,7 +103,7 @@
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2 text-amber-300 font-extrabold text-xs uppercase tracking-wider">
               <Sparkles class="w-4 h-4 text-amber-400 animate-pulse" />
-              <span>Conseil de l'Agronome IA AgroShop</span>
+              <span>Conseil de l'Agronome AgroShop</span>
             </div>
             <button @click="catalogStore.setAiAdvice(null)" class="text-xs text-purple-300 hover:text-white font-bold cursor-pointer">
               ✕ Masquer

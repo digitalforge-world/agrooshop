@@ -82,7 +82,7 @@
           <BarChart3 class="w-4 h-4 text-violet-600" />
           📦 Suggestion Réappro IA
         </h2>
-        <p class="text-xs text-slate-500 mb-5">Analyse IA des produits à réapprovisionner.</p>
+        <p class="text-xs text-slate-500 mb-5">Analyse des produits à réapprovisionner.</p>
         
         <button
           @click="fetchReappro"
@@ -95,7 +95,7 @@
         <div v-if="showReappro" class="mt-5 space-y-4">
           <div v-if="reapproLoading" class="py-6 text-center text-slate-500 font-mono text-xs">
             <div class="w-5 h-5 border-2 border-violet-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-            Analyse IA en cours...
+            Analyse en cours...
           </div>
           <template v-else>
             <div class="grid grid-cols-2 gap-3">
@@ -142,7 +142,7 @@
       </div>
     </div>
 
-    <!-- Assistant Rapport IA -->
+    <!-- Assistant Rapport -->
     <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
       <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div class="flex items-center gap-3">
@@ -155,7 +155,7 @@
               🤖 Assistant Rapport IA
             </h2>
             <p class="text-[11px] text-slate-500 mt-0.5">
-              Renseignez les données du jour et laissez l'IA rédiger votre rapport professionnel
+              Renseignez les données du jour et laissez rédiger votre rapport professionnel
             </p>
           </div>
         </div>
@@ -214,7 +214,7 @@
           >
             <RefreshCw v-if="aiGeneratingRapport" class="w-4 h-4 animate-spin" />
             <Wand2 v-else class="w-4 h-4" />
-            <span>{{ aiGeneratingRapport ? 'Rédaction IA en cours...' : '✨ Générer le Rapport avec l\'IA' }}</span>
+            <span>{{ aiGeneratingRapport ? 'Rédaction en cours...' : '✨ Générer le Rapport avec l\'IA' }}</span>
           </button>
         </div>
 
@@ -368,13 +368,15 @@ const genererRapport = async (type) => {
   generatingReport.value = type
   reportSuccess.value = null
   try {
+    const today = new Date().toISOString().split('T')[0]
     const res = await gestionnaireFetch('/gestionnaire/rapports/generer', {
       method: 'POST',
-      body: { type_rapport: type }
+      body: { type, date: today }
     })
     reportSuccess.value = res?.message || `Rapport ${type} généré et envoyé à l'administrateur avec succès !`
   } catch (e) {
-    reportSuccess.value = "Rapport généré ! (Vérifiez la configuration de l'API pour l'envoi)"
+    console.error('Erreur rapport:', e)
+    reportSuccess.value = "Erreur lors de la génération du rapport."
   } finally {
     generatingReport.value = null
     setTimeout(() => reportSuccess.value = null, 6000)
@@ -407,7 +409,29 @@ const generateAiRapport = async () => {
       method: 'POST',
       body
     })
-    aiRapportResult.value = res?.data || res
+    const data = res?.data || res
+    aiRapportResult.value = data
+
+    // Transmettre et sauvegarder automatiquement le rapport IA pour l'administrateur
+    try {
+      await gestionnaireFetch('/gestionnaire/rapports/sauvegarder-ia', {
+        method: 'POST',
+        body: {
+          boutique_id,
+          type: aiRapportForm.value.type,
+          date_rapport: aiRapportForm.value.date,
+          titre: data.titre || `Rapport IA ${aiRapportForm.value.type}`,
+          introduction: data.introduction,
+          section_activite: data.section_activite,
+          section_stocks: data.section_stocks,
+          section_anomalies: data.section_anomalies,
+          section_recommandations: data.section_recommandations,
+          conclusion: data.conclusion
+        }
+      })
+    } catch (saveErr) {
+      console.warn('Erreur sauvegarde automatique rapport IA', saveErr)
+    }
   } catch (e) {
     console.error('AI rapport error', e)
   } finally {
@@ -437,7 +461,7 @@ ${r.section_stocks || ''}
 === ANOMALIES CONSTATÉES ===
 ${r.section_anomalies || ''}
 
-=== RECOMMANDATIONS IA ===
+=== RECOMMANDATIONS ===
 ${r.section_recommandations || ''}
 
 === CONCLUSION ===

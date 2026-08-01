@@ -124,7 +124,7 @@
                   @click="openPrevision(boutique)"
                   :disabled="!boutique.is_active"
                   class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 disabled:opacity-50 disabled:cursor-not-allowed text-indigo-700 border border-indigo-200 rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-xs"
-                  title="Voir la prévision IA de réapprovisionnement"
+                  title="Voir la prévision de réapprovisionnement"
                 >
                   <BarChart3 class="w-3 h-3 text-violet-600" />
                   <Sparkles class="w-3 h-3" />
@@ -171,7 +171,7 @@
                         class="w-full px-4 py-2 text-xs font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-700 disabled:opacity-40 flex items-center gap-2 transition-colors cursor-pointer"
                       >
                         <Sparkles class="w-4 h-4 text-violet-600" />
-                        <span>Prévision IA Réappro</span>
+                        <span>Prévision Réappro</span>
                       </button>
                     </div>
 
@@ -353,7 +353,7 @@
                 </div>
                 <div>
                   <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                    📊 Prévision IA — Réapprovisionnement
+                    📊 Prévision — Réapprovisionnement
                   </h2>
                   <p class="text-[11px] text-slate-500 mt-0.5">
                     Boutique : <span class="font-bold text-slate-700">{{ selectedBoutiqueForPrevision?.nom || '-' }}</span>
@@ -368,7 +368,7 @@
 
             <div v-if="previsionLoading" class="p-12 text-center text-slate-500 font-mono text-xs flex-shrink-0">
               <div class="w-7 h-7 border-2 border-violet-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-              Analyse IA en cours — Calcul des besoins de stock...
+              Analyse en cours — Calcul des besoins de stock...
             </div>
 
             <div v-else class="overflow-y-auto p-5 space-y-5 flex-1">

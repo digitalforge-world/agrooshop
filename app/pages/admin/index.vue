@@ -495,7 +495,7 @@
                 <div>
                   <h2 class="ai-insights-title text-xl font-bold flex items-center gap-2">
                     <Sparkles class="w-5 h-5 text-amber-400" />
-                    Insights IA — Analyse Prédictive
+                    Insights — Analyse Prédictive
                   </h2>
                   <p class="ai-insights-subtitle text-xs text-slate-300">Analyse automatique des tendances et recommandations intelligentes</p>
                 </div>
@@ -521,7 +521,7 @@
             <div class="ai-modal-body">
               <div v-if="aiInsights.loading" class="py-16 text-center text-xs font-mono text-slate-400">
                 <div class="w-8 h-8 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                Génération de l'analyse IA et prédictions en cours...
+                Génération de l'analyse et prédictions en cours...
               </div>
 
               <div v-else class="space-y-6">
