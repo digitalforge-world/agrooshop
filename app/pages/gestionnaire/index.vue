@@ -464,7 +464,7 @@ const fetchReappro = async () => {
   if (!boutique_id) return
   reapproLoading.value = true
   try {
-    const res = await gestionnaireFetch(`/admin/ai/boutiques/${boutique_id}/suggerer-reappro`)
+    const res = await gestionnaireFetch(`/gestionnaire/ai/boutiques/${boutique_id}/suggerer-reappro`)
     const d = res?.data || res
     reapproData.value.nombre_prioritaires = d.nombre_prioritaires || d.prioritaires?.length || 0
     reapproData.value.total_estime = d.total_estime || d.cout_total || 0
