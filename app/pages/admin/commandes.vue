@@ -150,8 +150,8 @@
               <!-- Status Dropdown Select -->
               <td class="px-4 py-2">
                 <select 
-                  v-model="cmd.statut_commande" 
-                  @change="updateStatus(cmd)"
+                  :value="cmd.statut_commande" 
+                  @change="updateStatus(cmd, $event.target.value)"
                   class="px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[11px] font-bold text-slate-800 focus:outline-none focus:border-emerald-500 cursor-pointer shadow-xs"
                   :class="getStatutSelectClass(cmd.statut_commande)"
                 >
@@ -361,15 +361,22 @@ const openOrderDetail = (cmd) => {
   isOrderDetailOpen.value = true
 }
 
-const updateStatus = async (cmd) => {
+const updateStatus = async (cmd, newStatus) => {
+  const previousStatus = cmd.statut_commande
+  cmd.statut_commande = newStatus
   try {
     await $fetch(`${config.public.apiBaseUrl}/admin/commandes/${cmd.id}/statut`, {
       method: 'PUT',
-      headers: { Authorization: `Bearer ${authStore.token}` },
-      body: { statut_commande: cmd.statut_commande }
+      headers: {
+        Authorization: `Bearer ${authStore.token}`,
+        Accept: 'application/json'
+      },
+      body: { statut_commande: newStatus }
     })
   } catch (e) {
     console.warn('Order status update error', e)
+    cmd.statut_commande = previousStatus
+    alert('Impossible de modifier le statut de la commande dans la base de données.')
   }
 }
 

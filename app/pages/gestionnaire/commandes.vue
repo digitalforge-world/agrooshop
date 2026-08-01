@@ -183,16 +183,18 @@
 
               <!-- Statut Badge -->
               <td class="px-6 py-4">
-                <span v-if="c.statut_commande === 'livree'" class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-[10px] font-bold inline-flex items-center gap-1">
-                  <CheckCircle class="w-3 h-3 text-emerald-600" />
-                  Livrée / Traitée
-                </span>
-                <span v-else-if="c.statut_commande === 'expediee'" class="px-2.5 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded-full text-[10px] font-bold inline-flex items-center gap-1">
-                  🚚 En cours
-                </span>
-                <span v-else class="px-2.5 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-[10px] font-bold inline-flex items-center gap-1">
-                  ⏳ En attente
-                </span>
+                <select 
+                  :value="c.statut_commande" 
+                  @change="changeStatut(c, $event.target.value)"
+                  class="px-2.5 py-1 bg-white border border-slate-200 rounded-xl text-[11px] font-bold text-slate-800 focus:outline-none focus:border-emerald-500 cursor-pointer shadow-xs"
+                >
+                  <option value="en_attente">⏳ En Attente</option>
+                  <option value="confirmee">✔️ Confirmée</option>
+                  <option value="preparee">📦 Préparée</option>
+                  <option value="expediee">🚚 En Livraison</option>
+                  <option value="livree">✅ Livrée / Traitée</option>
+                  <option value="annulee">❌ Annulée</option>
+                </select>
               </td>
 
               <!-- Actions -->
@@ -394,21 +396,28 @@ const openDetails = (c) => {
   showModal.value = true
 }
 
-const marquerLivree = async (commande) => {
+const changeStatut = async (commande, targetStatus) => {
+  const previousStatus = commande.statut_commande
   try {
-    await gestionnaireFetch(`/commandes/${commande.id}/statut`, {
+    await gestionnaireFetch(`/gestionnaire/commandes/${commande.id}/statut`, {
       method: 'POST',
-      body: { statut_commande: 'livree' }
+      body: { statut_commande: targetStatus }
     })
-    commande.statut_commande = 'livree'
+    commande.statut_commande = targetStatus
   } catch (e) {
-    commande.statut_commande = 'livree'
+    console.error('Erreur mise à jour statut commande:', e)
+    commande.statut_commande = previousStatus
+    alert('Impossible de modifier le statut de la commande dans la base de données.')
   }
+}
+
+const marquerLivree = async (commande) => {
+  await changeStatut(commande, 'livree')
 }
 
 const downloadPdf = (commande) => {
   if (!commande?.id) return
-  const pdfUrl = `${config.public.apiBaseUrl}/commandes/${commande.id}/recu-pdf`
+  const pdfUrl = `${config.public.apiBaseUrl}/gestionnaire/commandes/${commande.id}/recu-pdf`
   window.open(pdfUrl, '_blank')
 }
 
