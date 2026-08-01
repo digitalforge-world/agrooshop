@@ -118,6 +118,8 @@ export default defineNuxtConfig({
         '/gestionnaire',
         '/gestionnaire/stock',
         '/gestionnaire/ventes',
+        '/gestionnaire/commandes',
+        '/gestionnaire/historique-ventes',
         '/admin/auth/v1/sso-login-gateway-98f7a2b91c84',
         '/admin',
         '/admin/produits',
@@ -125,6 +127,9 @@ export default defineNuxtConfig({
         '/admin/categories',
         '/admin/utilisateurs',
         '/admin/boutiques',
+        '/admin/gestionnaires',
+        '/admin/partenaires',
+        '/admin/rapports',
         '/admin/visites',
         '/admin/visites/journal',
         '/admin/blog'
@@ -175,6 +180,26 @@ export default defineNuxtConfig({
         path: '/admin/utilisateurs',
         file: '~/pages/admin/utilisateurs.vue'
       })
+      pages.push({
+        name: 'admin-boutiques',
+        path: '/admin/boutiques',
+        file: '~/pages/admin/boutiques.vue'
+      })
+      pages.push({
+        name: 'admin-gestionnaires',
+        path: '/admin/gestionnaires',
+        file: '~/pages/admin/gestionnaires.vue'
+      })
+      pages.push({
+        name: 'admin-partenaires',
+        path: '/admin/partenaires',
+        file: '~/pages/admin/partenaires.vue'
+      })
+      pages.push({
+        name: 'admin-rapports',
+        path: '/admin/rapports',
+        file: '~/pages/admin/rapports.vue'
+      })
       // Routes Gestionnaire de Boutique
       pages.push({
         name: 'gestionnaire-login',
@@ -195,6 +220,16 @@ export default defineNuxtConfig({
         name: 'gestionnaire-ventes',
         path: '/gestionnaire/ventes',
         file: '~/pages/gestionnaire/ventes.vue'
+      })
+      pages.push({
+        name: 'gestionnaire-commandes',
+        path: '/gestionnaire/commandes',
+        file: '~/pages/gestionnaire/commandes.vue'
+      })
+      pages.push({
+        name: 'gestionnaire-historique-ventes',
+        path: '/gestionnaire/historique-ventes',
+        file: '~/pages/gestionnaire/historique-ventes.vue'
       })
     }
   }
