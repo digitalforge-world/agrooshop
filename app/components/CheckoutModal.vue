@@ -251,17 +251,14 @@ const form = ref({
 
 const fetchBoutiques = async () => {
   try {
-    const res = await $fetch(`${config.public.apiBaseUrl}/boutiques`)
+    const res = await $fetch(`${config.public.apiBaseUrl}/boutiques-publiques`)
     const list = res?.data || res || []
     boutiques.value = Array.isArray(list) ? list : []
     if (boutiques.value.length > 0 && !form.value.boutique_id) {
       form.value.boutique_id = boutiques.value[0].id
     }
   } catch (e) {
-    boutiques.value = [
-      { id: 1, nom: 'Agroshop Grand Marché', localisation: 'Lomé' }
-    ]
-    form.value.boutique_id = 1
+    console.warn('Error loading public boutiques', e)
   }
 }
 
