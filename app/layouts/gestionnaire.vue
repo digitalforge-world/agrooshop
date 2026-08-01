@@ -67,11 +67,29 @@
 
           <NuxtLink
             to="/gestionnaire/ventes"
-            :class="route.path.startsWith('/gestionnaire/ventes') ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'"
+            :class="route.path === '/gestionnaire/ventes' ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'"
             class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all"
           >
             <ShoppingCart class="w-4 h-4" />
             <span>Caisse / Vente</span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/gestionnaire/commandes"
+            :class="route.path.startsWith('/gestionnaire/commandes') ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'"
+            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all"
+          >
+            <ShoppingBag class="w-4 h-4" />
+            <span>Commandes en Ligne</span>
+          </NuxtLink>
+
+          <NuxtLink
+            to="/gestionnaire/historique-ventes"
+            :class="route.path.startsWith('/gestionnaire/historique-ventes') ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'"
+            class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all"
+          >
+            <History class="w-4 h-4" />
+            <span>Historique Ventes</span>
           </NuxtLink>
         </nav>
       </div>
@@ -118,7 +136,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Store, LayoutDashboard, Package, ShoppingCart, LogOut } from 'lucide-vue-next'
+import { Store, LayoutDashboard, Package, ShoppingCart, ShoppingBag, History, LogOut } from 'lucide-vue-next'
 import { useGestionnaireAuthStore } from '~/stores/gestionnaireAuth'
 
 const route = useRoute()
@@ -128,6 +146,8 @@ const gestionnaireStore = useGestionnaireAuthStore()
 const pageTitle = computed(() => {
   if (route.path === '/gestionnaire') return 'DASHBOARD'
   if (route.path.includes('stock')) return 'MON STOCK'
+  if (route.path.includes('commandes')) return 'COMMANDES EN LIGNE'
+  if (route.path.includes('historique')) return 'HISTORIQUE DES VENTES'
   if (route.path.includes('ventes')) return 'CAISSE / VENTE'
   return ''
 })

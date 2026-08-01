@@ -145,6 +145,22 @@
               <div class="space-y-4 pt-2 border-t border-slate-100">
                 <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">2. Options de Livraison & Paiement</h3>
 
+                <!-- Boutique Selection -->
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-700 uppercase mb-1">
+                    🏬 Boutique AgroShop la plus proche / de traitement *
+                  </label>
+                  <select 
+                    v-model="form.boutique_id"
+                    required
+                    class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none cursor-pointer"
+                  >
+                    <option v-for="b in boutiques" :key="b.id" :value="b.id">
+                      {{ b.nom }} {{ b.localisation ? `(${b.localisation})` : '' }}
+                    </option>
+                  </select>
+                </div>
+
                 <!-- Reception Mode -->
                 <div class="grid grid-cols-2 gap-3">
                   <label :class="['p-3 rounded-xl border flex flex-col cursor-pointer transition-all', form.mode_livraison === 'domicile' ? 'border-emerald-600 bg-emerald-50/60 font-bold text-emerald-900 ring-1 ring-emerald-500/30' : 'border-slate-200 text-slate-600']">
@@ -209,7 +225,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useCartStore } from '~/stores/cart'
 
 const config = useRuntimeConfig()
@@ -218,18 +234,38 @@ const cartStore = useCartStore()
 const submitting = ref(false)
 const orderSuccess = ref(false)
 const orderRefCode = ref('')
+const boutiques = ref([])
 
 const form = ref({
   prenom_client: '',
   nom_client: '',
   telephone: '',
   email: '',
+  boutique_id: null,
   mode_livraison: 'domicile',
   adresse_ligne1: '',
   ville: 'Lomé',
   mode_paiement: 'mobile_money',
   commentaires: ''
 })
+
+const fetchBoutiques = async () => {
+  try {
+    const res = await $fetch(`${config.public.apiBaseUrl}/boutiques`)
+    const list = res?.data || res || []
+    boutiques.value = Array.isArray(list) ? list : []
+    if (boutiques.value.length > 0 && !form.value.boutique_id) {
+      form.value.boutique_id = boutiques.value[0].id
+    }
+  } catch (e) {
+    boutiques.value = [
+      { id: 1, nom: 'Agroshop Grand Marché', localisation: 'Lomé' }
+    ]
+    form.value.boutique_id = 1
+  }
+}
+
+onMounted(fetchBoutiques)
 
 const calculatedGrandTotal = computed(() => {
   const fee = form.value.mode_livraison === 'domicile' ? 5000 : 0
