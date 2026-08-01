@@ -311,12 +311,23 @@ const trackSuccessWhatsappClick = () => {
 const submitOrder = async () => {
   submitting.value = true
   try {
+    const itemsMapped = cartStore.items.map(item => ({
+      produit_id: item.id,
+      quantite: item.quantite
+    }))
+
     const payload = {
       ...form.value,
-      articles: cartStore.items.map(item => ({
-        produit_id: item.id,
-        quantite: item.quantite
-      }))
+      nom: form.value.nom_client,
+      prenom: form.value.prenom_client || '',
+      nom_client: form.value.nom_client,
+      prenom_client: form.value.prenom_client,
+      telephone: form.value.telephone,
+      items: itemsMapped,
+      articles: itemsMapped,
+      type_livraison: form.value.mode_livraison === 'domicile' ? 'livraison' : 'retrait_agence',
+      mode_livraison: form.value.mode_livraison,
+      boutique_id: form.value.boutique_id ? Number(form.value.boutique_id) : 1
     }
 
     const res = await $fetch(`${config.public.apiBaseUrl}/commandes`, {
@@ -324,21 +335,15 @@ const submitOrder = async () => {
       body: payload
     })
 
-    if (res && res.data) {
-      orderRefCode.value = res.data.code_reference || ('CMD-2026-' + Math.floor(1000 + Math.random() * 9000))
-    } else {
-      orderRefCode.value = 'CMD-2026-' + Math.floor(1000 + Math.random() * 9000)
-    }
+    const data = res?.data || res
+    orderRefCode.value = data?.code_reference || ('AGR2026' + Math.floor(100000 + Math.random() * 900000))
 
     trackOrderValidation(orderRefCode.value)
     cartStore.clearCart()
     orderSuccess.value = true
   } catch (e) {
-    console.warn('API connection offline, simulating order success reference', e)
-    orderRefCode.value = 'CMD-2026-' + Math.floor(1000 + Math.random() * 9000)
-    trackOrderValidation(orderRefCode.value)
-    cartStore.clearCart()
-    orderSuccess.value = true
+    console.error('Erreur enregistrement commande API', e)
+    alert(e?.data?.message || e?.message || "Erreur lors de l'enregistrement de votre commande.")
   } finally {
     submitting.value = false
   }
