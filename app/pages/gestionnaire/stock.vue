@@ -28,7 +28,7 @@
               <th class="px-6 py-4">Stock Actuel</th>
               <th class="px-6 py-4">Seuil Alerte</th>
               <th class="px-6 py-4">Prix Unitaire</th>
-              <th class="px-6 py-4 text-right">Actions</th>
+              <th class="px-6 py-4 text-right">Statut</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 font-medium">
@@ -55,34 +55,13 @@
                 <td class="px-6 py-4 text-slate-500 font-mono">{{ item.stock_alerte || 10 }}</td>
                 <td class="px-6 py-4 font-mono text-amber-700 font-bold">{{ formatPrice(item.produit?.prix_unitaire) }} FCFA</td>
                 <td class="px-6 py-4 text-right">
-                  <button @click="ajusterStock(item)" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-xl text-xs font-bold transition-colors border border-emerald-200 cursor-pointer">
-                    Ajuster
-                  </button>
+                  <span class="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] font-semibold border border-slate-200">
+                    Stock Géré par Admin
+                  </span>
                 </td>
               </tr>
           </tbody>
         </table>
-      </div>
-    </div>
-
-    <!-- Ajustement Modal -->
-    <div v-if="selectedItem" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4" @click.self="selectedItem = null">
-      <div class="bg-white border border-slate-200 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-        <h3 class="text-base font-bold text-slate-900 mb-1">Ajuster le Stock</h3>
-        <p class="text-xs text-slate-500 mb-5">{{ selectedItem.produit?.nom_commercial }}</p>
-        
-        <div class="flex items-center justify-center gap-4 mb-6">
-          <button @click="adjustQty(-1)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-700 font-black text-xl transition-colors flex items-center justify-center cursor-pointer border border-slate-200">-</button>
-          <span class="text-3xl font-black text-emerald-700 font-mono w-20 text-center">{{ adjustQty(0, true) }}</span>
-          <button @click="adjustQty(1)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 font-black text-xl transition-colors flex items-center justify-center cursor-pointer border border-slate-200">+</button>
-        </div>
-
-        <div class="flex gap-3">
-          <button @click="selectedItem = null" class="flex-1 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors cursor-pointer">Annuler</button>
-          <button @click="confirmerAjustement" :disabled="saving" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer shadow-xs">
-            {{ saving ? 'Enregistrement...' : 'Confirmer' }}
-          </button>
-        </div>
       </div>
     </div>
   </div>

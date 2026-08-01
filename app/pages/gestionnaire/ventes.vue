@@ -205,7 +205,7 @@ definePageMeta({
 useHead({ title: 'Caisse / Ventes - AgroShop Gestionnaire' })
 
 const store = useGestionnaireAuthStore()
-const config = useRuntimeConfig()
+const { gestionnaireFetch } = useGestionnaireFetch()
 
 const stock = ref([])
 const cart = ref([])
@@ -221,9 +221,7 @@ const formatPrice = (val) => Number(val || 0).toLocaleString('fr-FR')
 
 const fetchStock = async () => {
   try {
-    const res = await $fetch(`${config.public.apiBaseUrl}/gestionnaire/stock`, {
-      headers: { Authorization: `Bearer ${store.token}`, Accept: 'application/json' }
-    })
+    const res = await gestionnaireFetch('/gestionnaire/stock')
     stock.value = res?.data ?? (Array.isArray(res) ? res : [])
   } catch (e) { stock.value = [] }
 }
@@ -266,6 +264,7 @@ const totalQty = computed(() => cart.value.reduce((s, i) => s + i.quantite, 0))
 const totalMontant = computed(() => cart.value.reduce((s, i) => s + (i.prix_unitaire * i.quantite), 0))
 
 const validerVente = async () => {
+  if (cart.value.length === 0) return
   saving.value = true
   venteSuccess.value = null
   try {
@@ -275,9 +274,8 @@ const validerVente = async () => {
       telephone: telephoneClient.value || '',
       articles: cart.value.map(i => ({ produit_id: i.produit_id, quantite: i.quantite, prix_unitaire: i.prix_unitaire }))
     }
-    const res = await $fetch(`${config.public.apiBaseUrl}/gestionnaire/ventes`, {
+    const res = await gestionnaireFetch('/gestionnaire/ventes', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${store.token}`, Accept: 'application/json' },
       body
     })
 
@@ -294,6 +292,7 @@ const validerVente = async () => {
     setTimeout(() => venteSuccess.value = null, 5000)
   } catch (e) {
     console.error('Erreur lors de la vente', e)
+    alert(e?.data?.message || e?.message || "Erreur lors de l'enregistrement de la vente.")
   } finally {
     saving.value = false
   }
