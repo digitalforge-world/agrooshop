@@ -176,11 +176,14 @@
         </div>
 
         <!-- Buttons (Hidden in print) -->
-        <div class="mt-6 flex gap-3 print:hidden">
-          <button @click="downloadPdfReceipt" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer">
-            <Download class="w-4 h-4" /> 📄 Imprimer / Télécharger Reçu PDF
+        <div class="mt-6 flex flex-wrap gap-2 print:hidden">
+          <button @click="downloadPdfReceipt" class="flex-1 min-w-[140px] py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-xs cursor-pointer">
+            <Download class="w-4 h-4" /> 📄 Reçu PDF
           </button>
-          <button @click="showReceiptModal = false" class="py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors cursor-pointer">
+          <button @click="printReceipt" class="py-3 px-3 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+            <Printer class="w-4 h-4" /> Imprimer
+          </button>
+          <button @click="showReceiptModal = false" class="py-3 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors cursor-pointer">
             Fermer
           </button>
         </div>
@@ -307,7 +310,7 @@ const downloadPdfReceipt = () => {
 
 const printReceipt = () => {
   if (process.client) {
-    downloadPdfReceipt()
+    window.print()
   }
 }
 
