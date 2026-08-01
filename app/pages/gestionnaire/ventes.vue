@@ -1,11 +1,11 @@
 <template>
   <div class="space-y-6">
     <div>
-      <h1 class="text-2xl font-black text-white flex items-center gap-2">
-        <ShoppingCart class="w-6 h-6 text-emerald-400" />
+      <h1 class="text-2xl font-black text-slate-900 flex items-center gap-2">
+        <ShoppingCart class="w-6 h-6 text-emerald-600" />
         Caisse / Enregistrer une Vente
       </h1>
-      <p class="text-xs text-slate-400 mt-1">Sélectionnez les produits affectés à votre boutique et validez la vente avec impression du reçu</p>
+      <p class="text-xs text-slate-500 mt-1">Sélectionnez les produits affectés à votre boutique et validez la vente avec impression du reçu</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -13,8 +13,8 @@
       <!-- Catalogue (à gauche) -->
       <div class="lg:col-span-3 space-y-4">
         <div class="relative">
-          <Search class="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
-          <input v-model="searchQuery" type="text" placeholder="Rechercher un produit dans votre boutique..." class="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500" />
+          <Search class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <input v-model="searchQuery" type="text" placeholder="Rechercher un produit dans votre boutique..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 shadow-xs" />
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[calc(100vh-280px)] overflow-y-auto pr-1">
@@ -22,63 +22,63 @@
             v-for="item in filteredStock"
             :key="item.produit_id"
             @click="addToCart(item)"
-            class="bg-slate-900 border border-slate-800 hover:border-emerald-500/50 rounded-xl p-4 cursor-pointer transition-all hover:bg-slate-800/70 group"
+            class="bg-white border border-slate-200/80 hover:border-emerald-500 rounded-xl p-4 cursor-pointer transition-all hover:bg-emerald-50/30 group shadow-xs"
             :class="(item.quantite_en_stock ?? item.stock_disponible ?? 0) <= 0 ? 'opacity-40 cursor-not-allowed' : ''"
           >
-            <p class="font-bold text-white text-sm group-hover:text-emerald-400 transition-colors line-clamp-2">{{ item.produit?.nom_commercial }}</p>
-            <p class="text-[10px] text-slate-500 mt-1">Stock boutique: <span class="font-bold text-emerald-400">{{ item.quantite_en_stock ?? item.stock_disponible ?? 0 }} {{ item.produit?.unite_mesure || 'unités' }}</span></p>
-            <p class="text-sm font-black text-amber-400 font-mono mt-2">{{ formatPrice(item.produit?.prix_unitaire) }} <span class="text-[10px] text-slate-400">FCFA</span></p>
+            <p class="font-bold text-slate-900 text-sm group-hover:text-emerald-700 transition-colors line-clamp-2">{{ item.produit?.nom_commercial }}</p>
+            <p class="text-[10px] text-slate-500 mt-1">Stock boutique: <span class="font-bold text-emerald-700 font-mono">{{ item.quantite_en_stock ?? item.stock_disponible ?? 0 }} {{ item.produit?.unite_mesure || 'unités' }}</span></p>
+            <p class="text-sm font-black text-amber-600 font-mono mt-2">{{ formatPrice(item.produit?.prix_unitaire) }} <span class="text-[10px] text-slate-400 font-normal">FCFA</span></p>
           </div>
         </div>
       </div>
 
       <!-- Panier / Caisse (à droite) -->
       <div class="lg:col-span-2">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sticky top-6">
-          <h2 class="text-sm font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-            <ShoppingCart class="w-4 h-4 text-emerald-400" />
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-5 sticky top-6 shadow-xs">
+          <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <ShoppingCart class="w-4 h-4 text-emerald-600" />
             Panier Caisse
           </h2>
           
           <!-- Empty cart -->
-          <div v-if="cart.length === 0" class="py-8 text-center text-slate-600 text-xs">
+          <div v-if="cart.length === 0" class="py-8 text-center text-slate-400 text-xs">
             Cliquez sur un produit affecté à votre boutique pour l'ajouter
           </div>
 
           <!-- Cart items -->
           <div v-else class="space-y-2 mb-4 max-h-60 overflow-y-auto">
-            <div v-for="(item, idx) in cart" :key="idx" class="flex items-center gap-3 p-2 bg-slate-800/50 rounded-xl">
+            <div v-for="(item, idx) in cart" :key="idx" class="flex items-center gap-3 p-2 bg-slate-50 border border-slate-100 rounded-xl">
               <div class="flex-1 min-w-0">
-                <p class="text-xs font-bold text-white truncate">{{ item.nom }}</p>
-                <p class="text-[10px] text-slate-500">{{ formatPrice(item.prix_unitaire) }} FCFA</p>
+                <p class="text-xs font-bold text-slate-900 truncate">{{ item.nom }}</p>
+                <p class="text-[10px] text-slate-500 font-mono">{{ formatPrice(item.prix_unitaire) }} FCFA</p>
               </div>
               <div class="flex items-center gap-1.5">
-                <button @click="changeQty(idx, -1)" class="w-6 h-6 rounded bg-slate-700 text-white text-xs font-bold hover:bg-slate-600 flex items-center justify-center">-</button>
-                <span class="text-xs font-bold text-white w-5 text-center">{{ item.quantite }}</span>
-                <button @click="changeQty(idx, 1)" class="w-6 h-6 rounded bg-slate-700 text-white text-xs font-bold hover:bg-slate-600 flex items-center justify-center">+</button>
+                <button @click="changeQty(idx, -1)" class="w-6 h-6 rounded bg-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-300 flex items-center justify-center cursor-pointer">-</button>
+                <span class="text-xs font-bold text-slate-900 w-5 text-center font-mono">{{ item.quantite }}</span>
+                <button @click="changeQty(idx, 1)" class="w-6 h-6 rounded bg-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-300 flex items-center justify-center cursor-pointer">+</button>
               </div>
-              <button @click="removeFromCart(idx)" class="p-1 text-slate-500 hover:text-red-400 transition-colors">
+              <button @click="removeFromCart(idx)" class="p-1 text-slate-400 hover:text-red-600 transition-colors cursor-pointer">
                 <X class="w-4 h-4" />
               </button>
             </div>
           </div>
 
           <!-- Total -->
-          <div v-if="cart.length > 0" class="border-t border-slate-800 pt-3 mb-4">
-            <div class="flex justify-between text-xs text-slate-400 mb-1">
+          <div v-if="cart.length > 0" class="border-t border-slate-100 pt-3 mb-4">
+            <div class="flex justify-between text-xs text-slate-500 mb-1">
               <span>{{ totalQty }} article(s)</span>
               <span>Sous-total</span>
             </div>
             <div class="flex justify-between items-baseline">
-              <span class="text-sm font-bold text-white">Total à encaisser</span>
-              <span class="text-xl font-black text-amber-400 font-mono">{{ formatPrice(totalMontant) }} <span class="text-xs text-slate-400">FCFA</span></span>
+              <span class="text-sm font-bold text-slate-900">Total à encaisser</span>
+              <span class="text-xl font-black text-amber-600 font-mono">{{ formatPrice(totalMontant) }} <span class="text-xs text-slate-400 font-normal">FCFA</span></span>
             </div>
           </div>
 
           <!-- Client Info -->
           <div v-if="cart.length > 0" class="space-y-3 mb-4">
-            <input v-model="nomClient" type="text" placeholder="Nom du client (ex: Jean Koffi)" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500" />
-            <input v-model="telephoneClient" type="tel" placeholder="Téléphone client (ex: +228 90 12 34 56)" class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500" />
+            <input v-model="nomClient" type="text" placeholder="Nom du client (ex: Jean Koffi)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white" />
+            <input v-model="telephoneClient" type="tel" placeholder="Téléphone client (ex: +228 90 12 34 56)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white" />
           </div>
 
           <!-- Success banner -->
