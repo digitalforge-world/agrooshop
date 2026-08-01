@@ -98,12 +98,12 @@
       <!-- Right Products Grid -->
       <main class="lg:col-span-9 space-y-6 min-h-[750px]">
         
-        <!-- Floating Agronomist Advice Modal (Top Right, non-disruptive) -->
+        <!-- Floating Agronomist Advice Modal (Top Right below header, 100% visible, non-disruptive) -->
         <ClientOnly>
           <Teleport to="body">
             <div 
               v-if="catalogStore.aiAdvice" 
-              class="fixed top-20 right-4 sm:right-6 z-50 max-w-md w-[calc(100%-2rem)] sm:w-[420px] bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 p-5 rounded-3xl border border-emerald-500/40 text-white shadow-2xl space-y-3 relative overflow-hidden backdrop-blur-md animate-in slide-in-from-top-4 duration-300"
+              class="fixed top-36 sm:top-40 right-4 sm:right-6 z-[9999] max-w-md w-[calc(100%-2rem)] sm:w-[420px] bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 p-5 rounded-3xl border-2 border-emerald-400/50 text-white shadow-2xl space-y-3 relative overflow-hidden backdrop-blur-md animate-in slide-in-from-top-6 duration-300"
             >
               <!-- Decorative background ambient glow -->
               <div class="absolute -top-10 -right-10 w-28 h-28 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none"></div>
