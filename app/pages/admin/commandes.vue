@@ -346,17 +346,14 @@ const fetchOrders = async () => {
     const res = await $fetch(`${config.public.apiBaseUrl}/admin/commandes`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
-    const rawList = res?.data?.commandes?.data || res?.data?.commandes || res?.data?.data || res?.data || res || []
-    if (Array.isArray(rawList) && rawList.length > 0) {
-      orders.value = rawList
-    } else {
-      orders.value = fallbackAdminOrders
-    }
+    const list = res?.data?.data || res?.data?.commandes?.data || res?.data?.commandes || res?.data || res
+    orders.value = Array.isArray(list) ? list : []
   } catch (e) {
     console.warn('Admin orders fetch error', e)
-    orders.value = fallbackAdminOrders
+    orders.value = []
+  } finally {
+    isLoading.value = false
   }
-  isLoading.value = false
 }
 
 const openOrderDetail = (cmd) => {

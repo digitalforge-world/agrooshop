@@ -327,7 +327,6 @@ import { ShoppingBag, Search, RefreshCw, CheckCircle, Eye, Download } from 'luci
 import { useGestionnaireAuthStore } from '~/stores/gestionnaireAuth'
 
 definePageMeta({
-  path: '/gestionnaire/commandes',
   layout: 'gestionnaire',
   middleware: 'gestionnaire'
 })

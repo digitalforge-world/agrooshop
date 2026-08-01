@@ -293,7 +293,6 @@ import {
 import { useGestionnaireAuthStore } from '~/stores/gestionnaireAuth'
 
 definePageMeta({
-  path: '/gestionnaire/historique-ventes',
   layout: 'gestionnaire',
   middleware: 'gestionnaire'
 })
