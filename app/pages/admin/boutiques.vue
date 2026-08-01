@@ -131,46 +131,70 @@
                   Prévision
                 </button>
               </td>
-              <td class="px-6 py-4 text-right">
-                <div class="inline-flex items-center gap-1.5 justify-end">
-                  <!-- Bouton Rapport Stock & Ventes -->
+              <td class="px-6 py-4 text-right relative">
+                <div class="inline-block text-left">
                   <button 
-                    @click="openRapportBoutiqueModal(boutique)" 
-                    class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold rounded-xl text-xs transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-xs"
-                    title="Voir le stock restant et le détail des ventes de cette boutique"
+                    @click.stop="toggleDropdown(boutique.id)" 
+                    class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer border border-slate-200 flex items-center justify-center"
+                    title="Menu Actions"
                   >
-                    <Eye class="w-3.5 h-3.5" />
-                    <span>Stock & Ventes</span>
+                    <MoreVertical class="w-4 h-4" />
                   </button>
 
-                  <!-- Bouton Approvisionner -->
-                  <button 
-                    @click="openApprovisionnementModal(boutique)" 
-                    :disabled="!boutique.is_active"
-                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl text-xs transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-xs"
-                    title="Approvisionner le stock de cette boutique"
+                  <!-- Menu Déroulant 3-Points -->
+                  <div 
+                    v-if="activeDropdownId === boutique.id" 
+                    @click.stop
+                    class="absolute right-6 mt-1 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 py-1.5 divide-y divide-slate-100 text-left"
                   >
-                    <Truck class="w-3.5 h-3.5" />
-                    <span>Approvisionner</span>
-                  </button>
+                    <div class="py-1">
+                      <button 
+                        @click="openRapportBoutiqueModal(boutique); activeDropdownId = null" 
+                        class="w-full px-4 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 transition-colors cursor-pointer"
+                      >
+                        <Eye class="w-4 h-4 text-blue-600" />
+                        <span>Bilan Stock & Ventes</span>
+                      </button>
 
-                  <button 
-                    @click="openModal(boutique)" 
-                    class="p-2 bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 rounded-xl transition-all cursor-pointer border border-slate-200/60 hover:border-emerald-200 shadow-2xs"
-                    title="Éditer la boutique"
-                  >
-                    <Pencil class="w-4 h-4" />
-                  </button>
+                      <button 
+                        @click="openApprovisionnementModal(boutique); activeDropdownId = null" 
+                        :disabled="!boutique.is_active"
+                        class="w-full px-4 py-2 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 disabled:opacity-40 flex items-center gap-2 transition-colors cursor-pointer"
+                      >
+                        <Truck class="w-4 h-4 text-emerald-600" />
+                        <span>Approvisionner Stock</span>
+                      </button>
 
-                  <button 
-                    @click="toggleStatut(boutique)" 
-                    class="p-2 rounded-xl transition-all cursor-pointer border shadow-2xs"
-                    :class="boutique.is_active ? 'bg-red-50 hover:bg-red-100 text-red-600 border-red-200' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border-emerald-200'"
-                    :title="boutique.is_active ? 'Désactiver la boutique' : 'Activer la boutique'"
-                  >
-                    <Power v-if="boutique.is_active" class="w-4 h-4" />
-                    <CheckCircle2 v-else class="w-4 h-4" />
-                  </button>
+                      <button 
+                        @click="openPrevision(boutique); activeDropdownId = null" 
+                        :disabled="!boutique.is_active"
+                        class="w-full px-4 py-2 text-xs font-bold text-slate-700 hover:bg-violet-50 hover:text-violet-700 disabled:opacity-40 flex items-center gap-2 transition-colors cursor-pointer"
+                      >
+                        <Sparkles class="w-4 h-4 text-violet-600" />
+                        <span>Prévision IA Réappro</span>
+                      </button>
+                    </div>
+
+                    <div class="py-1">
+                      <button 
+                        @click="openModal(boutique); activeDropdownId = null" 
+                        class="w-full px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition-colors cursor-pointer"
+                      >
+                        <Pencil class="w-4 h-4 text-slate-500" />
+                        <span>Modifier la boutique</span>
+                      </button>
+
+                      <button 
+                        @click="toggleStatut(boutique); activeDropdownId = null" 
+                        class="w-full px-4 py-2 text-xs font-medium flex items-center gap-2 transition-colors cursor-pointer"
+                        :class="boutique.is_active ? 'text-rose-600 hover:bg-rose-50' : 'text-emerald-600 hover:bg-emerald-50'"
+                      >
+                        <Power v-if="boutique.is_active" class="w-4 h-4" />
+                        <CheckCircle2 v-else class="w-4 h-4" />
+                        <span>{{ boutique.is_active ? 'Désactiver la boutique' : 'Activer la boutique' }}</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -796,7 +820,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { Store, Plus, Search, CheckCircle, X, Hammer, Sprout, AlertCircle, Sparkles, BarChart3, Package, AlertTriangle, Pencil, Power, CheckCircle2, Truck, Eye, ShoppingCart, TrendingUp } from 'lucide-vue-next'
+import { Store, Plus, Search, CheckCircle, X, Hammer, Sprout, AlertCircle, Sparkles, BarChart3, Package, AlertTriangle, Pencil, Power, CheckCircle2, Truck, Eye, ShoppingCart, TrendingUp, MoreVertical } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 definePageMeta({
@@ -820,6 +844,17 @@ const isEditing = ref(false)
 const saving = ref(false)
 const formError = ref(null)
 const editingId = ref(null)
+
+const activeDropdownId = ref(null)
+const toggleDropdown = (id) => {
+  activeDropdownId.value = activeDropdownId.value === id ? null : id
+}
+
+if (process.client) {
+  window.addEventListener('click', () => {
+    activeDropdownId.value = null
+  })
+}
 
 const defaultForm = () => ({ nom: '', types: ['agricole'], localisation: '', description: '', is_active: true })
 const form = ref(defaultForm())
@@ -849,7 +884,12 @@ const openRapportBoutiqueModal = async (boutique) => {
 
   try {
     const res = await adminFetch(`/admin/boutiques/${boutique.id}/rapport-ventes`)
-    rapportData.value = res?.data || res
+    const payload = res?.data || res
+    rapportData.value = {
+      kpi: payload?.kpi || {},
+      produits: payload?.produits || [],
+      commandes: payload?.commandes || []
+    }
   } catch (e) {
     console.error('Erreur chargement rapport boutique', e)
   } finally {
