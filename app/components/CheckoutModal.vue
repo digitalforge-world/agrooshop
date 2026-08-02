@@ -275,7 +275,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useCartStore } from '~/stores/cart'
 
 const config = useRuntimeConfig()
@@ -286,14 +286,21 @@ const orderSuccess = ref(false)
 const orderRefCode = ref('')
 const paymentUrl = ref(null)
 const redirectingToPayment = ref(false)
-const boutiques = ref([])
+const defaultBoutiques = [
+  { id: 1, nom: 'AgroShop Siège Principal', localisation: 'Lomé Tokoin' },
+  { id: 2, nom: 'AgroShop Grand Marché', localisation: 'Lomé' },
+  { id: 3, nom: 'AgroShop Totsi', localisation: 'Lomé' },
+  { id: 4, nom: 'AgroShop Kara', localisation: 'Kara' }
+]
+
+const boutiques = ref([...defaultBoutiques])
 
 const form = ref({
   prenom_client: '',
   nom_client: '',
   telephone: '',
   email: '',
-  boutique_id: null,
+  boutique_id: 1,
   mode_livraison: 'domicile',
   adresse_ligne1: '',
   ville: 'Lomé',
@@ -305,16 +312,29 @@ const fetchBoutiques = async () => {
   try {
     const res = await $fetch(`${config.public.apiBaseUrl}/boutiques-publiques`)
     const list = res?.data || res || []
-    boutiques.value = Array.isArray(list) ? list : []
-    if (boutiques.value.length > 0 && !form.value.boutique_id) {
-      form.value.boutique_id = boutiques.value[0].id
+    if (Array.isArray(list) && list.length > 0) {
+      boutiques.value = list
+      if (!boutiques.value.some(b => b.id === form.value.boutique_id)) {
+        form.value.boutique_id = list[0].id
+      }
     }
   } catch (e) {
     console.warn('Error loading public boutiques', e)
   }
 }
 
-onMounted(fetchBoutiques)
+onMounted(() => {
+  fetchBoutiques()
+})
+
+watch(() => cartStore.isCheckoutOpen, (isOpen) => {
+  if (isOpen) {
+    fetchBoutiques()
+    if (!form.value.boutique_id && boutiques.value.length > 0) {
+      form.value.boutique_id = boutiques.value[0].id
+    }
+  }
+})
 
 const calculatedGrandTotal = computed(() => {
   const fee = form.value.mode_livraison === 'domicile' ? 5000 : 0
