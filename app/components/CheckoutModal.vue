@@ -215,7 +215,6 @@
                     <div class="flex items-center gap-1.5 flex-wrap">
                       <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-[10px] font-bold rounded-full border border-yellow-200">TMoney</span>
                       <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-[10px] font-bold rounded-full border border-orange-200">Flooz</span>
-                      <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-bold rounded-full border border-blue-200">Wave</span>
                     </div>
                     <p class="text-[10px] text-slate-500">Paiement immédiat &amp; sécurisé</p>
                   </label>
@@ -302,7 +301,7 @@ const form = ref({
   mode_livraison: 'domicile',
   adresse_ligne1: '',
   ville: 'Lomé',
-  mode_paiement: 'mobile_money',
+  mode_paiement: 'especes',
   commentaires: ''
 })
 

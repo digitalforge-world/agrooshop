@@ -187,9 +187,95 @@
         </div>
 
         <div class="flex items-center gap-4">
-          <div class="flex items-center gap-2 text-[11px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-semibold shadow-2xs">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>API CONNECTÉE</span>
+          <!-- Notification Bell Dropdown Component -->
+          <div class="relative" v-click-outside="closeNotifications">
+            <button 
+              @click="toggleNotifications"
+              type="button"
+              class="relative p-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-emerald-800 transition-all cursor-pointer border border-slate-200 shadow-2xs flex items-center justify-center"
+              title="Notifications commandes"
+            >
+              <Bell class="w-5 h-5" />
+              <span 
+                v-if="unreadNotificationsCount > 0" 
+                class="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-500 text-white font-black text-[10px] flex items-center justify-center border-2 border-white animate-pulse"
+              >
+                {{ unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount }}
+              </span>
+            </button>
+
+            <!-- Notifications Dropdown Panel -->
+            <div 
+              v-if="showNotifications"
+              class="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200"
+            >
+              <div class="p-4 bg-emerald-950 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <Bell class="w-4 h-4 text-emerald-400" />
+                  <h3 class="text-xs font-black tracking-wider uppercase">Notifications Commandes</h3>
+                </div>
+                <span v-if="unreadNotificationsCount > 0" class="text-[10px] bg-emerald-800 text-emerald-200 px-2 py-0.5 rounded-full font-bold">
+                  {{ unreadNotificationsCount }} nouvelle(s)
+                </span>
+              </div>
+
+              <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                <div v-if="notifications.length === 0" class="p-6 text-center text-xs text-slate-400">
+                  Aucune notification de commande récente.
+                </div>
+                <NuxtLink
+                  v-for="item in notifications"
+                  :key="item.id"
+                  :to="`/admin/commandes`"
+                  @click="closeNotifications"
+                  class="p-3.5 hover:bg-slate-50 flex items-start gap-3 transition-colors block"
+                >
+                  <div 
+                    :class="[
+                      'w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5',
+                      item.mode_paiement === 'mobile_money' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
+                    ]"
+                  >
+                    {{ item.mode_paiement === 'mobile_money' ? '📱' : '💵' }}
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between">
+                      <p class="text-xs font-bold text-slate-900 truncate">
+                        {{ item.prenom_client }} {{ item.nom_client }}
+                      </p>
+                      <span class="text-[10px] text-slate-400 font-mono">{{ formatTimeAgo(item.created_at) }}</span>
+                    </div>
+                    <p class="text-[11px] text-slate-600 font-medium">
+                      Ref: <strong class="text-slate-800">{{ item.code_reference }}</strong> — 
+                      <span class="text-emerald-700 font-black">{{ (item.montant_total || 0).toLocaleString('fr-FR') }} FCFA</span>
+                    </p>
+                    <div class="flex items-center gap-1.5 mt-1">
+                      <span class="text-[9px] px-1.5 py-0.5 rounded-md font-bold uppercase bg-slate-100 text-slate-600">
+                        {{ item.mode_paiement === 'mobile_money' ? 'Mobile Money' : 'Espèces' }}
+                      </span>
+                      <span 
+                        :class="[
+                          'text-[9px] px-1.5 py-0.5 rounded-md font-bold uppercase',
+                          item.statut_paiement === 'paye' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                        ]"
+                      >
+                        {{ item.statut_paiement === 'paye' ? 'Payé' : 'En attente' }}
+                      </span>
+                    </div>
+                  </div>
+                </NuxtLink>
+              </div>
+
+              <div class="p-2.5 bg-slate-50 border-t border-slate-100 text-center">
+                <NuxtLink 
+                  to="/admin/commandes" 
+                  @click="closeNotifications"
+                  class="text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors"
+                >
+                  Voir toutes les commandes →
+                </NuxtLink>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -208,6 +294,7 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { 
   Sprout, 
@@ -223,14 +310,88 @@ import {
   Users, 
   Activity,
   ExternalLink, 
-  LogOut 
+  LogOut,
+  Bell
 } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
 const route = useRoute()
 const authStore = useAdminAuthStore()
+const config = useRuntimeConfig()
+
+const showNotifications = ref(false)
+const notifications = ref([])
+const unreadNotificationsCount = ref(0)
+let pollingTimer = null
+
+const toggleNotifications = () => {
+  showNotifications.value = !showNotifications.value
+  if (showNotifications.value) {
+    unreadNotificationsCount.value = 0
+  }
+}
+
+const closeNotifications = () => {
+  showNotifications.value = false
+}
+
+const vClickOutside = {
+  mounted(el, binding) {
+    el.clickOutsideEvent = (event) => {
+      if (!(el === event.target || el.contains(event.target))) {
+        binding.value()
+      }
+    }
+    document.addEventListener('click', el.clickOutsideEvent)
+  },
+  unmounted(el) {
+    document.removeEventListener('click', el.clickOutsideEvent)
+  }
+}
+
+const formatTimeAgo = (dateStr) => {
+  if (!dateStr) return ''
+  const date = new Date(dateStr)
+  const diffMs = new Date() - date
+  const diffMins = Math.floor(diffMs / 60000)
+  if (diffMins < 1) return "À l'instant"
+  if (diffMins < 60) return `il y a ${diffMins} min`
+  const diffHours = Math.floor(diffMins / 60)
+  if (diffHours < 24) return `il y a ${diffHours} h`
+  return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })
+}
+
+const fetchNotifications = async () => {
+  try {
+    const token = authStore.token
+    if (!token) return
+
+    const res = await $fetch(`${config.public.apiBaseUrl}/admin/commandes/notifications`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+
+    const data = res?.data
+    if (data) {
+      notifications.value = data.notifications || []
+      unreadNotificationsCount.value = data.unread_count || 0
+    }
+  } catch (e) {
+    // silencieux sur erreur réseau
+  }
+}
+
+onMounted(() => {
+  fetchNotifications()
+  // Polling automatique toutes les 25 secondes
+  pollingTimer = setInterval(fetchNotifications, 25000)
+})
+
+onUnmounted(() => {
+  if (pollingTimer) clearInterval(pollingTimer)
+})
 
 const handleLogout = () => {
   authStore.logout()
 }
 </script>
+
