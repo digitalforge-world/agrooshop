@@ -100,7 +100,8 @@ export default defineNuxtConfig({
     '/gestionnaire': { ssr: false },
     '/gestionnaire/**': { ssr: false },
     '/produits': { ssr: false },
-    '/produits/**': { ssr: false }
+    '/produits/**': { ssr: false },
+    '/commande/**': { ssr: false }
   },
 
   nitro: {
@@ -132,7 +133,8 @@ export default defineNuxtConfig({
         '/admin/rapports',
         '/admin/visites',
         '/admin/visites/journal',
-        '/admin/blog'
+        '/admin/blog',
+        '/commande/succes'
       ],
       failOnError: false
     }

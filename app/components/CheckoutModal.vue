@@ -8,11 +8,11 @@
       >
         <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[90vh] my-auto border border-slate-100 animate-in fade-in zoom-in-95 duration-200">
           
-          <!-- Fixed Modal Header (Never scrolls away) -->
+          <!-- Fixed Modal Header -->
           <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white flex-shrink-0">
             <div>
               <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wider block">Finalisation de commande</span>
-              <h2 class="text-base sm:text-xl font-black text-slate-900">Validation & Paiement</h2>
+              <h2 class="text-base sm:text-xl font-black text-slate-900">Validation &amp; Paiement</h2>
             </div>
             <button 
               @click="closeModal" 
@@ -23,11 +23,39 @@
             </button>
           </div>
 
-          <!-- Scrollable Modal Content (Scrollbar constrained inside bounds) -->
+          <!-- Scrollable Modal Content -->
           <div class="p-5 sm:p-8 space-y-6 overflow-y-auto flex-1 custom-modal-scroll">
 
-            <!-- Success Confirmation View -->
-            <div v-if="orderSuccess" class="py-8 text-center space-y-4">
+            <!-- Redirecting to LeekPay -->
+            <div v-if="redirectingToPayment" class="py-12 text-center space-y-5">
+              <div class="w-20 h-20 rounded-full bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center mx-auto">
+                <div class="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+              <div class="space-y-2">
+                <h3 class="text-lg font-black text-slate-900">Redirection vers le paiement...</h3>
+                <p class="text-xs text-slate-500 max-w-sm mx-auto">
+                  Commande <strong class="text-emerald-700">{{ orderRefCode }}</strong> enregistrée.<br/>
+                  Vous allez être redirigé vers la page de paiement Mobile Money.
+                </p>
+              </div>
+              <div class="flex flex-col items-center gap-2">
+                <div class="flex items-center gap-2 text-xs text-slate-500">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Paiement sécurisé via LeekPay
+                </div>
+                <a
+                  v-if="paymentUrl"
+                  :href="paymentUrl"
+                  target="_blank"
+                  class="mt-2 px-6 py-3 bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md transition-all"
+                >
+                  Ouvrir la page de paiement →
+                </a>
+              </div>
+            </div>
+
+            <!-- Success Confirmation View (especes / fallback) -->
+            <div v-else-if="orderSuccess" class="py-8 text-center space-y-4">
               <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-3xl shadow-xs">
                 ✓
               </div>
@@ -143,7 +171,7 @@
 
               <!-- Reception & Payment Options -->
               <div class="space-y-4 pt-2 border-t border-slate-100">
-                <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">2. Options de Livraison & Paiement</h3>
+                <h3 class="text-xs font-extrabold text-slate-900 uppercase tracking-wider">2. Options de Livraison &amp; Paiement</h3>
 
                 <!-- Boutique Selection -->
                 <div>
@@ -174,23 +202,48 @@
                 </div>
 
                 <!-- Payment Mode -->
-                <div class="grid grid-cols-2 gap-3">
-                  <label :class="['p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-all', form.mode_paiement === 'mobile_money' ? 'border-emerald-600 bg-emerald-50/60 font-bold text-slate-900 ring-1 ring-emerald-500/30' : 'border-slate-200 text-slate-600']">
-                    <div class="flex items-center gap-2">
-                      <input type="radio" v-model="form.mode_paiement" value="mobile_money" class="sr-only" />
-                      <span class="text-xs">📱 Mobile Money</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <!-- Mobile Money Card -->
+                  <label :class="['p-4 rounded-xl border-2 flex flex-col gap-2 cursor-pointer transition-all', form.mode_paiement === 'mobile_money' ? 'border-emerald-600 bg-emerald-50 ring-1 ring-emerald-500/30' : 'border-slate-200 hover:border-slate-300']">
+                    <input type="radio" v-model="form.mode_paiement" value="mobile_money" class="sr-only" />
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-bold text-slate-900">📱 Mobile Money</span>
+                      <span v-if="form.mode_paiement === 'mobile_money'" class="w-4 h-4 rounded-full bg-emerald-600 flex items-center justify-center">
+                        <span class="text-white text-[8px] font-black">✓</span>
+                      </span>
                     </div>
-                  </label>
-                  <label :class="['p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-all', form.mode_paiement === 'especes' ? 'border-emerald-600 bg-emerald-50/60 font-bold text-slate-900 ring-1 ring-emerald-500/30' : 'border-slate-200 text-slate-600']">
-                    <div class="flex items-center gap-2">
-                      <input type="radio" v-model="form.mode_paiement" value="especes" class="sr-only" />
-                      <span class="text-xs">💵 Espèces à la livraison</span>
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-[10px] font-bold rounded-full border border-yellow-200">TMoney</span>
+                      <span class="px-2 py-0.5 bg-orange-100 text-orange-800 text-[10px] font-bold rounded-full border border-orange-200">Flooz</span>
+                      <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-bold rounded-full border border-blue-200">Wave</span>
                     </div>
+                    <p class="text-[10px] text-slate-500">Paiement immédiat &amp; sécurisé</p>
                   </label>
+
+                  <!-- Espèces Card -->
+                  <label :class="['p-4 rounded-xl border-2 flex flex-col gap-2 cursor-pointer transition-all', form.mode_paiement === 'especes' ? 'border-emerald-600 bg-emerald-50 ring-1 ring-emerald-500/30' : 'border-slate-200 hover:border-slate-300']">
+                    <input type="radio" v-model="form.mode_paiement" value="especes" class="sr-only" />
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-bold text-slate-900">💵 Espèces</span>
+                      <span v-if="form.mode_paiement === 'especes'" class="w-4 h-4 rounded-full bg-emerald-600 flex items-center justify-center">
+                        <span class="text-white text-[8px] font-black">✓</span>
+                      </span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-1">Paiement à la livraison ou en agence</p>
+                  </label>
+                </div>
+
+                <!-- Mobile Money info banner -->
+                <div v-if="form.mode_paiement === 'mobile_money'" class="flex items-start gap-2.5 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                  <span class="text-emerald-600 text-base mt-0.5">🔒</span>
+                  <p class="text-[11px] text-emerald-800 leading-relaxed">
+                    Après validation, vous serez redirigé vers la page de paiement sécurisée LeekPay. 
+                    Votre numéro de téléphone sera pré-rempli automatiquement.
+                  </p>
                 </div>
               </div>
 
-              <!-- Grand Total Calculation -->
+              <!-- Grand Total -->
               <div class="pt-4 border-t border-slate-200 space-y-2 text-xs">
                 <div class="flex justify-between text-slate-600">
                   <span>Sous-total articles :</span>
@@ -212,8 +265,10 @@
                 :disabled="submitting"
                 class="w-full py-3.5 bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-sm rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 disabled:opacity-50"
               >
-                <span>{{ submitting ? 'Validation en cours...' : 'Confirmer la commande' }}</span>
-                <span>✓</span>
+                <span v-if="submitting" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                <span v-if="submitting">Traitement en cours...</span>
+                <span v-else-if="form.mode_paiement === 'mobile_money'">Payer {{ calculatedGrandTotal.toLocaleString('fr-FR') }} FCFA — Mobile Money 📱</span>
+                <span v-else>Confirmer la commande ✓</span>
               </button>
             </form>
 
@@ -234,6 +289,8 @@ const cartStore = useCartStore()
 const submitting = ref(false)
 const orderSuccess = ref(false)
 const orderRefCode = ref('')
+const paymentUrl = ref(null)
+const redirectingToPayment = ref(false)
 const boutiques = ref([])
 
 const form = ref({
@@ -278,6 +335,8 @@ const whatsappDirectUrl = computed(() => {
 const closeModal = () => {
   cartStore.closeCheckout()
   orderSuccess.value = false
+  redirectingToPayment.value = false
+  paymentUrl.value = null
 }
 
 const trackOrderValidation = (refCode) => {
@@ -288,7 +347,7 @@ const trackOrderValidation = (refCode) => {
       body: {
         page: window.location.pathname,
         type_action: 'validation_commande',
-        details: `Commande Confirmée N° ${refCode} par ${form.value.prenom_client} ${form.value.nom_client} (${form.value.telephone}) - Total: ${calculatedGrandTotal.value.toLocaleString('fr-FR')} FCFA`
+        details: `Commande Confirmée N° ${refCode} par ${form.value.prenom_client} ${form.value.nom_client} (${form.value.telephone}) - Total: ${calculatedGrandTotal.value.toLocaleString('fr-FR')} FCFA - Mode: ${form.value.mode_paiement}`
       }
     })
   } catch (e) {}
@@ -327,6 +386,7 @@ const submitOrder = async () => {
       articles: itemsMapped,
       type_livraison: form.value.mode_livraison === 'domicile' ? 'livraison' : 'retrait_agence',
       mode_livraison: form.value.mode_livraison,
+      mode_paiement: form.value.mode_paiement,
       boutique_id: form.value.boutique_id ? Number(form.value.boutique_id) : 1
     }
 
@@ -340,7 +400,21 @@ const submitOrder = async () => {
 
     trackOrderValidation(orderRefCode.value)
     cartStore.clearCart()
-    orderSuccess.value = true
+
+    // --- Paiement Mobile Money : redirection vers LeekPay ---
+    if (form.value.mode_paiement === 'mobile_money' && data?.payment_url) {
+      paymentUrl.value = data.payment_url
+      redirectingToPayment.value = true
+
+      // Afficher l'état de chargement 1.2s puis rediriger
+      setTimeout(() => {
+        window.location.href = data.payment_url
+      }, 1200)
+    } else {
+      // Espèces ou LeekPay indisponible : affichage succès classique
+      orderSuccess.value = true
+    }
+
   } catch (e) {
     console.error('Erreur enregistrement commande API', e)
     alert(e?.data?.message || e?.message || "Erreur lors de l'enregistrement de votre commande.")
