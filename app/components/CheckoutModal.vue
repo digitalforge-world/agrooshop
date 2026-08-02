@@ -41,7 +41,7 @@
               <div class="flex flex-col items-center gap-2">
                 <div class="flex items-center gap-2 text-xs text-slate-500">
                   <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                  Paiement sécurisé via LeekPay
+                  Paiement Mobile Money sécurisé
                 </div>
                 <a
                   v-if="paymentUrl"
@@ -236,7 +236,7 @@
                 <div v-if="form.mode_paiement === 'mobile_money'" class="flex items-start gap-2.5 bg-emerald-50 border border-emerald-200 rounded-xl p-3">
                   <span class="text-emerald-600 text-base mt-0.5">🔒</span>
                   <p class="text-[11px] text-emerald-800 leading-relaxed">
-                    Après validation, vous serez redirigé vers la page de paiement sécurisée LeekPay. 
+                    Après validation, vous serez redirigé vers la page de paiement Mobile Money sécurisée. 
                     Votre numéro de téléphone sera pré-rempli automatiquement.
                   </p>
                 </div>
