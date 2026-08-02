@@ -115,6 +115,8 @@ export default defineNuxtConfig({
         '/quincaillerie',
         '/contact',
         '/faq',
+        '/produits',
+        '/blog',
         '/gestionnaire/login',
         '/gestionnaire',
         '/gestionnaire/stock',

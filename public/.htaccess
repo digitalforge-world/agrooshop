@@ -4,5 +4,14 @@
   RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteRule . index.html [L]
 </IfModule>
+
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-cache, no-store, must-revalidate" "expr=%{REQUEST_URI} =~ m#^/(produits|blog|commande|gestionnaire|admin)(/|$)#"
+  Header set Pragma "no-cache" "expr=%{REQUEST_URI} =~ m#^/(produits|blog|commande|gestionnaire|admin)(/|$)#"
+  Header set Expires "0" "expr=%{REQUEST_URI} =~ m#^/(produits|blog|commande|gestionnaire|admin)(/|$)#"
+</IfModule>
+
+Options -MultiViews
+ErrorDocument 404 /
