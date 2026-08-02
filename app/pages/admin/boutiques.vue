@@ -120,16 +120,26 @@
                 </span>
               </td>
               <td class="px-6 py-4">
-                <button
-                  @click="openPrevision(boutique)"
-                  :disabled="!boutique.is_active"
-                  class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 disabled:opacity-50 disabled:cursor-not-allowed text-indigo-700 border border-indigo-200 rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-xs"
-                  title="Voir la prévision de réapprovisionnement"
-                >
-                  <BarChart3 class="w-3 h-3 text-violet-600" />
-                  <Sparkles class="w-3 h-3" />
-                  Prévision
-                </button>
+                <div class="flex items-center gap-2">
+                  <button
+                    @click="openRapportBoutiqueModal(boutique)"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-[10px] font-extrabold transition-all cursor-pointer shadow-xs"
+                    title="Voir l'historique des ventes et l'activité journalière"
+                  >
+                    <ShoppingCart class="w-3.5 h-3.5 text-emerald-600" />
+                    <span>📜 Ventes &amp; Historique</span>
+                  </button>
+
+                  <button
+                    @click="openPrevision(boutique)"
+                    :disabled="!boutique.is_active"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-indigo-50 to-violet-50 hover:from-indigo-100 hover:to-violet-100 disabled:opacity-50 disabled:cursor-not-allowed text-indigo-700 border border-indigo-200 rounded-lg text-[10px] font-bold transition-all cursor-pointer shadow-xs"
+                    title="Voir la prévision de réapprovisionnement"
+                  >
+                    <Sparkles class="w-3 h-3 text-violet-600" />
+                    <span>Prévision</span>
+                  </button>
+                </div>
               </td>
               <td class="px-6 py-4 text-right relative">
                 <div class="inline-block text-left">
@@ -649,111 +659,218 @@
       </Transition>
     </Teleport>
 
-    <!-- ===================== MODAL RAPPORT STOCK & VENTES BOUTIQUE ===================== -->
+    <!-- ===================== MODAL HISTORIQUE DES VENTES & ACTIVITÉ BOUTIQUE ===================== -->
     <Teleport to="body">
       <Transition name="modal-fade">
         <div v-if="showRapportModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs" @click.self="showRapportModal = false">
-          <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+          <div class="bg-white border border-slate-200 rounded-3xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden">
             
             <!-- Header -->
-            <div class="p-5 border-b border-slate-100 flex items-center justify-between flex-shrink-0">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700">
-                  <Eye class="w-5 h-5" />
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-950 text-white flex-shrink-0">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 shadow-md">
+                  <ShoppingCart class="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 class="text-base font-black text-slate-900 flex items-center gap-2">
-                    Bilan Stock & Ventes — {{ selectedBoutiqueForRapport?.nom }}
-                  </h2>
-                  <p class="text-[11px] text-slate-500">Localisation: {{ selectedBoutiqueForRapport?.localisation || selectedBoutiqueForRapport?.adresse || 'Lomé, Togo' }}</p>
+                  <div class="flex items-center gap-2">
+                    <h2 class="text-lg font-black tracking-wide text-white">
+                      Historique des Ventes — {{ selectedBoutiqueForRapport?.nom }}
+                    </h2>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-800 text-emerald-200 border border-emerald-700 capitalize">
+                      {{ selectedBoutiqueForRapport?.localisation || selectedBoutiqueForRapport?.adresse || 'Lomé' }}
+                    </span>
+                  </div>
+
+                  <!-- Responsables / Managers -->
+                  <div class="flex items-center gap-2 text-xs text-emerald-300 mt-1">
+                    <span class="font-bold text-white">👤 Manager(s) responsable(s) :</span>
+                    <span v-if="rapportData.boutique?.gestionnaires && rapportData.boutique.gestionnaires.length > 0" class="font-mono">
+                      {{ rapportData.boutique.gestionnaires.map(g => `${g.prenom || ''} ${g.nom || ''} (${g.telephone || g.email || 'Manager'})`).join(', ') }}
+                    </span>
+                    <span v-else class="italic text-emerald-400/80">Aucun gestionnaire assigné</span>
+                  </div>
                 </div>
               </div>
-              <button @click="showRapportModal = false" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer">
-                <X class="w-5 h-5" />
+              <button @click="showRapportModal = false" class="p-2 text-emerald-300 hover:text-white hover:bg-emerald-900/60 rounded-xl transition-colors cursor-pointer">
+                <X class="w-6 h-6" />
               </button>
             </div>
 
             <!-- Loading -->
-            <div v-if="loadingRapport" class="p-12 text-center text-slate-500 font-mono text-xs flex-shrink-0">
-              <div class="w-7 h-7 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-              Chargement des stocks et de l'historique des ventes...
+            <div v-if="loadingRapport" class="p-16 text-center text-slate-500 font-mono text-xs flex-shrink-0">
+              <div class="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+              Chargement de l'historique des ventes et caisses...
             </div>
 
-            <div v-else class="overflow-y-auto p-5 space-y-6 flex-1">
+            <div v-else class="overflow-y-auto p-6 space-y-6 flex-1 bg-slate-50/50">
               
-              <!-- 4 KPI Cards -->
+              <!-- 4 KPI Cards analytics (Journalières & Globale) -->
               <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <div class="bg-blue-50/60 border border-blue-200 rounded-xl p-3.5">
-                  <p class="text-[10px] font-bold uppercase tracking-wider text-blue-700">Chiffre d'Affaires</p>
-                  <p class="text-lg font-black text-blue-900 font-mono mt-1">{{ Number(rapportData.kpi?.chiffre_affaires_total || 0).toLocaleString('fr-FR') }} <span class="text-[10px] font-normal">FCFA</span></p>
+                
+                <!-- KPI Aujourd'hui -->
+                <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl p-4 shadow-md shadow-emerald-900/10">
+                  <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-emerald-100">
+                    <span>☀️ Ventes Aujourd'hui</span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                  </div>
+                  <p class="text-xl font-black font-mono mt-1 text-white">
+                    {{ Number(rapportData.kpi?.chiffre_affaires_aujourdhui || 0).toLocaleString('fr-FR') }} <span class="text-xs font-normal text-emerald-200">FCFA</span>
+                  </p>
+                  <p class="text-[10px] font-medium text-emerald-100 mt-1">
+                    {{ rapportData.kpi?.nombre_commandes_aujourdhui || 0 }} transaction(s) ce jour
+                  </p>
                 </div>
-                <div class="bg-emerald-50/60 border border-emerald-200 rounded-xl p-3.5">
-                  <p class="text-[10px] font-bold uppercase tracking-wider text-emerald-700">Ventes Effectuées</p>
-                  <p class="text-lg font-black text-emerald-900 font-mono mt-1">{{ rapportData.kpi?.nombre_commandes || 0 }} <span class="text-[10px] font-normal">reçus</span></p>
+
+                <!-- KPI Total CA -->
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-2xs">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">💰 Chiffre d'Affaires Total</p>
+                  <p class="text-xl font-black text-slate-900 font-mono mt-1">
+                    {{ Number(rapportData.kpi?.chiffre_affaires_total || 0).toLocaleString('fr-FR') }} <span class="text-xs font-normal text-slate-500">FCFA</span>
+                  </p>
+                  <p class="text-[10px] font-medium text-slate-400 mt-1">Cumul historique</p>
                 </div>
-                <div class="bg-purple-50/60 border border-purple-200 rounded-xl p-3.5">
-                  <p class="text-[10px] font-bold uppercase tracking-wider text-purple-700">Articles Vendus</p>
-                  <p class="text-lg font-black text-purple-900 font-mono mt-1">{{ rapportData.kpi?.total_articles_vendus || 0 }} <span class="text-[10px] font-normal">unités</span></p>
+
+                <!-- KPI Total Transactions -->
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-2xs">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">🛒 Total Commandes</p>
+                  <p class="text-xl font-black text-blue-700 font-mono mt-1">
+                    {{ rapportData.kpi?.nombre_commandes || 0 }} <span class="text-xs font-normal text-slate-500">reçus</span>
+                  </p>
+                  <p class="text-[10px] font-medium text-slate-400 mt-1">Transactions validées</p>
                 </div>
-                <div class="bg-amber-50/60 border border-amber-200 rounded-xl p-3.5">
-                  <p class="text-[10px] font-bold uppercase tracking-wider text-amber-700">Valeur Stock Restant</p>
-                  <p class="text-lg font-black text-amber-900 font-mono mt-1">{{ Number(rapportData.kpi?.valeur_stock_restant || 0).toLocaleString('fr-FR') }} <span class="text-[10px] font-normal">FCFA</span></p>
+
+                <!-- KPI Total Articles -->
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-2xs">
+                  <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">📦 Articles Vendus</p>
+                  <p class="text-xl font-black text-purple-700 font-mono mt-1">
+                    {{ rapportData.kpi?.total_articles_vendus || 0 }} <span class="text-xs font-normal text-slate-500">unités</span>
+                  </p>
+                  <p class="text-[10px] font-medium text-slate-400 mt-1">Stock débité</p>
                 </div>
               </div>
 
-              <!-- Tabs Navigation -->
-              <div class="flex border-b border-slate-200">
-                <button 
-                  @click="activeRapportTab = 'products'" 
-                  class="px-4 py-2.5 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 cursor-pointer"
-                  :class="activeRapportTab === 'products' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-700'"
-                >
-                  <Package class="w-4 h-4" />
-                  <span>Stock Restant & Ventes par Produit ({{ rapportData.produits?.length || 0 }})</span>
-                </button>
-                <button 
-                  @click="activeRapportTab = 'sales'" 
-                  class="px-4 py-2.5 text-xs font-bold border-b-2 transition-colors flex items-center gap-2 cursor-pointer"
-                  :class="activeRapportTab === 'sales' ? 'border-emerald-600 text-emerald-700' : 'border-transparent text-slate-500 hover:text-slate-700'"
-                >
-                  <ShoppingCart class="w-4 h-4" />
-                  <span>Historique des Ventes / Caisses ({{ rapportData.commandes?.length || 0 }})</span>
-                </button>
+              <!-- Navigation par Onglets -->
+              <div class="flex items-center justify-between border-b border-slate-200 pb-1">
+                <div class="flex gap-2">
+                  <button 
+                    @click="activeRapportTab = 'sales'" 
+                    class="px-4 py-2.5 text-xs font-extrabold border-b-2 transition-all flex items-center gap-2 cursor-pointer"
+                    :class="activeRapportTab === 'sales' ? 'border-emerald-600 text-emerald-800 bg-emerald-50/50 rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800'"
+                  >
+                    <ShoppingCart class="w-4 h-4 text-emerald-600" />
+                    <span>Historique des Ventes / Caisses ({{ rapportData.commandes?.length || 0 }})</span>
+                  </button>
+                  
+                  <button 
+                    @click="activeRapportTab = 'products'" 
+                    class="px-4 py-2.5 text-xs font-extrabold border-b-2 transition-all flex items-center gap-2 cursor-pointer"
+                    :class="activeRapportTab === 'products' ? 'border-emerald-600 text-emerald-800 bg-emerald-50/50 rounded-t-xl' : 'border-transparent text-slate-500 hover:text-slate-800'"
+                  >
+                    <Package class="w-4 h-4 text-blue-600" />
+                    <span>Stock & Ventes par Produit ({{ rapportData.produits?.length || 0 }})</span>
+                  </button>
+                </div>
               </div>
 
-              <!-- TAB 1: Stock Restant vs Ventes par Produit -->
-              <div v-if="activeRapportTab === 'products'" class="space-y-3">
-                <div class="border border-slate-200 rounded-xl overflow-hidden">
+              <!-- TAB 1: HISTORIQUE DES VENTES / CAISSES -->
+              <div v-if="activeRapportTab === 'sales'" class="space-y-4">
+                
+                <!-- Filtres et Recherche pour l'Historique -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200 shadow-2xs">
+                  <!-- Période -->
+                  <div class="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mr-1">Période:</span>
+                    <button 
+                      v-for="p in [
+                        { key: 'all', label: 'Toutes' },
+                        { key: 'today', label: '☀️ Aujourd\'hui' },
+                        { key: 'week', label: '📅 7 derniers jours' },
+                        { key: 'month', label: '🗓️ Ce mois-ci' }
+                      ]"
+                      :key="p.key"
+                      @click="selectedPeriodFilter = p.key"
+                      :class="[
+                        'px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap',
+                        selectedPeriodFilter === p.key ? 'bg-emerald-800 text-white shadow-xs' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                      ]"
+                    >
+                      {{ p.label }}
+                    </button>
+                  </div>
+
+                  <!-- Recherche par Référence / Client / Téléphone -->
+                  <div class="relative w-full sm:w-72">
+                    <input 
+                      v-model="searchSalesQuery" 
+                      type="text" 
+                      placeholder="Rechercher réf, client, téléphone..." 
+                      class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-600 focus:bg-white transition-colors"
+                    />
+                    <Search class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                  </div>
+                </div>
+
+                <!-- Tableau des Ventes -->
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
                   <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-500 border-b border-slate-200">
+                    <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-600 border-b border-slate-200">
                       <tr>
-                        <th class="px-4 py-3">Produit</th>
-                        <th class="px-4 py-3">Catégorie</th>
-                        <th class="px-4 py-3 text-center">Stock Restant</th>
-                        <th class="px-4 py-3 text-center">Total Vendu</th>
-                        <th class="px-4 py-3 text-right">CA Généré (FCFA)</th>
+                        <th class="px-5 py-3.5">Réf. Vente</th>
+                        <th class="px-5 py-3.5">Date &amp; Heure</th>
+                        <th class="px-5 py-3.5">Client &amp; Téléphone</th>
+                        <th class="px-5 py-3.5">Mode Paiement</th>
+                        <th class="px-5 py-3.5">Articles Vendus</th>
+                        <th class="px-5 py-3.5 text-right">Montant Total</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 font-medium">
-                      <tr v-if="!rapportData.produits || rapportData.produits.length === 0">
-                        <td colspan="5" class="px-4 py-8 text-center text-slate-400">Aucun produit affecté à cette boutique</td>
+                      <tr v-if="filteredSales.length === 0">
+                        <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                          <ShoppingCart class="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                          <p class="font-bold">Aucune vente ne correspond à vos critères</p>
+                        </td>
                       </tr>
-                      <tr v-for="p in rapportData.produits" :key="p.produit_id" class="hover:bg-slate-50">
-                        <td class="px-4 py-3">
-                          <p class="font-bold text-slate-900">{{ p.nom_commercial }}</p>
-                          <p class="text-[10px] text-slate-400 font-mono">{{ p.prix_unitaire?.toLocaleString('fr-FR') }} FCFA / {{ p.unite_mesure || 'unité' }}</p>
+                      <tr v-for="cmd in filteredSales" :key="cmd.id" class="hover:bg-emerald-50/20 transition-colors">
+                        <td class="px-5 py-3.5 font-mono font-bold text-emerald-800">
+                          {{ cmd.code_reference }}
                         </td>
-                        <td class="px-4 py-3 text-slate-500">{{ p.categorie_nom }}</td>
-                        <td class="px-4 py-3 text-center">
-                          <span :class="p.stock_restant <= p.stock_alerte ? 'bg-red-100 text-red-800 border-red-300 font-black' : 'bg-emerald-100 text-emerald-800 border-emerald-200 font-bold'" class="px-2.5 py-1 rounded-full text-xs border font-mono">
-                            {{ p.stock_restant }} {{ p.unite_mesure }}
-                          </span>
+                        <td class="px-5 py-3.5 text-slate-600 font-mono text-[11px]">
+                          {{ new Date(cmd.created_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) }}
                         </td>
-                        <td class="px-4 py-3 text-center font-mono font-bold text-purple-700 text-sm">
-                          {{ p.quantite_vendue }}
+                        <td class="px-5 py-3.5">
+                          <p class="font-bold text-slate-900">{{ cmd.nom_client || 'Client Comptoir' }}</p>
+                          <p class="text-[10px] text-slate-500 font-mono">{{ cmd.telephone }}</p>
                         </td>
-                        <td class="px-4 py-3 text-right font-mono font-bold text-blue-700">
-                          {{ Number(p.chiffre_affaires || 0).toLocaleString('fr-FR') }} FCFA
+                        <td class="px-5 py-3.5">
+                          <div class="flex items-center gap-1.5">
+                            <span 
+                              :class="[
+                                'px-2.5 py-1 rounded-full text-[10px] font-bold border capitalize inline-flex items-center gap-1',
+                                cmd.mode_paiement === 'mobile_money' ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                              ]"
+                            >
+                              <span>{{ cmd.mode_paiement === 'mobile_money' ? '📱 Mobile Money' : '💵 Espèces' }}</span>
+                            </span>
+                            <span 
+                              :class="[
+                                'px-2 py-0.5 rounded-md text-[9px] font-bold uppercase',
+                                cmd.statut_paiement === 'paye' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'
+                              ]"
+                            >
+                              {{ cmd.statut_paiement === 'paye' ? 'Payé' : 'En attente' }}
+                            </span>
+                          </div>
+                        </td>
+                        <td class="px-5 py-3.5">
+                          <div class="space-y-1">
+                            <p v-for="art in cmd.articles" :key="art.nom_commercial" class="text-[11px] text-slate-700">
+                              • <span class="font-bold text-slate-900">{{ art.quantite }}x</span> {{ art.nom_commercial }}
+                              <span class="text-[10px] text-slate-400 font-mono">({{ Number(art.prix_unitaire || 0).toLocaleString('fr-FR') }} FCFA)</span>
+                            </p>
+                          </div>
+                        </td>
+                        <td class="px-5 py-3.5 text-right font-mono font-black text-emerald-800 text-sm">
+                          {{ Number(cmd.montant_total || 0).toLocaleString('fr-FR') }} FCFA
                         </td>
                       </tr>
                     </tbody>
@@ -761,39 +878,39 @@
                 </div>
               </div>
 
-              <!-- TAB 2: Historique des Ventes / Caisses -->
-              <div v-if="activeRapportTab === 'sales'" class="space-y-3">
-                <div class="border border-slate-200 rounded-xl overflow-hidden">
+              <!-- TAB 2: VENTES PAR PRODUIT & STOCK -->
+              <div v-if="activeRapportTab === 'products'" class="space-y-3">
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
                   <table class="w-full text-left text-xs">
-                    <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-500 border-b border-slate-200">
+                    <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-600 border-b border-slate-200">
                       <tr>
-                        <th class="px-4 py-3">Réf. Vente</th>
-                        <th class="px-4 py-3">Date & Heure</th>
-                        <th class="px-4 py-3">Client</th>
-                        <th class="px-4 py-3">Articles</th>
-                        <th class="px-4 py-3 text-right">Total Payé</th>
+                        <th class="px-5 py-3.5">Produit</th>
+                        <th class="px-5 py-3.5">Catégorie</th>
+                        <th class="px-5 py-3.5 text-center">Stock Restant</th>
+                        <th class="px-5 py-3.5 text-center">Total Vendu</th>
+                        <th class="px-5 py-3.5 text-right">CA Généré (FCFA)</th>
                       </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 font-medium">
-                      <tr v-if="!rapportData.commandes || rapportData.commandes.length === 0">
-                        <td colspan="5" class="px-4 py-8 text-center text-slate-400">Aucune vente enregistrée dans cette boutique</td>
+                      <tr v-if="!rapportData.produits || rapportData.produits.length === 0">
+                        <td colspan="5" class="px-6 py-12 text-center text-slate-400">Aucun produit affecté à cette boutique</td>
                       </tr>
-                      <tr v-for="cmd in rapportData.commandes" :key="cmd.id" class="hover:bg-slate-50">
-                        <td class="px-4 py-3 font-mono font-bold text-emerald-700">{{ cmd.code_reference }}</td>
-                        <td class="px-4 py-3 text-slate-500 text-[11px]">{{ new Date(cmd.created_at).toLocaleString('fr-FR') }}</td>
-                        <td class="px-4 py-3">
-                          <p class="font-bold text-slate-900">{{ cmd.nom_client || 'Client Comptoir' }}</p>
-                          <p class="text-[10px] text-slate-400">{{ cmd.telephone }}</p>
+                      <tr v-for="p in rapportData.produits" :key="p.produit_id" class="hover:bg-slate-50">
+                        <td class="px-5 py-3.5">
+                          <p class="font-bold text-slate-900">{{ p.nom_commercial }}</p>
+                          <p class="text-[10px] text-slate-400 font-mono">{{ p.prix_unitaire?.toLocaleString('fr-FR') }} FCFA / {{ p.unite_mesure || 'unité' }}</p>
                         </td>
-                        <td class="px-4 py-3">
-                          <div class="space-y-0.5">
-                            <p v-for="art in cmd.articles" :key="art.nom_commercial" class="text-[11px] text-slate-700">
-                              • <span class="font-bold">{{ art.quantite }}x</span> {{ art.nom_commercial }}
-                            </p>
-                          </div>
+                        <td class="px-5 py-3.5 text-slate-600">{{ p.categorie_nom }}</td>
+                        <td class="px-5 py-3.5 text-center">
+                          <span :class="p.stock_restant <= p.stock_alerte ? 'bg-red-100 text-red-800 border-red-300 font-black' : 'bg-emerald-100 text-emerald-800 border-emerald-200 font-bold'" class="px-2.5 py-1 rounded-full text-xs border font-mono">
+                            {{ p.stock_restant }} {{ p.unite_mesure }}
+                          </span>
                         </td>
-                        <td class="px-4 py-3 text-right font-mono font-black text-amber-700 text-sm">
-                          {{ Number(cmd.montant_total || 0).toLocaleString('fr-FR') }} FCFA
+                        <td class="px-5 py-3.5 text-center font-mono font-bold text-purple-700 text-sm">
+                          {{ p.quantite_vendue }}
+                        </td>
+                        <td class="px-5 py-3.5 text-right font-mono font-bold text-emerald-800">
+                          {{ Number(p.chiffre_affaires || 0).toLocaleString('fr-FR') }} FCFA
                         </td>
                       </tr>
                     </tbody>
@@ -804,8 +921,8 @@
             </div>
 
             <!-- Footer -->
-            <div class="p-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50 rounded-b-2xl flex-shrink-0">
-              <button @click="showRapportModal = false" class="px-5 py-2.5 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs rounded-xl transition-colors border border-slate-200 cursor-pointer">
+            <div class="p-4 border-t border-slate-100 flex justify-end gap-3 bg-white rounded-b-3xl flex-shrink-0">
+              <button @click="showRapportModal = false" class="px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors border border-slate-200 cursor-pointer">
                 Fermer
               </button>
             </div>
@@ -868,24 +985,60 @@ const selectedBoutiqueForPrevision = ref(null)
 const showRapportModal = ref(false)
 const loadingRapport = ref(false)
 const selectedBoutiqueForRapport = ref(null)
-const activeRapportTab = ref('products')
+const activeRapportTab = ref('sales')
+const selectedPeriodFilter = ref('all')
+const searchSalesQuery = ref('')
+
 const rapportData = ref({
-  kpi: { chiffre_affaires_total: 0, nombre_commandes: 0, total_articles_vendus: 0, valeur_stock_restant: 0 },
+  boutique: { id: null, nom: '', adresse: '', gestionnaires: [] },
+  kpi: { chiffre_affaires_total: 0, nombre_commandes: 0, total_articles_vendus: 0, valeur_stock_restant: 0, chiffre_affaires_aujourdhui: 0, nombre_commandes_aujourdhui: 0, total_articles_aujourdhui: 0 },
   produits: [],
   commandes: []
+})
+
+const filteredSales = computed(() => {
+  let list = rapportData.value.commandes || []
+
+  // Filtre par période
+  if (selectedPeriodFilter.value === 'today') {
+    const todayStr = new Date().toISOString().split('T')[0]
+    list = list.filter(c => c.created_at && c.created_at.startsWith(todayStr))
+  } else if (selectedPeriodFilter.value === 'week') {
+    const past7Days = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    list = list.filter(c => new Date(c.created_at) >= past7Days)
+  } else if (selectedPeriodFilter.value === 'month') {
+    const now = new Date()
+    const firstDayMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    list = list.filter(c => new Date(c.created_at) >= firstDayMonth)
+  }
+
+  // Filtre par recherche texte (référence, client, téléphone)
+  if (searchSalesQuery.value.trim()) {
+    const q = searchSalesQuery.value.toLowerCase().trim()
+    list = list.filter(c =>
+      (c.code_reference || '').toLowerCase().includes(q) ||
+      (c.nom_client || '').toLowerCase().includes(q) ||
+      (c.telephone || '').toLowerCase().includes(q)
+    )
+  }
+
+  return list
 })
 
 const openRapportBoutiqueModal = async (boutique) => {
   selectedBoutiqueForRapport.value = boutique
   showRapportModal.value = true
   loadingRapport.value = true
-  activeRapportTab.value = 'products'
-  rapportData.value = { kpi: {}, produits: [], commandes: [] }
+  activeRapportTab.value = 'sales'
+  selectedPeriodFilter.value = 'all'
+  searchSalesQuery.value = ''
+  rapportData.value = { boutique: {}, kpi: {}, produits: [], commandes: [] }
 
   try {
     const res = await adminFetch(`/admin/boutiques/${boutique.id}/rapport-ventes`)
     const payload = res?.data || res
     rapportData.value = {
+      boutique: payload?.boutique || {},
       kpi: payload?.kpi || {},
       produits: payload?.produits || [],
       commandes: payload?.commandes || []
