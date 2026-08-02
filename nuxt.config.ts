@@ -101,14 +101,18 @@ export default defineNuxtConfig({
     '/gestionnaire/**': { ssr: false },
     '/produits': { ssr: false },
     '/produits/**': { ssr: false },
-    '/commande/**': { ssr: false }
+    '/blog/**': { ssr: false },
+    '/commande/**': { ssr: false },
+    '/checkout': { ssr: false },
+    '/agrodop': { ssr: false },
+    '/quincaillerie': { ssr: false },
+    '/contact': { ssr: false },
+    '/faq': { ssr: false }
   },
 
   nitro: {
     prerender: {
-      // Désactiver le suivi automatique des liens pour éviter le crawl sauvage
       crawlLinks: false,
-      // Générer les shells HTML SPA statiques pour les routes publiques et d'accès direct
       routes: [
         '/',
         '/agrodop',
@@ -138,7 +142,21 @@ export default defineNuxtConfig({
         '/admin/blog',
         '/commande/succes'
       ],
-      failOnError: false
+      failOnError: false,
+      ignore: [
+        '/_nuxt/builds/**',
+        '/__seo_utils__/**'
+      ]
+    },
+    compressPublicAssets: true,
+    routeRules: {
+      '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+      '/assets/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+      '/images/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+      '/favicon.png': { headers: { 'cache-control': 'public, max-age=86400' } },
+      '/logo.png': { headers: { 'cache-control': 'public, max-age=86400' } },
+      '/robots.txt': { headers: { 'cache-control': 'public, max-age=86400' } },
+      '/sitemap.xml': { headers: { 'cache-control': 'public, max-age=86400' } }
     }
   },
 

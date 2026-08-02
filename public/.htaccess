@@ -1,3 +1,11 @@
+<IfModule LiteSpeed>
+  RewriteEngine On
+  RewriteRule .* - [E=Cache-Control:no-cache]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [END]
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
@@ -8,10 +16,15 @@
 </IfModule>
 
 <IfModule mod_headers.c>
-  Header set Cache-Control "no-cache, no-store, must-revalidate" "expr=%{REQUEST_URI} =~ m#^/(produits|blog|commande|gestionnaire|admin)(/|$)#"
-  Header set Pragma "no-cache" "expr=%{REQUEST_URI} =~ m#^/(produits|blog|commande|gestionnaire|admin)(/|$)#"
-  Header set Expires "0" "expr=%{REQUEST_URI} =~ m#^/(produits|blog|commande|gestionnaire|admin)(/|$)#"
+  Header set Cache-Control "no-cache, no-store, must-revalidate" "expr=%{REQUEST_URI} =~ m#^/(produits|blog|commande|gestionnaire|admin|agrodop|quincaillerie|contact|faq|checkout)(/|$)#"
+  Header set Pragma "no-cache" "expr=%{REQUEST_URI} =~ m#^/(produits|blog|commande|gestionnaire|admin|agrodop|quincaillerie|contact|faq|checkout)(/|$)#"
+  Header set Expires "0" "expr=%{REQUEST_URI} =~ m#^/(produits|blog|commande|gestionnaire|admin|agrodop|quincaillerie|contact|faq|checkout)(/|$)#"
 </IfModule>
 
-Options -MultiViews
+<IfModule LiteSpeed>
+  CacheDisable /
+</IfModule>
+
+Options -MultiViews -Indexes
 ErrorDocument 404 /
+ErrorDocument 200 /index.html
