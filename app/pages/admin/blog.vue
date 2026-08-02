@@ -642,15 +642,15 @@ const fetchArticles = async () => {
     const res = await $fetch(`${config.public.apiBaseUrl}/admin/blog`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
-    const list = res?.data?.data || res?.data || res || []
-    if (Array.isArray(list) && list.length > 0) {
+    const list = res?.data?.data || res?.data || res
+    if (Array.isArray(list)) {
       articles.value = list
     } else {
-      articles.value = fallbackArticlesList
+      articles.value = []
     }
   } catch (e) {
     console.warn('Admin blog fetch error', e)
-    articles.value = fallbackArticlesList
+    articles.value = []
   }
   isLoading.value = false
 }
