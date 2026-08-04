@@ -111,7 +111,7 @@
         Chargement des articles de blog...
       </div>
 
-      <div v-else-if="filteredArticles.length > 0" class="overflow-y-auto flex-1 custom-modal-scroll">
+      <div v-else-if="filteredArticles.length > 0" class="overflow-x-auto overflow-y-auto flex-1 custom-modal-scroll">
         <table class="w-full text-left text-xs text-slate-700 relative">
           
           <!-- Sticky Header -->
