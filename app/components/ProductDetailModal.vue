@@ -166,65 +166,97 @@
 
             <!-- Quantity & Actions Box -->
             <div class="space-y-4">
-              <!-- Quantity Selector & Line Total -->
-              <div class="flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-200">
-                <span class="text-xs font-bold text-slate-700">Quantité :</span>
-                <div class="flex items-center gap-3">
-                  <div class="flex items-center bg-white border border-slate-300 rounded-xl overflow-hidden shadow-xs">
-                    <button 
-                      @click="quantity > 1 ? quantity-- : null"
-                      class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 font-bold transition-colors cursor-pointer"
-                    >-</button>
-                    <span class="px-3 text-xs font-extrabold text-slate-900">{{ quantity }}</span>
-                    <button 
-                      @click="quantity < (product.stock_disponible || 999) ? quantity++ : null"
-                      class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 font-bold transition-colors cursor-pointer"
-                    >+</button>
+              <template v-if="isService">
+                <!-- Service Info Box -->
+                <div class="bg-amber-50 p-3.5 rounded-2xl border border-amber-200/80 space-y-1.5 text-xs text-amber-900">
+                  <div class="flex items-center gap-2 font-black text-amber-950">
+                    <ShieldCheck class="w-4 h-4 text-amber-600 flex-shrink-0" />
+                    <span>Service d'Assainissement & Inspection Terrain</span>
                   </div>
-
-                  <span class="text-sm font-black text-emerald-800">
-                    {{ (Number(product.prix_unitaire) * quantity).toLocaleString('fr-FR') }} FCFA
-                  </span>
+                  <p class="text-[11px] text-amber-800 leading-relaxed font-medium">
+                    Ce service ne comporte pas de tarif fixe standard. L'équipe technique AgroShop se déplace chez vous pour inspecter le terrain et établir un devis personnalisé.
+                  </p>
                 </div>
-              </div>
 
-              <!-- Main Buttons -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <button
-                  @click="handleAddToCart"
-                  :disabled="product.stock_disponible <= 0"
-                  :class="[
-                    'w-full py-3.5 rounded-2xl text-xs font-black transition-all cursor-pointer shadow-md flex items-center justify-center gap-2 active:scale-95',
-                    product.stock_disponible > 0 
-                      ? 'bg-emerald-800 hover:bg-emerald-700 text-white' 
-                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  ]"
+                <a 
+                  :href="serviceWhatsappUrl"
+                  target="_blank"
+                  class="w-full py-3.5 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-black rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                 >
-                  <ShoppingCart v-if="!isAdded" class="w-4 h-4" />
-                  <Check v-else class="w-4 h-4 text-lime-300" />
-                  <span>{{ isAdded ? 'Ajouté au panier !' : 'Ajouter au panier' }}</span>
-                </button>
+                  <MessageSquare class="w-4 h-4 text-amber-300" />
+                  <span>Demander un diagnostic terrain (WhatsApp)</span>
+                </a>
 
-                <button
-                  @click="handleBuyNow"
-                  :disabled="product.stock_disponible <= 0"
-                  class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                <a 
+                  href="tel:+22898706081"
+                  class="w-full py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                 >
-                  <Zap class="w-4 h-4" />
-                  <span>Acheter maintenant</span>
-                </button>
-              </div>
+                  <Phone class="w-4 h-4 text-slate-950" />
+                  <span>Appeler le +228 98 70 60 81</span>
+                </a>
+              </template>
 
-              <!-- WhatsApp Quick Order -->
-              <a 
-                :href="whatsappOrderUrl"
-                target="_blank"
-                @click="trackWhatsappClick"
-                class="w-full py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-              >
-                <MessageSquare class="w-4 h-4 text-emerald-600" />
-                <span>Commander directement par WhatsApp</span>
-              </a>
+              <template v-else>
+                <!-- Quantity Selector & Line Total -->
+                <div class="flex items-center justify-between bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                  <span class="text-xs font-bold text-slate-700">Quantité :</span>
+                  <div class="flex items-center gap-3">
+                    <div class="flex items-center bg-white border border-slate-300 rounded-xl overflow-hidden shadow-xs">
+                      <button 
+                        @click="quantity > 1 ? quantity-- : null"
+                        class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 font-bold transition-colors cursor-pointer"
+                      >-</button>
+                      <span class="px-3 text-xs font-extrabold text-slate-900">{{ quantity }}</span>
+                      <button 
+                        @click="quantity < (product.stock_disponible || 999) ? quantity++ : null"
+                        class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 font-bold transition-colors cursor-pointer"
+                      >+</button>
+                    </div>
+
+                    <span class="text-sm font-black text-emerald-800">
+                      {{ (Number(product.prix_unitaire) * quantity).toLocaleString('fr-FR') }} FCFA
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Main Buttons -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    @click="handleAddToCart"
+                    :disabled="product.stock_disponible <= 0"
+                    :class="[
+                      'w-full py-3.5 rounded-2xl text-xs font-black transition-all cursor-pointer shadow-md flex items-center justify-center gap-2 active:scale-95',
+                      product.stock_disponible > 0 
+                        ? 'bg-amber-400 hover:bg-amber-300 text-gray-900' 
+                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    ]"
+                  >
+                    <ShoppingCart v-if="!isAdded" class="w-4 h-4" />
+                    <Check v-else class="w-4 h-4 text-lime-300" />
+                    <span>{{ isAdded ? 'Ajouté au panier !' : 'Ajouter au panier' }}</span>
+                  </button>
+
+                  <button
+                    @click="handleBuyNow"
+                    :disabled="product.stock_disponible <= 0"
+                    class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                  >
+                    <Zap class="w-4 h-4" />
+                    <span>Acheter maintenant</span>
+                  </button>
+                </div>
+
+                <!-- WhatsApp Quick Order -->
+                <a 
+                  :href="whatsappOrderUrl"
+                  target="_blank"
+                  @click="trackWhatsappClick"
+                  class="w-full py-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-extrabold rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                >
+                  <MessageSquare class="w-4 h-4 text-emerald-600" />
+                  <span>Commander directement par WhatsApp</span>
+                </a>
+              </template>
             </div>
 
           </div>
@@ -236,7 +268,7 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
-import { X, ShoppingCart, Check, ShieldCheck, Truck, Leaf, Star, MessageSquare, Zap, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { X, ShoppingCart, Check, ShieldCheck, Truck, Leaf, Star, MessageSquare, Zap, ChevronLeft, ChevronRight, Phone } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'
 
 const props = defineProps({
@@ -254,6 +286,21 @@ const isFallback = ref(false)
 const selectedImageIndex = ref(0)
 
 const fallbackImage = '/images/Agroshopproduit .png'
+
+const isService = computed(() => {
+  if (!props.product) return false
+  if (props.product.is_service) return true
+  if (props.product.unite_mesure === 'service' || props.product.unite_mesure === 'intervention') return true
+  const catName = (props.product.categories?.[0]?.nom || '').toLowerCase()
+  const name = (props.product.nom_commercial || '').toLowerCase()
+  return catName.includes('service') || catName.includes('dératisation') || catName.includes('désinsectisation') || catName.includes('fumigation') || name.includes('dératisation') || name.includes('désinsectisation') || name.includes('fumigation') || name.includes('reptile')
+})
+
+const serviceWhatsappUrl = computed(() => {
+  if (!props.product) return '#'
+  const msg = `Bonjour AgroShop, je souhaite demander une visite de diagnostic terrain pour le service: "${props.product.nom_commercial}".`
+  return `https://wa.me/22898706081?text=${encodeURIComponent(msg)}`
+})
 
 watch(() => props.product, () => {
   quantity.value = 1

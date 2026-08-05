@@ -115,7 +115,7 @@
             <div v-show="showCatMenu" class="absolute top-full left-0 w-64 bg-white rounded-b-xl shadow-xl border border-gray-200 py-2 z-50">
               <NuxtLink 
                 v-for="cat in navCategories" :key="cat.slug"
-                :to="`/produits?category=${cat.slug}`"
+                :to="cat.isService ? '/services' : `/produits?category=${cat.slug}`"
                 class="flex items-center gap-3 px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors"
                 @click="showCatMenu = false"
               >
@@ -231,12 +231,13 @@ const showMobileSearchModal = ref(false)
 const navLinks = [
   { to: '/', label: 'ACCUEIL' },
   { to: '/produits', label: 'BOUTIQUE' },
+  { to: '/services', label: 'SERVICES & HYGIÈNE' },
   { to: '/blog', label: 'BLOG' },
-  { to: '/blog', label: 'CONSEILS' },
   { to: '/contact', label: 'CONTACT' },
 ]
 
 const navCategories = [
+  { name: 'Services Anti-Nuisibles', slug: 'services-anti-nuisibles', icon: ShieldCheck, isService: true },
   { name: 'Intrants agricoles', slug: 'intrants-agricoles', icon: Beaker },
   { name: 'Produits phytosanitaires', slug: 'produits-phytosanitaires', icon: Bug },
   { name: 'Semences', slug: 'semences', icon: Sprout },

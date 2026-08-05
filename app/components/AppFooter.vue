@@ -37,12 +37,12 @@
         <div>
           <h4 class="text-white font-extrabold text-sm uppercase tracking-wider mb-4 border-b border-[#8cc63f]/30 pb-2 inline-block">Nos Services</h4>
           <ul class="space-y-2.5 text-xs text-emerald-100/90 font-medium">
-            <li><NuxtLink to="/produits" class="hover:text-[#8cc63f] transition-colors">Conseil Agricole</NuxtLink></li>
+            <li><NuxtLink to="/services" class="hover:text-[#8cc63f] transition-colors text-amber-300 font-bold">Dératisation & Anti-Nuisibles</NuxtLink></li>
+            <li><NuxtLink to="/services" class="hover:text-[#8cc63f] transition-colors">Désinsectisation & Fumigation</NuxtLink></li>
             <li><NuxtLink to="/produits" class="hover:text-[#8cc63f] transition-colors">Protection des Cultures</NuxtLink></li>
             <li><NuxtLink to="/produits" class="hover:text-[#8cc63f] transition-colors">Fertilisation</NuxtLink></li>
             <li><NuxtLink to="/produits" class="hover:text-[#8cc63f] transition-colors">Irrigation</NuxtLink></li>
-            <li><NuxtLink to="/blog" class="hover:text-[#8cc63f] transition-colors">Formation</NuxtLink></li>
-            <li><NuxtLink to="/contact" class="hover:text-[#8cc63f] transition-colors">Accompagnement</NuxtLink></li>
+            <li><NuxtLink to="/contact" class="hover:text-[#8cc63f] transition-colors">Accompagnement Terrain</NuxtLink></li>
           </ul>
         </div>
 

@@ -55,27 +55,47 @@
 
       <!-- Price + Actions -->
       <div class="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-gray-100 space-y-2">
-        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-0.5 sm:gap-0">
-          <span class="text-sm sm:text-lg font-extrabold text-gray-900">
-            {{ Number(product.prix_unitaire).toLocaleString('fr-FR') }} <span class="text-[10px] sm:text-xs font-semibold text-gray-500">FCFA</span>
-          </span>
-          <span class="text-[9px] sm:text-[11px] text-gray-400 font-medium">/ {{ product.unite_mesure || 'unité' }}</span>
-        </div>
-        
-        <button
-          @click.stop="addToCart"
-          :disabled="product.stock_disponible <= 0"
-          :class="[
-            'w-full py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-1.5',
-            product.stock_disponible > 0 
-              ? 'bg-emerald-800 hover:bg-emerald-700 text-white' 
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-          ]"
-        >
-          <ShoppingCart class="w-3.5 h-3.5" />
-          <span class="hidden sm:inline">{{ isAdded ? 'Ajouté au panier !' : 'Ajouter au panier' }}</span>
-          <span class="sm:hidden">{{ isAdded ? 'Ajouté !' : 'Ajouter' }}</span>
-        </button>
+        <template v-if="isService">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] sm:text-xs font-black text-amber-800 bg-amber-50 border border-amber-200/80 px-2 py-1 rounded-md">
+              Sur Devis · Visite Terrain
+            </span>
+          </div>
+
+          <a
+            :href="serviceWhatsappUrl"
+            target="_blank"
+            @click.stop
+            class="w-full py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold bg-emerald-800 hover:bg-emerald-700 text-white transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-1.5"
+          >
+            <MessageSquare class="w-3.5 h-3.5 text-amber-300" />
+            <span>Demander un devis</span>
+          </a>
+        </template>
+
+        <template v-else>
+          <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-0.5 sm:gap-0">
+            <span class="text-sm sm:text-lg font-extrabold text-gray-900">
+              {{ Number(product.prix_unitaire).toLocaleString('fr-FR') }} <span class="text-[10px] sm:text-xs font-semibold text-gray-500">FCFA</span>
+            </span>
+            <span class="text-[9px] sm:text-[11px] text-gray-400 font-medium">/ {{ product.unite_mesure || 'unité' }}</span>
+          </div>
+          
+          <button
+            @click.stop="addToCart"
+            :disabled="product.stock_disponible <= 0"
+            :class="[
+              'w-full py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-1.5',
+              product.stock_disponible > 0 
+                ? 'bg-amber-400 hover:bg-amber-300 text-gray-900' 
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            ]"
+          >
+            <ShoppingCart class="w-3.5 h-3.5" />
+            <span class="hidden sm:inline">{{ isAdded ? 'Ajouté au panier !' : 'Ajouter au panier' }}</span>
+            <span class="sm:hidden">{{ isAdded ? 'Ajouté !' : 'Ajouter' }}</span>
+          </button>
+        </template>
       </div>
     </div>
 
@@ -90,7 +110,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Eye, ShoppingCart } from 'lucide-vue-next'
+import { Eye, ShoppingCart, MessageSquare } from 'lucide-vue-next'
 import { useCartStore } from '~/stores/cart'
 import ProductDetailModal from '~/components/ProductDetailModal.vue'
 
@@ -104,6 +124,19 @@ const isFallback = ref(false)
 const showModal = ref(false)
 
 const fallbackImage = '/images/Agroshopproduit .png'
+
+const isService = computed(() => {
+  if (props.product.is_service) return true
+  if (props.product.unite_mesure === 'service' || props.product.unite_mesure === 'intervention') return true
+  const catName = (props.product.categories?.[0]?.nom || '').toLowerCase()
+  const name = (props.product.nom_commercial || '').toLowerCase()
+  return catName.includes('service') || catName.includes('dératisation') || catName.includes('désinsectisation') || catName.includes('fumigation') || name.includes('dératisation') || name.includes('désinsectisation') || name.includes('fumigation') || name.includes('reptile')
+})
+
+const serviceWhatsappUrl = computed(() => {
+  const msg = `Bonjour AgroShop, je souhaite des informations et une visite de diagnostic terrain pour le service: "${props.product.nom_commercial}".`
+  return `https://wa.me/22898706081?text=${encodeURIComponent(msg)}`
+})
 
 const openModal = () => {
   showModal.value = true

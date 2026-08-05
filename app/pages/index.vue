@@ -84,22 +84,22 @@
         </div>
 
         <!-- Desktop / Tablet Grid -->
-        <div class="hidden sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="hidden sm:grid sm:grid-cols-3 lg:grid-cols-7 gap-3 lg:gap-3.5">
           <NuxtLink 
             v-for="(cat, idx) in categoryCards" 
             :key="idx"
             :to="cat.link"
             :class="[
-              'group flex flex-col items-center text-center p-5 rounded-xl border border-gray-200 hover:border-emerald-400 hover:shadow-md transition-all duration-300 bg-white',
+              'group flex flex-col items-center text-center p-3.5 sm:p-4 rounded-xl border border-gray-200 hover:border-emerald-400 hover:shadow-md transition-all duration-300 bg-white',
               idx % 2 === 0 ? 'reveal-left' : 'reveal-right',
               `stagger-${(idx % 4) + 1}`
             ]"
           >
-            <div class="w-14 h-14 rounded-full bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-110">
-              <component :is="cat.icon" class="w-6 h-6 text-emerald-700" />
+            <div class="w-12 h-12 rounded-full bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center mb-2.5 transition-transform duration-300 group-hover:scale-110">
+              <component :is="cat.icon" class="w-5 h-5 text-emerald-700" />
             </div>
-            <h3 class="text-sm font-semibold text-gray-900 group-hover:text-emerald-700 transition-colors">{{ cat.name }}</h3>
-            <p class="text-[11px] text-gray-400 mt-0.5">{{ cat.sub }}</p>
+            <h3 class="text-xs font-bold text-gray-900 group-hover:text-emerald-700 transition-colors leading-tight mb-0.5">{{ cat.name }}</h3>
+            <p class="text-[10px] text-gray-400 leading-tight">{{ cat.sub }}</p>
           </NuxtLink>
         </div>
       </div>
@@ -141,6 +141,7 @@
         </div>
       </div>
     </section>
+
 
 
     <!-- ═══ CALCULATOR ═══ -->
@@ -284,6 +285,7 @@ const trustItems = [
 
 // Categories
 const categoryCards = [
+  { name: 'Services Anti-Nuisibles', sub: 'Dératisation, Fumigation...', link: '/services', icon: ShieldCheck },
   { name: 'Intrants agricoles', sub: 'Engrais, NPK, Urée...', link: '/produits?category=intrants-agricoles', icon: Beaker },
   { name: 'Produits phytosanitaires', sub: 'Insecticides, Fongicides...', link: '/produits?category=produits-phytosanitaires', icon: Bug },
   { name: 'Semences', sub: 'Légumes, Céréales...', link: '/produits?category=semences', icon: Sprout },
