@@ -145,7 +145,7 @@
           <!-- Map -->
           <div class="relative w-full h-[320px] md:h-[400px] bg-slate-800 rounded-3xl overflow-hidden border border-white/10 shadow-2xl group">
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.052!2d1.2179458!3d6.1304538!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwMDcnNDkuNiJOIDHCsDEzJzA0LjYiRQ!5e0!3m2!1sfr!2stg!4v1700000000000!5m2!1sfr!2stg"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.123!2d1.372810!3d6.177996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1023efb509523b83%3A0xcdc9ca3bfd443ed!2sAgroShop!5e0!3m2!1sfr!2stg!4v1700000000000!5m2!1sfr!2stg"
               class="w-full h-full" 
               style="border:0;" 
               allowfullscreen="" 
@@ -155,7 +155,7 @@
 
             <!-- Quick Itinerary Floating Button -->
             <a 
-              href="https://www.google.com/maps/dir/?api=1&destination=6.1304538,1.2179458" 
+              href="https://maps.app.goo.gl/gZuMpanNmHSMaj2Q9" 
               target="_blank" 
               rel="noopener noreferrer"
               class="absolute bottom-4 right-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 transition-all transform hover:scale-105"
@@ -177,16 +177,16 @@
                 <h3 class="font-bold text-lg mb-1">Siège & Agences au Togo</h3>
                 <p class="text-slate-300 text-xs leading-relaxed mb-3">
                   Route d'Aného, face à Sanol Gaz, Kpogan<br />
-                  BP 12941, Lomé - Togo &nbsp;·&nbsp; <span class="text-amber-400 font-mono font-semibold">46J9+55P</span>
+                  BP 12941, Lomé - Togo
                 </p>
                 <a 
-                  href="https://www.google.com/maps/dir/?api=1&destination=6.1304538,1.2179458" 
+                  href="https://maps.app.goo.gl/gZuMpanNmHSMaj2Q9" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   class="inline-flex items-center gap-2 bg-amber-400/10 hover:bg-amber-400/20 text-amber-400 border border-amber-400/30 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
                 >
                   <Navigation class="w-3.5 h-3.5" />
-                  Calculer l'itinéraire vers AgroShop
+                  Ouvrir AgroShop dans Google Maps
                   <ExternalLink class="w-3 h-3" />
                 </a>
               </div>
