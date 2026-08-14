@@ -160,11 +160,20 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-center text-sm font-semibold text-gray-500 uppercase tracking-wider mb-8">Nos partenaires de confiance</h2>
         <div class="overflow-hidden">
-          <div class="animate-marquee">
+          <div class="flex animate-marquee items-center gap-8 min-w-full">
             <template v-for="n in 2" :key="n">
-              <div v-for="(p, idx) in partners" :key="`${n}-${idx}`" class="flex-shrink-0 mx-10 flex items-center justify-center h-16">
-                <img v-if="p.logo_url" :src="getImageUrl(p.logo_url)" :alt="p.nom" class="h-12 w-auto object-contain grayscale hover:grayscale-0 transition-all opacity-60 hover:opacity-100 cursor-pointer" />
-                <span v-else class="text-base font-bold text-gray-300 hover:text-emerald-600 transition-colors whitespace-nowrap cursor-default">{{ p.nom }}</span>
+              <div v-for="(p, idx) in partners" :key="`${n}-${idx}`" class="flex-shrink-0 mx-4 flex items-center justify-center h-16">
+                <img 
+                  v-if="p.logo_url && !failedLogos.has(p.id || p.nom)" 
+                  :src="getImageUrl(p.logo_url)" 
+                  :alt="p.nom" 
+                  @error="onPartnerLogoError(p.id || p.nom)"
+                  class="h-12 max-w-[160px] object-contain grayscale hover:grayscale-0 transition-all opacity-80 hover:opacity-100 cursor-pointer drop-shadow-xs" 
+                />
+                <div v-else class="px-4 py-2 bg-slate-50 border border-slate-200/80 rounded-xl shadow-2xs flex items-center gap-2 hover:border-emerald-500/40 hover:bg-emerald-50/50 transition-all cursor-pointer">
+                  <Building2 class="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                  <span class="text-xs font-black text-slate-700 tracking-wide whitespace-nowrap">{{ p.nom }}</span>
+                </div>
               </div>
             </template>
           </div>
@@ -266,7 +275,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { 
-  ArrowRight, Star,
+  ArrowRight, Star, Building2,
   Truck, ShieldCheck, Banknote, Headphones,
   Beaker, Bug, Droplets, Sprout, Tractor, Wrench
 } from 'lucide-vue-next'
@@ -296,6 +305,10 @@ const categoryCards = [
 
 // Partners
 const partners = ref([])
+const failedLogos = ref(new Set())
+const onPartnerLogoError = (key) => {
+  failedLogos.value.add(key)
+}
 
 // Testimonials
 const testimonials = [
@@ -365,13 +378,28 @@ onMounted(async () => {
 
   try {
     const partRes = await $fetch(`${config.public.apiBaseUrl}/partenaires`)
-    if (partRes?.data) {
+    if (partRes?.data && Array.isArray(partRes.data) && partRes.data.length > 0) {
       partners.value = partRes.data
+    } else {
+      partners.value = [
+        { id: 1, nom: 'YARA International', logo_url: null },
+        { id: 2, nom: 'Bayer CropScience', logo_url: null },
+        { id: 3, nom: 'Syngenta Togo', logo_url: null },
+        { id: 4, nom: 'CAGIA Togo', logo_url: null },
+        { id: 5, nom: 'ITRA Togo', logo_url: null },
+        { id: 6, nom: 'FAO Agriculture', logo_url: null }
+      ]
     }
   } catch (e) {
     console.warn('API partenaires offline', e)
-    // Fallback if needed
-    partners.value = [{ nom: 'YARA International' }, { nom: 'Bayer CropScience' }, { nom: 'Bejo Zaden' }]
+    partners.value = [
+      { id: 1, nom: 'YARA International', logo_url: null },
+      { id: 2, nom: 'Bayer CropScience', logo_url: null },
+      { id: 3, nom: 'Syngenta Togo', logo_url: null },
+      { id: 4, nom: 'CAGIA Togo', logo_url: null },
+      { id: 5, nom: 'ITRA Togo', logo_url: null },
+      { id: 6, nom: 'FAO Agriculture', logo_url: null }
+    ]
   }
 
   isLoading.value = false

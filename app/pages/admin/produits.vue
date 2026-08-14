@@ -357,8 +357,8 @@
                 <span class="text-amber-700 font-bold text-sm">{{ selectedProductDetail.stock_alerte || 10 }}</span>
               </div>
               <div class="p-2.5 bg-white rounded-xl border border-slate-200 shadow-xs">
-                <span class="text-slate-500 text-[10px] block uppercase">Poids (kg)</span>
-                <span class="text-slate-800 font-bold text-sm">{{ selectedProductDetail.poids ? `${selectedProductDetail.poids} kg` : '50.0 kg' }}</span>
+                <span class="text-slate-500 text-[10px] block uppercase">Poids</span>
+                <span class="text-slate-800 font-bold text-sm">{{ formatPoidsDisplay(selectedProductDetail.poids) }}</span>
               </div>
               <div class="p-2.5 bg-white rounded-xl border border-slate-200 shadow-xs">
                 <span class="text-slate-500 text-[10px] block uppercase">Dimensions</span>
@@ -840,14 +840,30 @@
                 </div>
 
                 <div>
-                  <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Poids (kg)</label>
-                  <input 
-                    v-model.number="form.poids" 
-                    type="number" 
-                    step="0.1" 
-                    placeholder="ex: 50" 
-                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
-                  />
+                  <div class="flex items-center justify-between mb-1">
+                    <label class="block text-xs font-bold text-slate-700 uppercase">Poids</label>
+                    <span v-if="poidsEquivalentText" class="text-[11px] font-semibold text-emerald-600">
+                      (= {{ poidsEquivalentText }})
+                    </span>
+                  </div>
+                  <div class="flex items-center">
+                    <input 
+                      v-model.number="poidsValeur" 
+                      type="number" 
+                      :step="poidsUnite === 'g' ? '1' : '0.01'" 
+                      :placeholder="poidsUnite === 'g' ? 'ex: 500' : 'ex: 50'" 
+                      class="w-full px-4 py-2.5 bg-slate-50 border border-r-0 border-slate-200 rounded-l-xl text-xs text-slate-900 focus:outline-none focus:border-emerald-500 focus:bg-white font-medium"
+                      @input="updateFormPoids"
+                    />
+                    <select 
+                      v-model="poidsUnite"
+                      @change="onPoidsUniteChange"
+                      class="px-3 py-2.5 bg-slate-100 border border-slate-200 rounded-r-xl text-xs font-bold text-slate-700 focus:outline-none focus:border-emerald-500 cursor-pointer transition-colors hover:bg-slate-200"
+                    >
+                      <option value="kg">kg</option>
+                      <option value="g">g</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div>
@@ -1318,6 +1334,60 @@ const form = ref({
   meta_description: ''
 })
 
+const poidsValeur = ref(null)
+const poidsUnite = ref('kg')
+
+const updateFormPoids = () => {
+  if (poidsValeur.value === null || poidsValeur.value === undefined || poidsValeur.value === '' || isNaN(Number(poidsValeur.value))) {
+    form.value.poids = null
+    return
+  }
+  const val = Number(poidsValeur.value)
+  if (poidsUnite.value === 'g') {
+    form.value.poids = Number((val / 1000).toFixed(4))
+  } else {
+    form.value.poids = val
+  }
+}
+
+const onPoidsUniteChange = () => {
+  if (poidsValeur.value !== null && poidsValeur.value !== undefined && poidsValeur.value !== '' && !isNaN(Number(poidsValeur.value))) {
+    const val = Number(poidsValeur.value)
+    if (poidsUnite.value === 'g') {
+      poidsValeur.value = Math.round(val * 1000)
+    } else {
+      poidsValeur.value = Number((val / 1000).toFixed(4))
+    }
+  }
+  updateFormPoids()
+}
+
+const poidsEquivalentText = computed(() => {
+  if (poidsValeur.value === null || poidsValeur.value === undefined || poidsValeur.value === '' || isNaN(Number(poidsValeur.value))) {
+    return ''
+  }
+  const val = Number(poidsValeur.value)
+  if (poidsUnite.value === 'g') {
+    const inKg = Number((val / 1000).toFixed(4))
+    return `${inKg} kg`
+  } else {
+    const inG = Math.round(val * 1000)
+    return `${inG.toLocaleString('fr-FR')} g`
+  }
+})
+
+const formatPoidsDisplay = (poidsInKg) => {
+  if (poidsInKg === null || poidsInKg === undefined || poidsInKg === '') return 'Non spécifié'
+  const p = Number(poidsInKg)
+  if (isNaN(p) || p <= 0) return 'Non spécifié'
+  if (p < 1) {
+    const g = Math.round(p * 1000)
+    return `${g} g (${p} kg)`
+  }
+  const g = Math.round(p * 1000)
+  return `${p} kg (${g.toLocaleString('fr-FR')} g)`
+}
+
 const formatPrice = (val) => Number(val || 0).toLocaleString('fr-FR')
 const getImgUrl = (img) => getImageUrl(img, fallbackImage)
 
@@ -1599,6 +1669,8 @@ const populateFormFromProd = (prod) => {
     ? Number(prod.categories.find(c => c.pivot?.principale).id) 
     : (extractedIds[0] || (categoriesList.value[0]?.id || 1))
 
+  const pKg = prod.poids !== null && prod.poids !== undefined ? Number(prod.poids) : null
+
   form.value = {
     nom_commercial: prod.nom_commercial || '',
     description: prod.description || '',
@@ -1612,7 +1684,7 @@ const populateFormFromProd = (prod) => {
     unite_mesure: prod.unite_mesure || 'sac 50kg',
     stock_disponible: Number(prod.stock_disponible || 0),
     stock_alerte: Number(prod.stock_alerte || 10),
-    poids: prod.poids ? Number(prod.poids) : null,
+    poids: pKg,
     dimensions: prod.dimensions || '',
     url_image: prod.image_principale?.url_image || prod.url_image || '',
     selectedCategories: extractedIds,
@@ -1622,6 +1694,19 @@ const populateFormFromProd = (prod) => {
     slug: prod.slug || '',
     meta_title: prod.meta_title || (prod.nom_commercial ? `${prod.nom_commercial} - AgroShop Togo` : ''),
     meta_description: prod.meta_description || prod.description || 'Achetez en ligne au Togo au meilleur prix certifié.'
+  }
+
+  if (pKg !== null && !isNaN(pKg) && pKg > 0) {
+    if (pKg < 1) {
+      poidsUnite.value = 'g'
+      poidsValeur.value = Math.round(pKg * 1000)
+    } else {
+      poidsUnite.value = 'kg'
+      poidsValeur.value = pKg
+    }
+  } else {
+    poidsUnite.value = 'kg'
+    poidsValeur.value = null
   }
 }
 
@@ -1659,6 +1744,8 @@ const openAddModal = () => {
     meta_title: '',
     meta_description: ''
   }
+  poidsUnite.value = 'kg'
+  poidsValeur.value = 50
   isModalOpen.value = true
 }
 
@@ -1939,7 +2026,15 @@ const genererFicheProduitIA = async () => {
         form.value.stock_alerte = data.suggestion_stock_alerte
       }
       if (typeof data.suggestion_poids_kg === 'number' && !form.value.poids) {
-        form.value.poids = data.suggestion_poids_kg
+        const pKg = data.suggestion_poids_kg
+        form.value.poids = pKg
+        if (pKg < 1) {
+          poidsUnite.value = 'g'
+          poidsValeur.value = Math.round(pKg * 1000)
+        } else {
+          poidsUnite.value = 'kg'
+          poidsValeur.value = pKg
+        }
       }
       if (data.suggestion_dimensions && !form.value.dimensions) {
         form.value.dimensions = String(data.suggestion_dimensions)

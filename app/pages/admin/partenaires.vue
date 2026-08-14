@@ -36,7 +36,13 @@
             <tr v-for="partenaire in partenaires" :key="partenaire.id" class="hover:bg-slate-50/50 transition-colors">
               <td class="px-6 py-4">
                 <div class="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center overflow-hidden border border-slate-200">
-                  <img v-if="partenaire.logo_url" :src="getImageUrl(partenaire.logo_url)" :alt="partenaire.nom" class="w-full h-full object-contain p-1" />
+                  <img 
+                    v-if="partenaire.logo_url && !failedLogos.has(partenaire.id)" 
+                    :src="getImageUrl(partenaire.logo_url)" 
+                    :alt="partenaire.nom" 
+                    @error="failedLogos.add(partenaire.id)"
+                    class="w-full h-full object-contain p-1" 
+                  />
                   <ImageIcon v-else class="w-5 h-5 text-slate-400" />
                 </div>
               </td>
@@ -152,6 +158,7 @@ const config = useRuntimeConfig()
 const { getImageUrl } = useMedia()
 
 const partenaires = ref([])
+const failedLogos = ref(new Set())
 const loading = ref(true)
 
 const showModal = ref(false)

@@ -239,9 +239,9 @@
                   <button
                     @click="handleBuyNow"
                     :disabled="product.stock_disponible <= 0"
-                    class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                    class="w-full py-3.5 bg-orange-600 hover:bg-orange-500 disabled:opacity-50 text-white text-xs font-black rounded-2xl shadow-md shadow-orange-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                   >
-                    <Zap class="w-4 h-4" />
+                    <Zap class="w-4 h-4 text-amber-300 fill-amber-300" />
                     <span>Acheter maintenant</span>
                   </button>
                 </div>
