@@ -1,336 +1,433 @@
 <template>
-  <div class="min-h-screen bg-slate-50 py-6 sm:py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">
-      
-      <!-- ═══ HERO BANNER ═══ -->
-      <div class="relative bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-900 rounded-3xl p-6 sm:p-12 text-white overflow-hidden shadow-2xl border border-emerald-800/40">
-        <!-- Ambient decorative glows -->
-        <div class="absolute -top-24 -right-24 w-96 h-96 bg-amber-400/20 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="min-h-screen bg-[#F7F9F8] text-slate-900 selection:bg-amber-400 selection:text-slate-950">
 
-        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- SECTION 1: HERO HEADER (FULL-BLEED BACKGROUND LIKE HOMEPAGE HERO)-->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section class="relative overflow-hidden bg-white min-h-[480px] sm:min-h-[520px] flex items-center border-b border-slate-200/60 select-none">
+      
+      <!-- Background Image (Widescreen African AgroShop technician, non-zoomed, seamlessly feathered) -->
+      <div class="absolute inset-0 z-0">
+        <img 
+          src="/images/services-hero-tech-wide.png" 
+          alt="Technicien africain certifié AgroShop en intervention" 
+          class="w-full h-full object-cover object-right"
+        />
+        <!-- Soft Gradient Overlay on Left Side for Text Contrast -->
+        <div class="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent lg:w-[50%]"></div>
+      </div>
+
+      <!-- Main Content Container -->
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
-          <div class="lg:col-span-7 space-y-5 text-center lg:text-left">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-black uppercase tracking-wider">
-              <ShieldCheck class="w-4 h-4 text-amber-400" />
-              <span>Services Certifiés AgroShop</span>
+          <!-- Hero Text Left -->
+          <div class="lg:col-span-7 space-y-6 text-left">
+            
+            <!-- Pill Badge -->
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-300/70 text-[#072B1C] text-xs font-bold uppercase tracking-wider">
+              <svg class="w-4 h-4 text-[#072B1C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+              <span>SERVICES CERTIFIÉS AGROSHOP</span>
             </div>
 
-            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black text-white leading-tight">
-              Dites adieu aux <span class="text-amber-400">nuisibles !</span>
+            <!-- Main Title -->
+            <h1 class="text-4xl sm:text-6xl font-black text-[#072B1C] leading-[1.1] tracking-tight">
+              Dites adieu <br />
+              <span class="text-[#D49917]">aux nuisibles !</span>
             </h1>
 
-            <p class="text-xs sm:text-base text-emerald-100/90 leading-relaxed font-medium max-w-2xl">
-              La solution professionnelle certifiée pour votre maison, jardin, entrepôts et exploitations agricoles au Togo. Nos techniciens se déplacent directement sur le terrain pour un diagnostic précis avant tout traitement.
+            <!-- Description Paragraph -->
+            <p class="text-sm sm:text-base text-slate-600 font-medium leading-relaxed max-w-xl">
+              La solution professionnelle certifiée pour votre maison, jardin, entrepôts et exploitations agricoles au Togo.
+              Nos techniciens se déplacent directement sur le terrain pour un diagnostic précis avant tout traitement.
             </p>
 
-            <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+            <!-- 3 Bullet Features Row -->
+            <div class="flex flex-wrap items-center gap-3 text-xs font-extrabold text-[#072B1C] pt-1">
+              <div class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-2xs">
+                <svg class="w-4 h-4 text-[#072B1C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+                <span>Diagnostic sur site</span>
+              </div>
+
+              <div class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-2xs">
+                <svg class="w-4 h-4 text-[#072B1C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+                <span>Traitement professionnel</span>
+              </div>
+
+              <div class="flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-2xs">
+                <svg class="w-4 h-4 text-[#072B1C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <path d="m9 12 2 2 4-4"/>
+                </svg>
+                <span>Suivi après intervention</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-3 pt-2 sm:w-max">
+              <!-- Main WhatsApp Gold Button -->
               <a 
                 :href="whatsappDirectUrl"
                 target="_blank"
-                class="px-6 py-3.5 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs sm:text-sm font-black rounded-2xl shadow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95"
+                rel="noopener noreferrer"
+                class="w-full sm:w-auto px-7 py-3.5 bg-[#E5A812] hover:bg-[#d69b0f] text-[#072B1C] text-xs sm:text-sm font-black rounded-xl shadow-md transition-all flex items-center justify-center gap-3 cursor-pointer border border-amber-400"
               >
-                <MessageSquare class="w-4 h-4 text-slate-950" />
-                <span>Demander une inspection terrain (WhatsApp)</span>
+                <svg class="w-5 h-5 fill-current flex-shrink-0" viewBox="0 0 24 24">
+                  <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.762.459 3.48 1.332 5.001L2 22l5.176-1.334c1.472.802 3.129 1.224 4.833 1.225h.005c5.505 0 9.988-4.478 9.989-9.985 0-2.668-1.038-5.176-2.924-7.062A9.923 9.923 0 0 0 12.012 2zm.005 16.568h-.004c-1.492 0-2.956-.4-4.234-1.157l-.304-.18-3.147.811.838-3.037-.197-.311c-.833-1.314-1.273-2.839-1.273-4.404 0-4.408 3.587-7.994 7.996-7.994 2.135 0 4.141.832 5.651 2.342a7.94 7.94 0 0 1 2.338 5.65c-.001 4.409-3.588 7.995-7.998 7.995zm4.385-5.992c-.24-.12-.1423-.71-.207-.803-.083-.092-.18-.138-.277-.138-.096 0-.194.046-.264.149-.071.103-.277.345-.339.414-.063.069-.125.08-.245.02-.12-.06-.508-.187-.968-.598-.358-.319-.601-.714-.671-.834-.07-.12-.008-.185.052-.244.054-.053.12-.138.18-.207.06-.069.08-.12.12-.2.04-.08.02-.149-.01-.207-.03-.06-.277-.667-.38-.913-.1-.24-.202-.207-.277-.211h-.237c-.083 0-.218.031-.332.155-.114.124-.436.426-.436 1.04 0 .614.447 1.206.509 1.29.062.083.88 1.344 2.132 1.885.298.128.531.205.713.263.299.095.571.082.786.05.24-.036.738-.302.842-.594.104-.292.104-.542.073-.594-.031-.052-.128-.083-.248-.143z"/>
+                </svg>
+                <div class="text-center sm:text-left leading-tight">
+                  <div class="uppercase tracking-wide">DEMANDER UNE INSPECTION TERRAIN</div>
+                  <div class="text-[11px] font-bold opacity-90">(WhatsApp)</div>
+                </div>
               </a>
 
+              <!-- Phone White Button -->
               <a 
                 href="tel:+22898706081"
-                class="px-6 py-3.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs sm:text-sm font-bold rounded-2xl transition-all flex items-center gap-2 cursor-pointer"
+                class="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-slate-50 border border-slate-300 text-[#072B1C] text-xs sm:text-sm font-extrabold rounded-xl shadow-xs transition-all flex items-center justify-center gap-3 cursor-pointer"
               >
-                <Phone class="w-4 h-4 text-amber-300" />
+                <svg class="w-4 h-4 text-[#072B1C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
                 <span>+228 98 70 60 81</span>
               </a>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Interactive Flyer / Banner Presentation Card -->
-          <div class="lg:col-span-5 flex justify-center">
-            <div class="w-full max-w-sm bg-white rounded-3xl p-5 text-slate-900 shadow-2xl border-4 border-amber-400 space-y-4 transform hover:scale-[1.02] transition-transform">
-              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div class="flex items-center gap-2">
-                  <img src="/logo.png" alt="AgroShop" class="h-8 w-auto object-contain" />
-                </div>
-                <span class="px-2.5 py-1 bg-red-100 text-red-700 text-[10px] font-black rounded-full uppercase tracking-wider flex items-center gap-1">
-                  ★ Certifié
-                </span>
-              </div>
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- REST OF THE SERVICES PAGE SECTIONS CONTAINER                      -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16 py-8 sm:py-12">
 
-              <div class="bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-4 rounded-2xl text-center space-y-1">
-                <h3 class="text-sm font-black tracking-wide uppercase text-amber-300">DITES ADIEU AUX NUISIBLES !</h3>
-                <p class="text-[10px] text-emerald-100 font-medium">La solution professionnelle pour maison & jardin</p>
-              </div>
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <!-- SECTION 2: DARK GREEN COMMITMENT BANNER                         -->
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <section class="bg-[#052818] rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-emerald-900">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 items-center">
+          
+          <!-- Col 1: Produits homologués -->
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full border-2 border-white/40 flex items-center justify-center flex-shrink-0 text-white">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-white tracking-wide">Produits homologués</h3>
+              <p class="text-xs text-emerald-200/90 font-medium leading-relaxed">
+                Utilisation de produits certifiés et respectueux des normes.
+              </p>
+            </div>
+          </div>
 
-              <div class="space-y-2 text-xs font-bold text-slate-800">
-                <div class="flex items-center gap-2 p-2 bg-emerald-50 rounded-xl text-emerald-900">
-                  <Bug class="w-4 h-4 text-emerald-700 flex-shrink-0" />
-                  <span>Dératisation & Contrôle des rongeurs</span>
-                </div>
-                <div class="flex items-center gap-2 p-2 bg-amber-50 rounded-xl text-amber-900">
-                  <ShieldAlert class="w-4 h-4 text-amber-700 flex-shrink-0" />
-                  <span>Traitement contre reptiles & scorpions</span>
-                </div>
-                <div class="flex items-center gap-2 p-2 bg-emerald-50 rounded-xl text-emerald-900">
-                  <Sparkles class="w-4 h-4 text-emerald-700 flex-shrink-0" />
-                  <span>Désinsectisation (Punaises, Cafards, Moustiques)</span>
-                </div>
-                <div class="flex items-center gap-2 p-2 bg-emerald-50 rounded-xl text-emerald-900">
-                  <Wind class="w-4 h-4 text-emerald-700 flex-shrink-0" />
-                  <span>Fumigation professionnelle</span>
-                </div>
-              </div>
+          <!-- Col 2: Techniciens qualifiés -->
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full border-2 border-white/40 flex items-center justify-center flex-shrink-0 text-white">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-white tracking-wide">Techniciens qualifiés</h3>
+              <p class="text-xs text-emerald-200/90 font-medium leading-relaxed">
+                Équipe expérimentée et formée aux meilleures pratiques.
+              </p>
+            </div>
+          </div>
 
-              <div class="pt-2 border-t border-slate-100 text-center space-y-1">
-                <p class="text-[11px] font-extrabold text-slate-700">Service sur-mesure · Intervention sur le terrain</p>
-                <p class="text-xs font-black text-emerald-800">📞 +228 98 70 60 81 / +228 79 04 07 07</p>
-              </div>
+          <!-- Col 3: Intervention au Togo -->
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full border-2 border-white/40 flex items-center justify-center flex-shrink-0 text-white">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-black text-white tracking-wide">Intervention au Togo</h3>
+              <p class="text-xs text-emerald-200/90 font-medium leading-relaxed">
+                Déplacement rapide dans toutes les régions.
+              </p>
             </div>
           </div>
 
         </div>
-      </div>
+      </section>
 
-      <!-- ═══ WHY DIAGNOSTIC TERRAIN (EXPLANATION) ═══ -->
-      <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-xs space-y-8">
-        <div class="text-center max-w-3xl mx-auto space-y-2">
-          <span class="text-xs font-extrabold text-emerald-700 uppercase tracking-wider">Comment fonctionne notre service ?</span>
-          <h2 class="text-xl sm:text-3xl font-black text-slate-900">Un diagnostic sur le terrain avant tout devis</h2>
-          <p class="text-xs sm:text-sm text-slate-600">
-            Chaque lieu et chaque infestation est unique. AgroShop n'applique pas de tarif fixe standard sans évaluation. Notre équipe se déplace directement chez vous pour inspecter le terrain.
-          </p>
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <!-- SECTION 3: NOS INTERVENTIONS (REAL NATURAL PHOTOS MATCHING RED BOX) -->
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <section class="space-y-6">
+        <!-- Title -->
+        <div class="text-center space-y-2">
+          <h2 class="text-xl sm:text-2xl font-black text-[#072B1C]">Nos interventions</h2>
+          <div class="w-12 h-1 bg-[#E5A812] mx-auto rounded-full"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div v-for="(step, idx) in processSteps" :key="idx" class="bg-slate-50 p-5 rounded-2xl border border-slate-200/80 space-y-3 relative">
-            <div class="w-10 h-10 rounded-2xl bg-amber-400 text-slate-950 font-black text-sm flex items-center justify-center shadow-xs">
-              0{{ idx + 1 }}
-            </div>
-            <h3 class="text-sm font-extrabold text-slate-900">{{ step.title }}</h3>
-            <p class="text-xs text-slate-600 leading-relaxed">{{ step.desc }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- ═══ 4 MAIN SERVICES CATALOG ═══ -->
-      <div class="space-y-6">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="text-xl sm:text-2xl font-black text-slate-900">Nos prestations phytosanitaires & hygiène</h2>
-            <p class="text-xs sm:text-sm text-slate-500">Découvrez l'ensemble des traitements assurés par AgroShop Togo.</p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- 8 Cards Grid with REAL ISOLATED PEST CUTOUTS (MATCHING REFERENCE MODEL EXACTLY) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 sm:gap-3">
           <div 
-            v-for="(service, idx) in mainServices" 
+            v-for="(pest, idx) in pestInterventions" 
             :key="idx"
-            class="bg-white rounded-3xl border border-slate-200 hover:border-amber-400 p-6 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between space-y-4 group"
+            class="bg-white rounded-xl border border-slate-200/90 py-3 px-2 flex flex-col items-center justify-between text-center min-h-[120px] sm:min-h-[135px] shadow-2xs hover:border-[#E5A812] hover:shadow-md transition-all duration-200 cursor-pointer group"
+            @click="requestPestService(pest.name)"
           >
-            <div class="space-y-4">
-              <div class="w-14 h-14 rounded-2xl bg-amber-100 group-hover:bg-amber-400 text-amber-900 group-hover:text-slate-950 flex items-center justify-center transition-colors shadow-xs">
-                <component :is="service.icon" class="w-7 h-7" />
-              </div>
-
-              <div class="space-y-1.5">
-                <span class="text-[10px] font-extrabold uppercase text-amber-700 tracking-wider">Intervention Terrain</span>
-                <h3 class="text-base font-black text-slate-900 leading-snug">{{ service.title }}</h3>
-                <p class="text-xs text-slate-500 leading-relaxed">{{ service.desc }}</p>
-              </div>
-
-              <ul class="space-y-1.5 pt-2 text-xs font-semibold text-slate-700 border-t border-slate-100">
-                <li v-for="(item, i) in service.details" :key="i" class="flex items-center gap-1.5">
-                  <CheckCircle2 class="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                  <span>{{ item }}</span>
-                </li>
-              </ul>
+            <!-- Isolated Cutout Image Directly on White Card -->
+            <div class="flex-1 flex items-center justify-center w-full py-0.5">
+              <img 
+                :src="pest.image" 
+                :alt="pest.name" 
+                class="max-w-full max-h-14 sm:max-h-16 w-auto object-contain mx-auto group-hover:scale-110 transition-transform duration-300"
+              />
             </div>
 
-            <div class="pt-4 border-t border-slate-100 space-y-2">
-              <div class="text-[11px] font-bold text-amber-800 bg-amber-50 p-2 rounded-xl text-center border border-amber-200/60">
-                Tarif sur devis après visite terrain
-              </div>
-
-              <a 
-                :href="getServiceWhatsappUrl(service.title)"
-                target="_blank"
-                class="w-full py-2.5 bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
-              >
-                <MessageSquare class="w-3.5 h-3.5 text-amber-300" />
-                <span>Demander ce service</span>
-              </a>
-            </div>
+            <!-- Label -->
+            <span class="text-[11px] sm:text-xs font-black text-[#072B1C] group-hover:text-amber-700 transition-colors leading-tight pt-1">
+              {{ pest.name }}
+            </span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- ═══ CONTACT & QUOTE REQUEST FORM SECTION ═══ -->
-      <div class="bg-gradient-to-r from-emerald-900 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl space-y-6">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div class="lg:col-span-6 space-y-4">
-            <span class="text-xs font-extrabold text-amber-400 uppercase tracking-wider">Contact Direct AgroShop</span>
-            <h2 class="text-xl sm:text-3xl font-black">Besoin d'un diagnostic rapide à votre domicile ou entreprise ?</h2>
-            <p class="text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-medium">
-              Contactez directement nos équipes par téléphone ou via WhatsApp. Indiquez la nature de votre problème et nous planifierons rapidement une visite d'inspection.
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <!-- SECTION 4: COMMENT ÇA MARCHE ?                                  -->
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <section class="space-y-8">
+        <!-- Title -->
+        <div class="text-center space-y-2">
+          <h2 class="text-xl sm:text-2xl font-black text-[#072B1C]">Comment ça marche ?</h2>
+          <div class="w-12 h-1 bg-[#E5A812] mx-auto rounded-full"></div>
+        </div>
+
+        <!-- 3 Steps Grid with Dark Green Badges & Dashed Yellow Arrows -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+          
+          <!-- Step 01 Card -->
+          <div class="md:col-span-3 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs space-y-3">
+            <div class="relative h-44 overflow-hidden bg-slate-100">
+              <span class="absolute top-3 left-3 w-8 h-8 rounded-full bg-[#052818] text-white font-black text-xs flex items-center justify-center shadow-md z-10">
+                01
+              </span>
+              <img src="/images/services-step-1.png" alt="Inspection AgroShop" class="w-full h-full object-cover" />
+            </div>
+            <div class="p-4 space-y-1.5 text-center">
+              <h3 class="text-sm font-black text-[#072B1C]">Inspection</h3>
+              <p class="text-xs text-slate-600 font-medium leading-relaxed">
+                Nous identifions les nuisibles et évaluons le niveau d'infestation.
+              </p>
+            </div>
+          </div>
+
+          <!-- Dashed Yellow Arrow 1 -->
+          <div class="hidden md:flex md:col-span-1 justify-center text-[#E5A812]">
+            <svg class="w-8 h-8 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-dasharray="3 3">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+
+          <!-- Step 02 Card -->
+          <div class="md:col-span-3 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs space-y-3">
+            <div class="relative h-44 overflow-hidden bg-slate-100">
+              <span class="absolute top-3 left-3 w-8 h-8 rounded-full bg-[#052818] text-white font-black text-xs flex items-center justify-center shadow-md z-10">
+                02
+              </span>
+              <img src="/images/services-step-2.png" alt="Traitement AgroShop" class="w-full h-full object-cover" />
+            </div>
+            <div class="p-4 space-y-1.5 text-center">
+              <h3 class="text-sm font-black text-[#072B1C]">Traitement</h3>
+              <p class="text-xs text-slate-600 font-medium leading-relaxed">
+                Nous appliquons le traitement adapté au problème identifié.
+              </p>
+            </div>
+          </div>
+
+          <!-- Dashed Yellow Arrow 2 -->
+          <div class="hidden md:flex md:col-span-1 justify-center text-[#E5A812]">
+            <svg class="w-8 h-8 stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-dasharray="3 3">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </div>
+
+          <!-- Step 03 Card -->
+          <div class="md:col-span-3 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs space-y-3">
+            <div class="relative h-44 overflow-hidden bg-slate-100">
+              <span class="absolute top-3 left-3 w-8 h-8 rounded-full bg-[#052818] text-white font-black text-xs flex items-center justify-center shadow-md z-10">
+                03
+              </span>
+              <img src="/images/services-step-3.png" alt="Suivi AgroShop" class="w-full h-full object-cover" />
+            </div>
+            <div class="p-4 space-y-1.5 text-center">
+              <h3 class="text-sm font-black text-[#072B1C]">Suivi</h3>
+              <p class="text-xs text-slate-600 font-medium leading-relaxed">
+                Nous assurons le suivi et vous donnons des conseils pour éviter la réinfestation.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <!-- SECTION 5: POURQUOI CHOISIR AGROSHOP ?                          -->
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <section class="space-y-8">
+        <!-- Title -->
+        <div class="text-center space-y-2">
+          <h2 class="text-xl sm:text-2xl font-black text-[#072B1C]">Pourquoi choisir AGROSHOP ?</h2>
+          <div class="w-12 h-1 bg-[#E5A812] mx-auto rounded-full"></div>
+        </div>
+
+        <!-- 4 White Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+          
+          <!-- Card 1 -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-3 shadow-2xs hover:border-[#E5A812] transition-colors">
+            <div class="w-12 h-12 text-[#072B1C] mx-auto flex items-center justify-center">
+              <svg class="w-8 h-8 stroke-[1.75]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
+              </svg>
+            </div>
+            <h3 class="text-sm font-black text-[#072B1C]">Diagnostic précis</h3>
+            <p class="text-xs text-slate-600 font-medium leading-relaxed">
+              Inspection sur site pour identifier la source du problème.
             </p>
-
-            <div class="space-y-3 pt-2">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
-                  <Phone class="w-5 h-5" />
-                </div>
-                <div>
-                  <p class="text-[10px] text-emerald-200 uppercase font-bold">Téléphones</p>
-                  <p class="text-sm font-black">+228 98 70 60 81 / +228 79 04 07 07</p>
-                </div>
-              </div>
-
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold">
-                  <MapPin class="w-5 h-5 text-amber-400" />
-                </div>
-                <div>
-                  <p class="text-[10px] text-emerald-200 uppercase font-bold">Zone d'intervention</p>
-                  <p class="text-sm font-black">Lomé et toutes les régions du Togo</p>
-                </div>
-              </div>
-            </div>
           </div>
 
-          <!-- Quick Interactive Request Form -->
-          <div class="lg:col-span-6 bg-white text-slate-900 p-5 sm:p-6 rounded-2xl space-y-4 shadow-xl">
-            <h3 class="text-sm font-extrabold text-slate-900">Demande d'inspection terrain rapide</h3>
-            
-            <div class="space-y-3">
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Votre Nom complet</label>
-                <input 
-                  v-model="form.name"
-                  type="text" 
-                  placeholder="Ex: Kossi Mensah"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                />
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Service recherché</label>
-                <select 
-                  v-model="form.service"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                >
-                  <option value="Dératisation & Contrôle des rongeurs">Dératisation & Contrôle des rongeurs (Rats, Souris)</option>
-                  <option value="Traitement contre les reptiles & scorpions">Traitement contre les reptiles et scorpions</option>
-                  <option value="Désinsectisation">Désinsectisation (Punaises, Cafards, Moustiques)</option>
-                  <option value="Fumigation professionnelle">Fumigation professionnelle</option>
-                  <option value="Autre service d'assainissement">Autre service d'assainissement</option>
-                </select>
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Ville / Emplacement au Togo</label>
-                <input 
-                  v-model="form.location"
-                  type="text" 
-                  placeholder="Ex: Lomé (Adidogomé), Tsévié, Atakpamé..."
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                />
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Détails (Optionnel)</label>
-                <textarea 
-                  v-model="form.details"
-                  rows="2"
-                  placeholder="Précisez la superficie du lieu ou le degré d'infestation..."
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600"
-                ></textarea>
-              </div>
-
-              <button 
-                @click="sendFormToWhatsapp"
-                class="w-full py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
-              >
-                <MessageSquare class="w-4 h-4 text-slate-950" />
-                <span>Envoyer la demande sur WhatsApp</span>
-              </button>
+          <!-- Card 2 -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-3 shadow-2xs hover:border-[#E5A812] transition-colors">
+            <div class="w-12 h-12 text-[#072B1C] mx-auto flex items-center justify-center">
+              <svg class="w-8 h-8 stroke-[1.75]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
             </div>
+            <h3 class="text-sm font-black text-[#072B1C]">Solutions adaptées</h3>
+            <p class="text-xs text-slate-600 font-medium leading-relaxed">
+              Traitements professionnels adaptés à chaque situation.
+            </p>
           </div>
+
+          <!-- Card 3 -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-3 shadow-2xs hover:border-[#E5A812] transition-colors">
+            <div class="w-12 h-12 text-[#072B1C] mx-auto flex items-center justify-center">
+              <svg class="w-8 h-8 stroke-[1.75]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="8" r="6"/>
+                <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>
+              </svg>
+            </div>
+            <h3 class="text-sm font-black text-[#072B1C]">Sécurité garantie</h3>
+            <p class="text-xs text-slate-600 font-medium leading-relaxed">
+              Méthodes sûres pour les personnes, les animaux et l'environnement.
+            </p>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="bg-white rounded-2xl border border-slate-200 p-6 space-y-3 shadow-2xs hover:border-[#E5A812] transition-colors">
+            <div class="w-12 h-12 text-[#072B1C] mx-auto flex items-center justify-center">
+              <svg class="w-8 h-8 stroke-[1.75]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+              </svg>
+            </div>
+            <h3 class="text-sm font-black text-[#072B1C]">Suivi client</h3>
+            <p class="text-xs text-slate-600 font-medium leading-relaxed">
+              Nous restons à vos côtés après chaque intervention.
+            </p>
+          </div>
+
         </div>
-      </div>
+      </section>
+
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <!-- SECTION 6: ILS NOUS FONT CONFIANCE                               -->
+      <!-- ════════════════════════════════════════════════════════════════ -->
+      <section class="bg-[#052818] rounded-3xl p-6 sm:p-10 text-white shadow-xl border border-emerald-900 space-y-8">
+        <!-- Title + Yellow Underline -->
+        <div class="text-left space-y-2">
+          <h2 class="text-xl sm:text-2xl font-black text-white">Ils nous font confiance</h2>
+          <div class="w-12 h-1 bg-[#E5A812] rounded-full"></div>
+        </div>
+
+        <!-- Content Grid (Testimonial Quote + 3 Photos) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Testimonial Quote Left -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="text-3xl text-amber-400 font-serif leading-none">““</div>
+            <p class="text-xs sm:text-sm text-emerald-100 font-medium leading-relaxed italic">
+              Service rapide et efficace. Techniciens professionnels et à l'écoute. Je recommande AGROSHOP.
+            </p>
+            
+            <!-- 5 Stars -->
+            <div class="flex items-center gap-1 text-amber-400">
+              <span v-for="i in 5" :key="i" class="text-base">★</span>
+            </div>
+
+            <p class="text-xs font-bold text-emerald-300">
+              — Client à Lomé
+            </p>
+          </div>
+
+          <!-- 3 Photos Right -->
+          <div class="lg:col-span-7 grid grid-cols-3 gap-3">
+            <div class="rounded-xl overflow-hidden shadow-md h-32 sm:h-40 bg-slate-900">
+              <img src="/images/services-step-1.png" alt="Intervention AgroShop" class="w-full h-full object-cover" />
+            </div>
+            <div class="rounded-xl overflow-hidden shadow-md h-32 sm:h-40 bg-slate-900">
+              <img src="/images/services-step-2.png" alt="Traitement entrepôt AgroShop" class="w-full h-full object-cover" />
+            </div>
+            <div class="rounded-xl overflow-hidden shadow-md h-32 sm:h-40 bg-slate-900">
+              <img src="/images/services-greenhouse.png" alt="Intervention serre agricole" class="w-full h-full object-cover" />
+            </div>
+          </div>
+
+        </div>
+      </section>
 
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { 
-  ShieldCheck, MessageSquare, Phone, Bug, ShieldAlert, Sparkles, Wind,
-  CheckCircle2, MapPin
-} from 'lucide-vue-next'
-
 useHead({
-  title: 'Services Anti-Nuisibles & Fumigation - AgroShop Togo',
+  title: 'Services Certifiés Anti-Nuisibles - AgroShop Togo',
   meta: [
-    { name: 'description', content: 'Services professionnels de dératisation, désinsectisation, traitement reptiles et fumigation au Togo par AgroShop. Diagnostic d\'inspection sur le terrain.' }
+    { name: 'description', content: 'Dites adieu aux nuisibles ! La solution professionnelle certifiée pour votre maison, jardin, entrepôts et exploitations agricoles au Togo par AgroShop.' }
   ]
 })
 
-const whatsappDirectUrl = `https://wa.me/22898706081?text=${encodeURIComponent("Bonjour AgroShop, je souhaite me renseigner sur vos services d'assainissement et demander une visite de diagnostic terrain.")}`
+const whatsappDirectUrl = `https://wa.me/22898706081?text=${encodeURIComponent("Bonjour AgroShop Togo, je souhaite demander une visite d'inspection terrain pour un traitement anti-nuisibles.")}`
 
-const processSteps = [
-  { title: 'Prise de contact', desc: 'Vous nous contactez par téléphone ou WhatsApp (+228 98 70 60 81) pour nous faire part de votre problème.' },
-  { title: 'Inspection Terrain', desc: 'Notre équipe technique se déplace sur votre lieu pour évaluer la superficie et le degré d\'infestation.' },
-  { title: 'Devis Sur-Mesure', desc: 'Nous établissons une proposition tarifaire précise et adaptée sans frais cachés.' },
-  { title: 'Traitement Certifié', desc: 'Application des solutions phytosanitaires certifiées avec suivi d\'efficacité.' }
-]
-
-const mainServices = [
-  {
-    title: 'Dératisation & Contrôle des Rongeurs',
-    desc: 'Éradication complète et gestion des populations de rats et souris pour maisons, entrepôts et champs.',
-    icon: Bug,
-    details: ['Rats & Souris', 'Entrepôts & Habitations', 'Postes d\'appâtage sécurisés', 'Plan d\'éradication durable']
-  },
-  {
-    title: 'Traitement Reptiles & Scorpions',
-    desc: 'Intervention préventive et curative contre les serpents, scorpions et créatures venimeuses.',
-    icon: ShieldAlert,
-    details: ['Protection habitations & jardins', 'Barrière répulsive périmétrique', 'Intervention d\'urgence', 'Produits homologués']
-  },
-  {
-    title: 'Désinsectisation Spécialisée',
-    desc: 'Elimination rapide des insectes nuisibles piqueurs et ravageurs de locaux.',
-    icon: Sparkles,
-    details: ['Punaises de lit', 'Cafards & Blattes', 'Moustiques & Larves', 'Termites de structure']
-  },
-  {
-    title: 'Fumigation Professionnelle',
-    desc: 'Gazage et désinfection globale pour grands volumes, silos, hangars et serres.',
-    icon: Wind,
-    details: ['Silos de céréales & conteneurs', 'Hangars & Serres agricoles', 'Bâtiments professionnels', 'Conformité normes phytosanitaires']
-  }
-]
-
-const form = ref({
-  name: '',
-  service: 'Dératisation & Contrôle des rongeurs',
-  location: '',
-  details: ''
-})
-
-const getServiceWhatsappUrl = (serviceName) => {
-  const msg = `Bonjour AgroShop, je suis intéressé(e) par votre service de "${serviceName}". Je souhaite planifier une visite de diagnostic sur le terrain.`
-  return `https://wa.me/22898706081?text=${encodeURIComponent(msg)}`
-}
-
-const sendFormToWhatsapp = () => {
-  let msg = `Bonjour AgroShop Togo,\n\nJe souhaite effectuer une demande de visite de diagnostic sur le terrain pour un service d'assainissement.\n\n`
-  if (form.value.name) msg += `- Nom: ${form.value.name}\n`
-  msg += `- Service: ${form.value.service}\n`
-  if (form.value.location) msg += `- Localisation: ${form.value.location}\n`
-  if (form.value.details) msg += `- Détails: ${form.value.details}\n`
-
+const requestPestService = (pestName) => {
+  const msg = `Bonjour AgroShop Togo, je souhaite demander une intervention / diagnostic concernant les : ${pestName}.`
   const url = `https://wa.me/22898706081?text=${encodeURIComponent(msg)}`
   window.open(url, '_blank')
 }
+
+// 8 Pest Interventions Grid with REAL NATURAL PHOTOS
+const pestInterventions = [
+  { name: 'Cafards', image: '/images/pest-cafard.png' },
+  { name: 'Fourmis', image: '/images/pest-fourmi.png' },
+  { name: 'Rats & souris', image: '/images/pest-rat.png' },
+  { name: 'Moustiques', image: '/images/pest-moustique.png' },
+  { name: 'Mouches', image: '/images/pest-mouche.png' },
+  { name: 'Insectes nuisibles', image: '/images/pest-beetle.png' },
+  { name: 'Nuisibles agricoles', image: '/images/pest-chenille.png' },
+  { name: 'Entrepôts & stocks', image: '/images/pest-entrepot.png' }
+]
 </script>

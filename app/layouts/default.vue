@@ -14,6 +14,9 @@
     <!-- Checkout Modal Component -->
     <CheckoutModal />
 
+    <!-- Floating WhatsApp Action Button -->
+    <FloatingWhatsapp />
+
     <!-- Footer Component -->
     <AppFooter />
   </div>
@@ -23,6 +26,7 @@
 import { onMounted } from 'vue'
 import { useCartStore } from '~/stores/cart'
 import CheckoutModal from '~/components/CheckoutModal.vue'
+import FloatingWhatsapp from '~/components/FloatingWhatsapp.vue'
 
 const cartStore = useCartStore()
 
