@@ -112,91 +112,58 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 sm:space-y-16 py-8 sm:py-12">
 
       <!-- ════════════════════════════════════════════════════════════════ -->
-      <!-- SECTION 2: DARK GREEN COMMITMENT BANNER                         -->
+      <!-- SECTION 2: DETACHED INDIVIDUAL DARK GREEN COMMITMENT CARDS (MARQUEE) -->
       <!-- ════════════════════════════════════════════════════════════════ -->
-      <section class="bg-[#052818] rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-emerald-900">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6 items-center">
-          
-          <!-- Col 1: Produits homologués -->
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full border-2 border-white/40 flex items-center justify-center flex-shrink-0 text-white">
-              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <path d="m9 12 2 2 4-4"/>
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-sm font-black text-white tracking-wide">Produits homologués</h3>
-              <p class="text-xs text-emerald-200/90 font-medium leading-relaxed">
-                Utilisation de produits certifiés et respectueux des normes.
-              </p>
-            </div>
-          </div>
-
-          <!-- Col 2: Techniciens qualifiés -->
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full border-2 border-white/40 flex items-center justify-center flex-shrink-0 text-white">
-              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-sm font-black text-white tracking-wide">Techniciens qualifiés</h3>
-              <p class="text-xs text-emerald-200/90 font-medium leading-relaxed">
-                Équipe expérimentée et formée aux meilleures pratiques.
-              </p>
+      <section class="relative w-full overflow-hidden py-2">
+        <!-- Horizontal Marquee Loop scrolling 3 detached cards one by one -->
+        <div class="overflow-x-auto scrollbar-none py-1">
+          <div class="flex animate-marquee items-center gap-4">
+            <div 
+              v-for="(item, idx) in [...commitmentItems, ...commitmentItems, ...commitmentItems]" 
+              :key="idx"
+              class="flex items-center gap-4 bg-[#052818] border border-emerald-800 text-white rounded-2xl p-4 sm:p-5 shadow-lg flex-shrink-0 min-w-[275px] sm:min-w-[320px] transition-transform hover:scale-[1.02]"
+            >
+              <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0 text-amber-400 shadow-md">
+                <component :is="item.icon" class="w-6 h-6" />
+              </div>
+              <div>
+                <h3 class="text-xs sm:text-sm font-black text-white tracking-wide leading-tight">{{ item.title }}</h3>
+                <p class="text-[11px] sm:text-xs text-emerald-200/90 font-medium leading-relaxed mt-0.5">{{ item.desc }}</p>
+              </div>
             </div>
           </div>
-
-          <!-- Col 3: Intervention au Togo -->
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-full border-2 border-white/40 flex items-center justify-center flex-shrink-0 text-white">
-              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                <circle cx="12" cy="10" r="3"/>
-              </svg>
-            </div>
-            <div>
-              <h3 class="text-sm font-black text-white tracking-wide">Intervention au Togo</h3>
-              <p class="text-xs text-emerald-200/90 font-medium leading-relaxed">
-                Déplacement rapide dans toutes les régions.
-              </p>
-            </div>
-          </div>
-
         </div>
       </section>
 
       <!-- ════════════════════════════════════════════════════════════════ -->
       <!-- SECTION 3: NOS INTERVENTIONS (REAL NATURAL PHOTOS MATCHING RED BOX) -->
       <!-- ════════════════════════════════════════════════════════════════ -->
-      <section class="space-y-6">
+      <section class="space-y-4 sm:space-y-6">
         <!-- Title -->
-        <div class="text-center space-y-2">
-          <h2 class="text-xl sm:text-2xl font-black text-[#072B1C]">Nos interventions</h2>
-          <div class="w-12 h-1 bg-[#E5A812] mx-auto rounded-full"></div>
+        <div class="text-center space-y-1.5">
+          <h2 class="text-lg sm:text-2xl font-black text-[#072B1C]">Nos interventions</h2>
+          <div class="w-10 sm:w-12 h-1 bg-[#E5A812] mx-auto rounded-full"></div>
         </div>
 
-        <!-- 8 Cards Grid with REAL ISOLATED PEST CUTOUTS (MATCHING REFERENCE MODEL EXACTLY) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 sm:gap-3">
+        <!-- 8 Cards Grid (Compact 4 columns on mobile, 8 on desktop) -->
+        <div class="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
           <div 
             v-for="(pest, idx) in pestInterventions" 
             :key="idx"
-            class="bg-white rounded-xl border border-slate-200/90 py-3 px-2 flex flex-col items-center justify-between text-center min-h-[120px] sm:min-h-[135px] shadow-2xs hover:border-[#E5A812] hover:shadow-md transition-all duration-200 cursor-pointer group"
+            class="bg-white rounded-2xl border border-slate-200/90 p-2 flex flex-col items-center justify-between text-center min-h-[110px] sm:min-h-[135px] shadow-2xs hover:border-[#E5A812] hover:shadow-md active:scale-95 transition-all duration-200 cursor-pointer group"
             @click="requestPestService(pest.name)"
           >
-            <!-- Isolated Cutout Image Directly on White Card -->
-            <div class="flex-1 flex items-center justify-center w-full py-0.5">
+            <!-- Image in subtle container -->
+            <div class="w-full h-12 sm:h-16 flex items-center justify-center p-1 rounded-xl bg-slate-50 group-hover:bg-amber-50/60 transition-colors">
               <img 
                 :src="pest.image" 
                 :alt="pest.name" 
-                class="max-w-full max-h-14 sm:max-h-16 w-auto object-contain mx-auto group-hover:scale-110 transition-transform duration-300"
+                class="max-w-full max-h-full object-contain mx-auto group-hover:scale-110 transition-transform duration-300"
               />
             </div>
 
             <!-- Label -->
-            <span class="text-[11px] sm:text-xs font-black text-[#072B1C] group-hover:text-amber-700 transition-colors leading-tight pt-1">
+            <span class="text-[10px] sm:text-xs font-extrabold text-[#072B1C] group-hover:text-amber-700 leading-tight pt-1">
               {{ pest.name }}
             </span>
           </div>
@@ -404,12 +371,32 @@
 </template>
 
 <script setup>
+import { ShieldCheck, UserCheck, MapPin } from 'lucide-vue-next'
+
 useHead({
   title: 'Services Certifiés Anti-Nuisibles - AgroShop Togo',
   meta: [
     { name: 'description', content: 'Dites adieu aux nuisibles ! La solution professionnelle certifiée pour votre maison, jardin, entrepôts et exploitations agricoles au Togo par AgroShop.' }
   ]
 })
+
+const commitmentItems = [
+  {
+    title: 'Produits homologués',
+    desc: 'Utilisation de produits certifiés et respectueux des normes.',
+    icon: ShieldCheck
+  },
+  {
+    title: 'Techniciens qualifiés',
+    desc: 'Équipe expérimentée et formée aux meilleures pratiques.',
+    icon: UserCheck
+  },
+  {
+    title: 'Intervention au Togo',
+    desc: 'Déplacement rapide dans toutes les régions.',
+    icon: MapPin
+  }
+]
 
 const whatsappDirectUrl = `https://wa.me/22898706081?text=${encodeURIComponent("Bonjour AgroShop Togo, je souhaite demander une visite d'inspection terrain pour un traitement anti-nuisibles.")}`
 

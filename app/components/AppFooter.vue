@@ -14,11 +14,11 @@
         <!-- Col 1: Brand Logo & Tagline -->
         <div class="lg:col-span-1 pr-2 space-y-4">
           <NuxtLink to="/" class="inline-flex group">
-            <div class="bg-white/95 rounded-xl px-3 py-2 group-hover:scale-105 transition-transform shadow-md">
+            <div class="bg-white/95 rounded-xl px-3.5 py-2.5 group-hover:scale-105 transition-transform shadow-md border border-white/20">
               <img 
-                src="/logo.png" 
+                src="/Logo Agroshop _fond transparent.png" 
                 alt="AgroShop Togo" 
-                class="h-10 w-auto object-contain"
+                class="h-10 sm:h-11 w-auto object-contain"
               />
             </div>
           </NuxtLink>
@@ -105,8 +105,9 @@
           <Linkedin class="w-4 h-4" />
         </a>
         <a 
-          href="https://www.instagram.com/agroshop_tg/" 
+          href="https://www.instagram.com/agroshoptg.store?igsh=ZXk0ZjM5ZGsxeTlz&utm_source=qr" 
           target="_blank" 
+          rel="noopener"
           aria-label="Instagram"
           class="w-10 h-10 rounded-full border border-[#8cc63f]/60 bg-emerald-950/40 flex items-center justify-center text-[#8cc63f] hover:bg-[#8cc63f] hover:text-emerald-950 hover:border-[#8cc63f] transition-all duration-300 shadow-xs"
         >

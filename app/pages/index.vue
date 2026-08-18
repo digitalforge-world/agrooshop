@@ -8,15 +8,15 @@
     <!-- ═══ TRUST STRIP ═══ -->
     <section class="border-b border-gray-200 bg-white overflow-hidden py-3 sm:py-0">
       
-      <!-- Mobile: Interactive Auto & Swipeable Horizontal Scroll -->
-      <div class="sm:hidden relative w-full overflow-x-auto scrollbar-none scroll-smooth py-1">
+      <!-- Mobile: Animated Scrolling Marquee -->
+      <div class="sm:hidden relative w-full overflow-hidden py-1">
         <div class="flex animate-marquee items-center gap-3">
           <div 
             v-for="(item, idx) in [...trustItems, ...trustItems]" 
             :key="idx" 
-            class="flex items-center gap-2.5 py-2 px-3.5 bg-emerald-50/80 rounded-full border border-emerald-100/80 flex-shrink-0 whitespace-nowrap shadow-xs"
+            class="flex items-center gap-2.5 py-2 px-3.5 bg-emerald-50/90 rounded-full border border-emerald-100/90 flex-shrink-0 whitespace-nowrap shadow-xs"
           >
-            <div class="w-7 h-7 rounded-full bg-emerald-800 text-white flex items-center justify-center flex-shrink-0">
+            <div class="w-6.5 h-6.5 rounded-full bg-emerald-800 text-white flex items-center justify-center flex-shrink-0">
               <component :is="item.icon" class="w-3.5 h-3.5" />
             </div>
             <div class="pr-1">
@@ -63,14 +63,14 @@
           </NuxtLink>
         </div>
 
-        <!-- Mobile: Interactive Auto & Swipeable Horizontal Scroll -->
-        <div class="sm:hidden relative w-full overflow-x-auto scrollbar-none scroll-smooth py-1">
+        <!-- Mobile: Animated Scrolling Marquee with Horizontal Cards -->
+        <div class="sm:hidden relative w-full overflow-hidden py-1">
           <div class="flex animate-marquee-categories items-center gap-3">
             <NuxtLink 
               v-for="(cat, idx) in [...categoryCards, ...categoryCards]" 
               :key="idx"
               :to="cat.link"
-              class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 bg-white shadow-xs flex-shrink-0 whitespace-nowrap min-w-[200px]"
+              class="flex items-center gap-3 p-3 rounded-2xl border border-slate-200 bg-white shadow-xs flex-shrink-0 whitespace-nowrap min-w-[210px] hover:border-emerald-500 transition-colors"
             >
               <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
                 <component :is="cat.icon" class="w-5 h-5 text-emerald-700" />
@@ -114,8 +114,8 @@
             <h2 class="text-base sm:text-xl font-black text-slate-900">Produits populaires</h2>
             <p class="mt-0.5 text-xs sm:text-sm text-slate-500">Les produits les plus commandés par nos clients.</p>
           </div>
-          <NuxtLink to="/produits" class="flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-700 transition-all duration-300">
-            <span>Voir tout</span>
+          <NuxtLink to="/produits?category=semences" class="flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-700 transition-all duration-300">
+            <span>Voir toutes les semences</span>
             <ArrowRight class="w-3.5 h-3.5" />
           </NuxtLink>
         </div>
@@ -190,20 +190,22 @@
           <p class="mt-0.5 text-xs sm:text-sm text-slate-500">Plus de 2000 agriculteurs nous font confiance</p>
         </div>
 
-        <!-- Mobile: Interactive Auto & Swipeable Horizontal Scroll -->
-        <div class="sm:hidden relative w-full overflow-x-auto scrollbar-none scroll-smooth py-1">
-          <div class="flex animate-marquee-testimonials items-center gap-4">
+        <!-- Mobile: Touch Swipe Snap Scroll -->
+        <div class="sm:hidden relative w-full overflow-x-auto scrollbar-none snap-x snap-mandatory py-1">
+          <div class="flex items-stretch gap-3 px-1">
             <div 
-              v-for="(t, idx) in [...testimonials, ...testimonials, ...testimonials]" 
+              v-for="(t, idx) in testimonials" 
               :key="idx"
-              class="p-4 rounded-2xl border border-slate-200 bg-white shadow-xs flex-shrink-0 w-[280px] space-y-3"
+              class="snap-start p-4 rounded-2xl border border-slate-200 bg-white shadow-xs flex-shrink-0 w-[275px] flex flex-col justify-between"
             >
-              <div class="flex gap-0.5">
-                <Star v-for="i in 5" :key="i" class="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+              <div class="space-y-2">
+                <div class="flex gap-0.5">
+                  <Star v-for="i in 5" :key="i" class="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                </div>
+                <p class="text-xs text-slate-600 leading-relaxed italic line-clamp-3">"{{ t.text }}"</p>
               </div>
-              <p class="text-xs text-slate-600 leading-relaxed italic line-clamp-3">"{{ t.text }}"</p>
-              <div class="flex items-center gap-2.5 pt-2 border-t border-slate-100">
-                <div class="w-8 h-8 rounded-full bg-emerald-800 flex items-center justify-center text-white text-xs font-bold shadow-xs">
+              <div class="flex items-center gap-2.5 pt-3 mt-2 border-t border-slate-100">
+                <div class="w-8 h-8 rounded-full bg-emerald-800 flex items-center justify-center text-white text-xs font-bold shadow-xs flex-shrink-0">
                   {{ t.initials }}
                 </div>
                 <div>
@@ -317,12 +319,56 @@ const testimonials = [
   { text: "Qualité des outils de quincaillerie exceptionnelle. Bien meilleur que ce qu'on trouve au marché local.", name: 'Kofi D.', role: 'Entrepreneur BTP, Lomé', initials: 'KD' },
 ]
 
-// Featured Products
+// Featured Products (Seeds only as requested)
 const featuredProducts = ref([
-  { id: 1, nom_commercial: 'Urée YARA 46% N', slug: 'uree-yara-46-n', composition: 'Urée granulée 46% Azote total.', prix_unitaire: 15000, unite_mesure: 'sac 50kg', stock_disponible: 1000, featured: true, url_image: 'storage/produits/urea.jpg', categories: [{ nom: 'Urée' }] },
-  { id: 2, nom_commercial: 'Engrais NPK 15-15-15', slug: 'engrais-npk-15-15-15-superfert', composition: '15% N, 15% P2O5, 15% K2O.', prix_unitaire: 18500, unite_mesure: 'sac 50kg', stock_disponible: 750, featured: true, url_image: 'storage/produits/npk.jpg', categories: [{ nom: 'Engrais NPK' }] },
-  { id: 5, nom_commercial: "Kit Irrigation 500m²", slug: 'kit-irrigation-goutte-a-goutte-500m2', composition: 'Tuyaux PE 25mm, gaines 16mm.', prix_unitaire: 85000, unite_mesure: 'kit', stock_disponible: 45, featured: true, url_image: 'storage/produits/irrigation_kit.jpg', categories: [{ nom: 'Irrigation' }] },
-  { id: 7, nom_commercial: 'Brouette Renforcée 90L', slug: 'brouette-de-chantier-renforcee-90l', composition: 'Bac acier galvanisé 1mm.', prix_unitaire: 32000, unite_mesure: 'unité', stock_disponible: 120, url_image: 'storage/produits/brouette.jpg', categories: [{ nom: 'Quincaillerie' }] },
+  { 
+    id: 4, 
+    nom_commercial: 'Semence Maïs Hybride PAN 53', 
+    slug: 'semence-mais-hybride-pan-53', 
+    composition: 'Semence certifiée Zea mays. Haut rendement & résistant à la sécheresse.', 
+    prix_unitaire: 12000, 
+    unite_mesure: 'sac 5kg', 
+    stock_disponible: 500, 
+    featured: true, 
+    url_image: 'storage/produits/mais_pan53.jpg', 
+    categories: [{ nom: 'Semences', slug: 'semences' }] 
+  },
+  { 
+    id: 9, 
+    nom_commercial: 'Semences Tomate Hybride Cobra F1', 
+    slug: 'semences-tomate-hybride-cobra-f1', 
+    composition: 'Semence maraîchère certifiée. Fruits fermes et tolérance aux maladies.', 
+    prix_unitaire: 8500, 
+    unite_mesure: 'boîte 50g', 
+    stock_disponible: 350, 
+    featured: true, 
+    url_image: 'storage/produits/mais_pan53.jpg', 
+    categories: [{ nom: 'Semences', slug: 'semences' }] 
+  },
+  { 
+    id: 10, 
+    nom_commercial: 'Semences Piment Hybride Demon F1', 
+    slug: 'semences-piment-hybride-demon-f1', 
+    composition: 'Piment fort très productif adapté au climat tropical.', 
+    prix_unitaire: 9500, 
+    unite_mesure: 'boîte 50g', 
+    stock_disponible: 280, 
+    featured: true, 
+    url_image: 'storage/produits/mais_pan53.jpg', 
+    categories: [{ nom: 'Semences', slug: 'semences' }] 
+  },
+  { 
+    id: 11, 
+    nom_commercial: 'Semences Gombo Kropi F1', 
+    slug: 'semences-gombo-kropi-f1', 
+    composition: 'Variété précoce à forte ramification et gousses vertes.', 
+    prix_unitaire: 6000, 
+    unite_mesure: 'sachet 100g', 
+    stock_disponible: 420, 
+    featured: true, 
+    url_image: 'storage/produits/mais_pan53.jpg', 
+    categories: [{ nom: 'Semences', slug: 'semences' }] 
+  },
 ])
 
 // Blog Posts from DB
@@ -361,8 +407,21 @@ const initScrollObserver = () => {
 
 onMounted(async () => {
   try {
-    const data = await $fetch(`${config.public.apiBaseUrl}/produits?per_page=4`)
-    if (data?.data?.data?.length > 0) featuredProducts.value = data.data.data
+    const data = await $fetch(`${config.public.apiBaseUrl}/produits?category=semences&per_page=12`)
+    const prods = data?.data?.data || data?.data || []
+    if (prods.length > 0) {
+      const seedsOnly = prods.filter(p => {
+        const cats = p.categories || []
+        const catStr = cats.map(c => (c.nom || c.slug || '').toLowerCase()).join(' ')
+        const nameStr = (p.nom_commercial || '').toLowerCase()
+        return catStr.includes('semence') || catStr.includes('graine') || nameStr.includes('semence') || nameStr.includes('maïs') || nameStr.includes('tomate') || nameStr.includes('piment') || nameStr.includes('gombo')
+      })
+      if (seedsOnly.length > 0) {
+        featuredProducts.value = seedsOnly.slice(0, 4)
+      } else {
+        featuredProducts.value = prods.slice(0, 4)
+      }
+    }
   } catch (e) {
     console.warn('API products offline', e)
   }
