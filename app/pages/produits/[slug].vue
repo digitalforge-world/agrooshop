@@ -564,52 +564,70 @@ const findFallbackProduct = (slug) => {
   trackProductView()
 }
 
-onMounted(async () => {
-  try {
-    const slug = route.params.slug
-    const res = await $fetch(`${config.public.apiBaseUrl}/produits/${slug}`)
-    const rawItem = extractProduitFromResponse(res)
-    const item = normalizeProduit(rawItem)
-    if (item && item.nom_commercial) {
-      product.value = {
-        ...product.value,
-        ...item,
-        description: item.description || product.value.description,
-        composition: item.composition || product.value.composition,
-        principes_actifs: item.principes_actifs || product.value.principes_actifs,
-        mode_emploi: item.mode_emploi || product.value.mode_emploi,
-        dosage_recommande: item.dosage_recommande || product.value.dosage_recommande,
-        precautions_usage: item.precautions_usage || product.value.precautions_usage,
-        prix_unitaire: item.prix_unitaire ?? product.value.prix_unitaire,
-        unite_mesure: item.unite_mesure || product.value.unite_mesure,
-        stock_disponible: item.stock_disponible ?? product.value.stock_disponible,
-        images: (item.images && item.images.length > 0) ? item.images : product.value.images,
-        categories: (item.categories && item.categories.length > 0) ? item.categories : product.value.categories,
-        image_principale: item.image_principale || product.value.image_principale,
-        url_image: item.url_image || product.value.url_image
-      }
-      trackProductView()
-    } else {
-      findFallbackProduct(slug)
+const { data: asyncProductData } = await useAsyncData(
+  `product-${route.params.slug}`,
+  async () => {
+    try {
+      const slug = route.params.slug
+      const res = await $fetch(`${config.public.apiBaseUrl}/produits/${slug}`)
+      const rawItem = extractProduitFromResponse(res)
+      return normalizeProduit(rawItem)
+    } catch (e) {
+      return null
     }
-  } catch (e) {
-    findFallbackProduct(route.params.slug)
   }
+)
+
+if (asyncProductData.value && asyncProductData.value.nom_commercial) {
+  const item = asyncProductData.value
+  product.value = {
+    ...product.value,
+    ...item,
+    description: item.description || product.value.description,
+    composition: item.composition || product.value.composition,
+    principes_actifs: item.principes_actifs || product.value.principes_actifs,
+    mode_emploi: item.mode_emploi || product.value.mode_emploi,
+    dosage_recommande: item.dosage_recommande || product.value.dosage_recommande,
+    precautions_usage: item.precautions_usage || product.value.precautions_usage,
+    prix_unitaire: item.prix_unitaire ?? product.value.prix_unitaire,
+    unite_mesure: item.unite_mesure || product.value.unite_mesure,
+    stock_disponible: item.stock_disponible ?? product.value.stock_disponible,
+    images: (item.images && item.images.length > 0) ? item.images : product.value.images,
+    categories: (item.categories && item.categories.length > 0) ? item.categories : product.value.categories,
+    image_principale: item.image_principale || product.value.image_principale,
+    url_image: item.url_image || product.value.url_image
+  }
+} else {
+  findFallbackProduct(route.params.slug)
+}
+
+onMounted(() => {
+  trackProductView()
   startAutoSlide()
   fetchAiRecommendations()
 })
 
+const productCanonicalUrl = computed(() => `https://agroshoptg.store/produits/${product.value.slug || route.params.slug}`)
+const primaryProductImageUrl = computed(() => getImgUrl(displayImages.value[0]))
+
 useSeoMeta({
-  title: () => `${product.value.nom_commercial} - AgroShop Togo`,
-  description: () => product.value.description || 'Achetez vos intrants agricoles certifiés chez AgroShop Togo.',
-  ogTitle: () => `${product.value.nom_commercial} | AgroShop Togo`,
-  ogDescription: () => product.value.description || 'Intrant agricole certifié disponible au Togo.',
-  ogImage: () => getImgUrl(displayImages.value[0]),
-  ogUrl: () => `https://agroshoptg.store/produits/${product.value.slug}`,
-  twitterCard: 'summary_large_image'
+  title: () => `${product.value.nom_commercial} | AgroShop Togo`,
+  description: () => product.value.description || `Achetez ${product.value.nom_commercial} au meilleur prix chez AgroShop Togo. Livraison rapide partout au Togo.`,
+  ogTitle: () => `${product.value.nom_commercial} | Intrants Agricoles AgroShop`,
+  ogDescription: () => product.value.description || 'Intrant agricole certifié avec livraison au Togo.',
+  ogImage: () => primaryProductImageUrl.value,
+  ogUrl: () => productCanonicalUrl.value,
+  ogType: 'product',
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => `${product.value.nom_commercial} - AgroShop Togo`,
+  twitterDescription: () => product.value.description || 'Achetez vos intrants agricoles certifiés chez AgroShop Togo.',
+  twitterImage: () => primaryProductImageUrl.value
 })
 
 useHead({
+  link: [
+    { rel: 'canonical', href: productCanonicalUrl.value }
+  ],
   script: [
     {
       type: 'application/ld+json',
@@ -617,16 +635,24 @@ useHead({
         '@context': 'https://schema.org',
         '@type': 'Product',
         'name': product.value.nom_commercial,
-        'image': [getImgUrl(displayImages.value[0])],
+        'image': [primaryProductImageUrl.value],
         'description': product.value.description,
         'sku': `AGRO-${product.value.id}`,
+        'brand': {
+          '@type': 'Brand',
+          'name': 'AgroShop Togo'
+        },
         'offers': {
           '@type': 'Offer',
-          'url': `https://agroshoptg.store/produits/${product.value.slug}`,
+          'url': productCanonicalUrl.value,
           'priceCurrency': 'XOF',
           'price': product.value.prix_unitaire,
           'availability': product.value.stock_disponible > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-          'itemCondition': 'https://schema.org/NewCondition'
+          'itemCondition': 'https://schema.org/NewCondition',
+          'seller': {
+            '@type': 'Organization',
+            'name': 'AgroShop Togo'
+          }
         }
       }))
     }
