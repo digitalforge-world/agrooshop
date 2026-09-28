@@ -578,7 +578,9 @@ const meutreEtSauvegarderIa = async (dataToSave) => {
     fetchHistoriqueRapports()
     return saveRes
   } catch (saveErr) {
-    console.warn('Erreur sauvegarde rapport IA:', saveErr)
+    const errMsg = saveErr?.data?.message || saveErr?.response?._data?.message || saveErr?.message || 'Erreur inconnue'
+    console.warn('Erreur sauvegarde rapport IA:', errMsg)
+    return { status: 'error', message: errMsg }
   }
 }
 
@@ -588,12 +590,16 @@ const envoyerRapportIaAAdmin = async () => {
   aiSentSuccess.value = null
   try {
     const res = await meutreEtSauvegarderIa(aiRapportResult.value)
-    aiSentSuccess.value = res?.message || "✅ Rapport IA transmis directement à l'administrateur avec succès !"
+    if (res?.status === 'error') {
+      aiSentSuccess.value = `⚠️ ${res.message || "Erreur lors de la transmission."}`
+    } else {
+      aiSentSuccess.value = res?.message || "✅ Rapport IA transmis directement à l'administrateur avec succès !"
+    }
   } catch (e) {
     aiSentSuccess.value = "Erreur lors de la transmission à l'administrateur."
   } finally {
     aiSendingToAdmin.value = false
-    setTimeout(() => { aiSentSuccess.value = null }, 6000)
+    setTimeout(() => { aiSentSuccess.value = null }, 7000)
   }
 }
 
