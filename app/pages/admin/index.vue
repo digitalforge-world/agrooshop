@@ -480,6 +480,59 @@
     </div>
 
     <!-- ═══════════════════════════════════════════════════ -->
+    <!-- RAPPORTS RÉCENTS DES GESTIONNAIRES                  -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="orders-panel" v-if="rapportsRecents.length > 0">
+      <div class="orders-header">
+        <div>
+          <h2 class="section-title flex items-center gap-2">
+            <FileSpreadsheet class="w-5 h-5 text-emerald-600 inline" />
+            <span>Rapports Récents des Gestionnaires</span>
+          </h2>
+          <p class="section-subtitle">Rapports d'activité transmis par les délégués de boutique</p>
+        </div>
+        <NuxtLink to="/admin/rapports" class="link-all">
+          Tous les Rapports →
+        </NuxtLink>
+      </div>
+
+      <div class="orders-table-wrapper">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Statut</th>
+              <th>Titre du Rapport</th>
+              <th>Boutique</th>
+              <th>Gestionnaire</th>
+              <th>Date</th>
+              <th class="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="rap in rapportsRecents" :key="rap.id" class="order-row">
+              <td>
+                <span :class="rap.lu_par_admin || rap.statut_lecture ? 'badge badge-green' : 'badge badge-amber animate-pulse'">
+                  {{ rap.lu_par_admin || rap.statut_lecture ? 'Lu' : 'Nouveau' }}
+                </span>
+              </td>
+              <td class="font-bold text-slate-900">
+                {{ rap.titre || `Rapport #${rap.id}` }}
+              </td>
+              <td>{{ rap.boutique?.nom || '—' }}</td>
+              <td>{{ rap.gestionnaire ? `${rap.gestionnaire.prenom} ${rap.gestionnaire.nom}` : '—' }}</td>
+              <td class="order-date">{{ formatDate(rap.created_at) }}</td>
+              <td class="text-right">
+                <NuxtLink to="/admin/rapports" class="btn-sm bg-emerald-50 text-emerald-700 font-bold px-3 py-1 rounded-lg border border-emerald-200">
+                  Consulter PDF
+                </NuxtLink>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
     <!-- AI INSIGHTS MODAL                                   -->
     <!-- ═══════════════════════════════════════════════════ -->
     <Teleport to="body">
@@ -657,7 +710,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import {
   TrendingUp, ShoppingCart, DollarSign, Package, RefreshCw,
   AlertTriangle, Clock, CreditCard, MapPin, Sparkles, Brain,
-  Zap, Target, TrendingDown, X
+  Zap, Target, TrendingDown, X, FileSpreadsheet
 } from 'lucide-vue-next'
 import { useAdminAuthStore } from '~/stores/adminAuth'
 
@@ -703,6 +756,7 @@ const modesPaiement = ref([])
 const topProduits = ref([])
 const ventesVilles = ref([])
 const recentOrders = ref([])
+const rapportsRecents = ref([])
 
 const aiInsights = ref({
   loading: false,
@@ -941,6 +995,19 @@ const fetchDashboardData = async () => {
   }
   isLoading.value = false
   fetchAiInsights()
+  fetchRecentRapports()
+}
+
+const fetchRecentRapports = async () => {
+  try {
+    const res = await $fetch(`${config.public.apiBaseUrl}/admin/rapports`, {
+      headers: { Authorization: `Bearer ${authStore.token}` }
+    })
+    const raw = res?.data ?? (Array.isArray(res) ? res : [])
+    rapportsRecents.value = raw.slice(0, 5)
+  } catch (e) {
+    console.warn('Erreur chargement des rapports récents:', e)
+  }
 }
 
 onMounted(() => {

@@ -49,7 +49,7 @@
           <FileText class="w-4 h-4 text-blue-600" />
           Générer un Rapport PDF
         </h2>
-        <p class="text-xs text-slate-500 mb-5">Rapport classique envoyé à l'administrateur.</p>
+        <p class="text-xs text-slate-500 mb-5">Rapport classique envoyé directement à l'administrateur.</p>
         
         <div class="flex flex-wrap gap-3">
           <button
@@ -70,9 +70,21 @@
           </button>
         </div>
 
-        <div v-if="reportSuccess" class="mt-4 bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-700 flex items-center gap-2">
-          <CheckCircle class="w-4 h-4 flex-shrink-0" />
-          {{ reportSuccess }}
+        <div v-if="reportSuccess" class="mt-4 bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <CheckCircle class="w-4 h-4 flex-shrink-0 text-emerald-600" />
+            <span>{{ reportSuccess }}</span>
+          </div>
+          <button
+            v-if="lastGeneratedRapportId"
+            @click="telechargerPdf(lastGeneratedRapportId)"
+            :disabled="downloadingId === lastGeneratedRapportId"
+            class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] rounded-lg flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs w-fit"
+          >
+            <RefreshCw v-if="downloadingId === lastGeneratedRapportId" class="w-3.5 h-3.5 animate-spin" />
+            <Download v-else class="w-3.5 h-3.5" />
+            <span>Télécharger PDF</span>
+          </button>
         </div>
       </div>
 
@@ -142,7 +154,7 @@
       </div>
     </div>
 
-    <!-- Assistant Rapport -->
+    <!-- Assistant Rapport IA -->
     <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
       <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div class="flex items-center gap-3">
@@ -246,13 +258,33 @@
                   Bout. {{ store.boutique?.nom || '-' }} · {{ aiRapportForm.date }} · {{ store.user?.prenom }} {{ store.user?.nom }}
                 </p>
               </div>
-              <button
-                @click="exportRapportPdf"
-                class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
-              >
-                <Download class="w-3.5 h-3.5" />
-                Exporter PDF
-              </button>
+              
+              <!-- Buttons: Envoyer à l'Admin + Exporter PDF -->
+              <div class="flex items-center gap-2 flex-wrap">
+                <button
+                  @click="envoyerRapportIaAAdmin"
+                  :disabled="aiSendingToAdmin"
+                  class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white text-[11px] font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                >
+                  <RefreshCw v-if="aiSendingToAdmin" class="w-3.5 h-3.5 animate-spin" />
+                  <Send v-else class="w-3.5 h-3.5" />
+                  <span>{{ aiSendingToAdmin ? 'Envoi...' : (aiSentSuccess ? '✅ Transmis à l\'Admin' : 'Envoyer à l\'Admin') }}</span>
+                </button>
+                <button
+                  @click="exportRapportPdf"
+                  :disabled="downloadingId === lastGeneratedRapportId"
+                  class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                >
+                  <RefreshCw v-if="downloadingId === lastGeneratedRapportId" class="w-3.5 h-3.5 animate-spin" />
+                  <Download v-else class="w-3.5 h-3.5" />
+                  <span>Exporter PDF</span>
+                </button>
+              </div>
+            </div>
+
+            <div v-if="aiSendSuccess" class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs p-2.5 rounded-xl flex items-center gap-2">
+              <CheckCircle class="w-4 h-4 text-emerald-600 flex-shrink-0" />
+              <span>{{ aiSendSuccess }}</span>
             </div>
 
             <div v-if="aiRapportResult.introduction" class="space-y-1.5">
@@ -299,6 +331,76 @@
       </div>
     </div>
 
+    <!-- Historique des Rapports Envoyés -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <div>
+          <h2 class="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+            <FileSpreadsheet class="w-4 h-4 text-emerald-600" />
+            <span>Historique de vos Rapports Envoyés à l'Admin</span>
+          </h2>
+          <p class="text-xs text-slate-500 mt-0.5">Consultez et téléchargez tous les rapports transmis depuis votre boutique</p>
+        </div>
+        <button @click="fetchHistoriqueRapports" class="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg flex items-center gap-1 transition-colors cursor-pointer">
+          <RefreshCw class="w-3.5 h-3.5" :class="{ 'animate-spin': loadingHistory }" />
+          <span>Actualiser</span>
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-50 uppercase text-[10px] font-mono tracking-wider text-slate-500 border-b border-slate-200">
+            <tr>
+              <th class="px-4 py-3">Rapport</th>
+              <th class="px-4 py-3">Type</th>
+              <th class="px-4 py-3">Date du Rapport</th>
+              <th class="px-4 py-3">Statut Admin</th>
+              <th class="px-4 py-3 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 font-medium">
+            <tr v-if="loadingHistory">
+              <td colspan="5" class="px-4 py-6 text-center text-slate-500 font-mono">Chargement de l'historique...</td>
+            </tr>
+            <tr v-else-if="historicRapports.length === 0">
+              <td colspan="5" class="px-4 py-6 text-center text-slate-500">Aucun rapport envoyé pour le moment</td>
+            </tr>
+            <tr v-for="r in historicRapports" :key="r.id" class="hover:bg-slate-50">
+              <td class="px-4 py-3 font-bold text-slate-900 flex items-center gap-2">
+                <FileText class="w-4 h-4 text-blue-600 flex-shrink-0" />
+                <span>{{ r.titre || `Rapport #${r.id}` }}</span>
+              </td>
+              <td class="px-4 py-3">
+                <span :class="r.type === 'mensuel' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-blue-50 text-blue-700 border-blue-200'" class="px-2 py-0.5 rounded-full text-[10px] font-bold border uppercase">
+                  {{ r.type || 'journalier' }}
+                </span>
+              </td>
+              <td class="px-4 py-3 font-mono text-slate-500">
+                {{ r.date_rapport ? new Date(r.date_rapport).toLocaleDateString('fr-FR') : '—' }}
+              </td>
+              <td class="px-4 py-3">
+                <span :class="r.statut_lecture || r.lu_par_admin ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200 animate-pulse'" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border">
+                  <span class="w-1.5 h-1.5 rounded-full" :class="r.statut_lecture || r.lu_par_admin ? 'bg-emerald-500' : 'bg-amber-500'"></span>
+                  {{ r.statut_lecture || r.lu_par_admin ? 'Lu par l\'Admin' : 'Non Lu (En attente)' }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-right">
+                <button
+                  @click="telechargerPdf(r.id)"
+                  :disabled="downloadingId === r.id"
+                  class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-[11px] font-bold rounded-lg flex items-center gap-1.5 ml-auto transition-colors cursor-pointer"
+                >
+                  <RefreshCw v-if="downloadingId === r.id" class="w-3.5 h-3.5 animate-spin" />
+                  <Download v-else class="w-3.5 h-3.5" />
+                  <span>Télécharger PDF</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -306,7 +408,8 @@
 import { ref, computed, onMounted } from 'vue'
 import {
   TrendingUp, ShoppingBag, Package, FileText, Calendar, CheckCircle,
-  Sparkles, Wand2, Brain, Download, AlertTriangle, Plus, X, BarChart3, RefreshCw
+  Sparkles, Wand2, Brain, Download, AlertTriangle, Plus, X, BarChart3, RefreshCw,
+  Send, FileSpreadsheet
 } from 'lucide-vue-next'
 import { useGestionnaireAuthStore } from '~/stores/gestionnaireAuth'
 
@@ -319,11 +422,17 @@ definePageMeta({
 useHead({ title: 'Mon Dashboard - AgroShop Gestionnaire' })
 
 const store = useGestionnaireAuthStore()
-const { gestionnaireFetch } = useGestionnaireFetch()
+const config = useRuntimeConfig()
+const { gestionnaireFetch, token } = useGestionnaireFetch()
 
 const stats = ref({ ca_du_jour: 0, ventes_du_jour: 0, produits_en_stock: 0 })
 const generatingReport = ref(null)
 const reportSuccess = ref(null)
+const lastGeneratedRapportId = ref(null)
+const downloadingId = ref(null)
+
+const historicRapports = ref([])
+const loadingHistory = ref(false)
 
 const formatPrice = (val) => Number(val || 0).toLocaleString('fr-FR')
 const todayStr = () => new Date().toISOString().split('T')[0]
@@ -342,6 +451,8 @@ const aiRapportForm = ref({
 
 const aiGeneratingRapport = ref(false)
 const aiRapportResult = ref(null)
+const aiSendingToAdmin = ref(false)
+const aiSentSuccess = ref(null)
 
 // ===== SUGGESTION REAPPRO STATE =====
 const showReappro = ref(false)
@@ -364,6 +475,18 @@ const fetchStats = async () => {
   }
 }
 
+const fetchHistoriqueRapports = async () => {
+  loadingHistory.value = true
+  try {
+    const res = await gestionnaireFetch('/gestionnaire/rapports')
+    historicRapports.value = res?.data || res || []
+  } catch (e) {
+    console.warn('Erreur chargement historique des rapports:', e)
+  } finally {
+    loadingHistory.value = false
+  }
+}
+
 const genererRapport = async (type) => {
   generatingReport.value = type
   reportSuccess.value = null
@@ -373,13 +496,17 @@ const genererRapport = async (type) => {
       method: 'POST',
       body: { type, date: today }
     })
+    const rapportObj = res?.rapport || res?.data
+    if (rapportObj?.id) {
+      lastGeneratedRapportId.value = rapportObj.id
+    }
     reportSuccess.value = res?.message || `Rapport ${type} généré et envoyé à l'administrateur avec succès !`
+    fetchHistoriqueRapports()
   } catch (e) {
     console.error('Erreur rapport:', e)
     reportSuccess.value = "Erreur lors de la génération du rapport."
   } finally {
     generatingReport.value = null
-    setTimeout(() => reportSuccess.value = null, 6000)
   }
 }
 
@@ -387,6 +514,7 @@ const genererRapport = async (type) => {
 const generateAiRapport = async () => {
   aiGeneratingRapport.value = true
   aiRapportResult.value = null
+  aiSentSuccess.value = null
   try {
     const boutique = store.boutique
     const boutique_id = boutique?.id || store.boutiques?.[0]?.id || null
@@ -412,26 +540,8 @@ const generateAiRapport = async () => {
     const data = res?.data || res
     aiRapportResult.value = data
 
-    // Transmettre et sauvegarder automatiquement le rapport IA pour l'administrateur
-    try {
-      await gestionnaireFetch('/gestionnaire/rapports/sauvegarder-ia', {
-        method: 'POST',
-        body: {
-          boutique_id,
-          type: aiRapportForm.value.type,
-          date_rapport: aiRapportForm.value.date,
-          titre: data.titre || `Rapport IA ${aiRapportForm.value.type}`,
-          introduction: data.introduction,
-          section_activite: data.section_activite,
-          section_stocks: data.section_stocks,
-          section_anomalies: data.section_anomalies,
-          section_recommandations: data.section_recommandations,
-          conclusion: data.conclusion
-        }
-      })
-    } catch (saveErr) {
-      console.warn('Erreur sauvegarde automatique rapport IA', saveErr)
-    }
+    // Sauvegarde et transmission automatique de départ
+    await meutreEtSauvegarderIa(data)
   } catch (e) {
     console.error('AI rapport error', e)
   } finally {
@@ -439,44 +549,144 @@ const generateAiRapport = async () => {
   }
 }
 
-const exportRapportPdf = () => {
-  if (!aiRapportResult.value) return
+const meutreEtSauvegarderIa = async (dataToSave) => {
+  const rData = dataToSave || aiRapportResult.value
+  if (!rData) return
+  const boutique = store.boutique
+  const boutique_id = boutique?.id || store.boutiques?.[0]?.id || 1
+
   try {
-    const r = aiRapportResult.value
-    const content = `
-RAPPORT D'ACTIVITÉ — ${r.titre || 'Rapport'}
-Date: ${aiRapportForm.value.date}
-Gestionnaire: ${store.user?.prenom || ''} ${store.user?.nom || ''}
-Boutique: ${store.boutique?.nom || ''}
+    const saveRes = await gestionnaireFetch('/gestionnaire/rapports/sauvegarder-ia', {
+      method: 'POST',
+      body: {
+        boutique_id,
+        type: aiRapportForm.value.type,
+        date_rapport: aiRapportForm.value.date,
+        titre: rData.titre || `Rapport IA ${aiRapportForm.value.type}`,
+        introduction: rData.introduction,
+        section_activite: rData.section_activite,
+        section_stocks: rData.section_stocks,
+        section_anomalies: rData.section_anomalies,
+        section_recommandations: rData.section_recommandations,
+        conclusion: rData.conclusion
+      }
+    })
+    const rap = saveRes?.rapport || saveRes?.data
+    if (rap?.id) {
+      lastGeneratedRapportId.value = rap.id
+    }
+    fetchHistoriqueRapports()
+    return saveRes
+  } catch (saveErr) {
+    console.warn('Erreur sauvegarde rapport IA:', saveErr)
+  }
+}
 
-=== INTRODUCTION ===
-${r.introduction || ''}
+const envoyerRapportIaAAdmin = async () => {
+  if (!aiRapportResult.value) return
+  aiSendingToAdmin.value = true
+  aiSentSuccess.value = null
+  try {
+    const res = await meutreEtSauvegarderIa(aiRapportResult.value)
+    aiSentSuccess.value = res?.message || "✅ Rapport IA transmis directement à l'administrateur avec succès !"
+  } catch (e) {
+    aiSentSuccess.value = "Erreur lors de la transmission à l'administrateur."
+  } finally {
+    aiSendingToAdmin.value = false
+    setTimeout(() => { aiSentSuccess.value = null }, 6000)
+  }
+}
 
-=== ACTIVITÉ DU JOUR ===
-${r.section_activite || ''}
+const telechargerPdf = async (rapportId) => {
+  if (!rapportId) return
+  downloadingId.value = rapportId
+  try {
+    const blob = await $fetch(`${config.public.apiBaseUrl}/gestionnaire/rapports/${rapportId}/telecharger`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`
+      },
+      responseType: 'blob'
+    })
 
-=== SITUATION STOCKS ===
-${r.section_stocks || ''}
+    if (!blob || blob.size === 0) {
+      throw new Error('Fichier PDF vide ou introuvable')
+    }
 
-=== ANOMALIES CONSTATÉES ===
-${r.section_anomalies || ''}
-
-=== RECOMMANDATIONS ===
-${r.section_recommandations || ''}
-
-=== CONCLUSION ===
-${r.conclusion || ''}
-`.trim()
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `rapport_${aiRapportForm.value.type}_${aiRapportForm.value.date}.txt`
+    a.download = `rapport_${rapportId}.pdf`
+    document.body.appendChild(a)
     a.click()
-    URL.revokeObjectURL(url)
+    document.body.removeChild(a)
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
   } catch (e) {
-    console.warn('Export error', e)
+    console.error('Erreur téléchargement PDF:', e)
+    alert('Impossible de télécharger le PDF. Tentative de génération directe...')
+  } finally {
+    downloadingId.value = null
   }
+}
+
+const exportRapportPdf = async () => {
+  if (!aiRapportResult.value) return
+  if (lastGeneratedRapportId.value) {
+    await telechargerPdf(lastGeneratedRapportId.value)
+    return
+  }
+  try {
+    const res = await meutreEtSauvegarderIa(aiRapportResult.value)
+    const rapId = res?.rapport?.id || lastGeneratedRapportId.value
+    if (rapId) {
+      await telechargerPdf(rapId)
+    } else {
+      fallbackPrintPdf()
+    }
+  } catch (e) {
+    fallbackPrintPdf()
+  }
+}
+
+const fallbackPrintPdf = () => {
+  if (!aiRapportResult.value) return
+  const r = aiRapportResult.value
+  const printWindow = window.open('', '_blank')
+  if (!printWindow) return
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${r.titre || 'Rapport PDF'}</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 30px; color: #1e293b; line-height: 1.6; }
+        h1 { color: #065f46; border-bottom: 2px solid #059669; padding-bottom: 10px; font-size: 20px; }
+        .meta { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 12px; }
+        .section { font-weight: bold; color: #065f46; margin-top: 20px; font-size: 14px; border-bottom: 1px solid #cbd5e1; }
+        p { margin-top: 5px; font-size: 13px; }
+      </style>
+    </head>
+    <body>
+      <h1>AGROSHOP — ${r.titre || 'Rapport d\'Activité'}</h1>
+      <div class="meta">
+        <strong>Boutique :</strong> ${store.boutique?.nom || ''}<br>
+        <strong>Date :</strong> ${aiRapportForm.value.date}<br>
+        <strong>Gestionnaire :</strong> ${store.user?.prenom || ''} ${store.user?.nom || ''}
+      </div>
+      ${r.introduction ? `<div class="section">📌 INTRODUCTION</div><p>${r.introduction}</p>` : ''}
+      ${r.section_activite ? `<div class="section">📊 ACTIVITÉ & VENTES</div><p>${r.section_activite.replace(/\n/g, '<br>')}</p>` : ''}
+      ${r.section_stocks ? `<div class="section">📦 SITUATION STOCKS</div><p>${r.section_stocks.replace(/\n/g, '<br>')}</p>` : ''}
+      ${r.section_anomalies ? `<div class="section">⚠️ ANOMALIES</div><p>${r.section_anomalies.replace(/\n/g, '<br>')}</p>` : ''}
+      ${r.section_recommandations ? `<div class="section">💡 RECOMMANDATIONS</div><p>${r.section_recommandations.replace(/\n/g, '<br>')}</p>` : ''}
+      ${r.conclusion ? `<div class="section">🎯 CONCLUSION</div><p>${r.conclusion}</p>` : ''}
+    </body>
+    </html>
+  `)
+  printWindow.document.close()
+  printWindow.focus()
+  setTimeout(() => {
+    printWindow.print()
+    printWindow.close()
+  }, 300)
 }
 
 // ===== SUGGESTION REAPPRO =====
@@ -501,5 +711,8 @@ const fetchReappro = async () => {
   }
 }
 
-onMounted(fetchStats)
+onMounted(() => {
+  fetchStats()
+  fetchHistoriqueRapports()
+})
 </script>
