@@ -327,7 +327,12 @@
           <div class="p-6 overflow-y-auto flex-1 custom-modal-scroll space-y-6">
             <div class="flex flex-col sm:flex-row items-center gap-6 bg-slate-50 p-5 rounded-2xl border border-slate-200">
               <div class="w-28 h-28 rounded-2xl bg-white p-2 flex items-center justify-center flex-shrink-0 border border-slate-200 shadow-xs">
-                <img :src="getImgUrl(selectedProductDetail.url_image || selectedProductDetail.image_principale?.url_image)" class="w-full h-full object-contain" />
+                <img 
+                  :src="getImgUrl(selectedProductDetail.url_image || selectedProductDetail.image_principale?.url_image)" 
+                  :alt="selectedProductDetail.nom_commercial || 'Image produit AgroShop'" 
+                  class="w-full h-full object-contain" 
+                  @error="(e) => e.target.src = fallbackImage"
+                />
               </div>
               <div class="space-y-1.5 text-center sm:text-left flex-1">
                 <div class="flex items-center justify-center sm:justify-start gap-2">
@@ -651,6 +656,7 @@
                   <div class="w-32 h-32 rounded-2xl bg-white border border-slate-200 p-2 flex items-center justify-center flex-shrink-0 shadow-xs relative">
                     <img 
                       :src="mainImagePreview || getImgUrl(form.url_image)" 
+                      :alt="form.nom_commercial || 'Aperçu de l\'image principale'"
                       class="w-full h-full object-contain" 
                       @error="(e) => e.target.src = fallbackImage"
                     />
@@ -703,7 +709,12 @@
                     class="relative bg-slate-50 p-2 rounded-2xl border border-slate-200 flex flex-col items-center gap-2 group shadow-xs"
                   >
                     <div class="w-full h-24 bg-white rounded-xl p-1 flex items-center justify-center border border-slate-200">
-                      <img :src="img.preview" class="w-full h-full object-contain" />
+                      <img 
+                        :src="img.preview" 
+                        :alt="`Image galerie ${idx + 1}`" 
+                        class="w-full h-full object-contain" 
+                        @error="(e) => e.target.src = fallbackImage"
+                      />
                     </div>
 
                     <div class="flex items-center gap-1.5 w-full justify-between">
@@ -1014,14 +1025,29 @@
               <span>{{ currentStep > 1 ? '← Précédent' : '✕ Annuler' }}</span>
             </button>
 
-            <button v-if="currentStep < totalSteps" type="button" @click="nextStep" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 cursor-pointer">
-              <span>Suivant →</span>
-            </button>
+            <div class="flex items-center gap-2">
+              <button 
+                v-if="editingId && currentStep < totalSteps" 
+                type="button" 
+                @click="saveProduct" 
+                :disabled="isSaving" 
+                class="px-4 py-2.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5 transition-colors"
+                title="Enregistrer directement sans passer toutes les étapes"
+              >
+                <RefreshCw v-if="isSaving" class="w-3.5 h-3.5 animate-spin" />
+                <Save v-else class="w-3.5 h-3.5" />
+                <span>Enregistrer</span>
+              </button>
 
-            <button v-else type="button" @click="saveProduct" :disabled="isSaving" class="px-7 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 cursor-pointer flex items-center gap-2">
-              <RefreshCw v-if="isSaving" class="w-3.5 h-3.5 animate-spin" />
-              <span>{{ isSaving ? 'Sauvegarde BDD...' : '✓ Terminer & Enregistrer' }}</span>
-            </button>
+              <button v-if="currentStep < totalSteps" type="button" @click="nextStep" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 cursor-pointer">
+                <span>Suivant →</span>
+              </button>
+
+              <button v-else type="button" @click="saveProduct" :disabled="isSaving" class="px-7 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 cursor-pointer flex items-center gap-2">
+                <RefreshCw v-if="isSaving" class="w-3.5 h-3.5 animate-spin" />
+                <span>{{ isSaving ? 'Sauvegarde BDD...' : '✓ Terminer & Enregistrer' }}</span>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -1871,6 +1897,7 @@ const removeImage = (idx) => {
 const saveProduct = async () => {
   if (!validateCurrentStep()) return
   isSaving.value = true
+  stepErrorMessage.value = ''
 
   try {
     const formData = new FormData()
@@ -1879,22 +1906,28 @@ const saveProduct = async () => {
       formData.append('_method', 'PUT')
     }
 
+    // Champs texte & agronomiques exhaustifs
     formData.append('nom_commercial', form.value.nom_commercial || '')
-    if (form.value.description) formData.append('description', form.value.description)
-    if (form.value.composition) formData.append('composition', form.value.composition)
-    if (form.value.principes_actifs) formData.append('principes_actifs', form.value.principes_actifs)
-    if (form.value.mode_emploi) formData.append('mode_emploi', form.value.mode_emploi)
-    if (form.value.dosage_recommande) formData.append('dosage_recommande', form.value.dosage_recommande)
-    if (form.value.precautions_usage) formData.append('precautions_usage', form.value.precautions_usage)
-    if (form.value.contre_indications) formData.append('contre_indications', form.value.contre_indications)
+    formData.append('description', form.value.description ?? '')
+    formData.append('composition', form.value.composition ?? '')
+    formData.append('principes_actifs', form.value.principes_actifs ?? '')
+    formData.append('mode_emploi', form.value.mode_emploi ?? '')
+    formData.append('dosage_recommande', form.value.dosage_recommande ?? '')
+    formData.append('precautions_usage', form.value.precautions_usage ?? '')
+    formData.append('contre_indications', form.value.contre_indications ?? '')
 
+    // Prix, Unité & Stocks
     formData.append('prix_unitaire', String(form.value.prix_unitaire || 0))
     formData.append('unite_mesure', form.value.unite_mesure || 'unité')
     formData.append('stock_disponible', String(form.value.stock_disponible || 0))
     formData.append('stock_alerte', String(form.value.stock_alerte || 10))
 
-    if (form.value.poids) formData.append('poids', String(form.value.poids))
-    if (form.value.dimensions) formData.append('dimensions', form.value.dimensions)
+    if (form.value.poids !== null && form.value.poids !== undefined && form.value.poids !== '') {
+      formData.append('poids', String(form.value.poids))
+    } else {
+      formData.append('poids', '')
+    }
+    formData.append('dimensions', form.value.dimensions ?? '')
     if (form.value.url_image) formData.append('url_image', form.value.url_image)
 
     // Upload Main Image File if uploaded separately
@@ -1906,9 +1939,9 @@ const saveProduct = async () => {
     formData.append('statut', form.value.statut || 'actif')
     formData.append('featured', form.value.est_en_vedette ? '1' : '0')
 
-    if (form.value.slug) formData.append('slug', form.value.slug)
-    if (form.value.meta_title) formData.append('meta_title', form.value.meta_title)
-    if (form.value.meta_description) formData.append('meta_description', form.value.meta_description)
+    formData.append('slug', form.value.slug ?? '')
+    formData.append('meta_title', form.value.meta_title ?? '')
+    formData.append('meta_description', form.value.meta_description ?? '')
 
     // Send numeric category IDs as array
     if (Array.isArray(form.value.selectedCategories) && form.value.selectedCategories.length > 0) {
@@ -1955,13 +1988,14 @@ const saveProduct = async () => {
 
     // Refresh products list from DB
     await fetchProducts()
+    isModalOpen.value = false
 
   } catch (e) {
-    console.error('Save product notice', e)
+    console.error('Save product error', e)
+    stepErrorMessage.value = e?.data?.message || 'Erreur lors de l\'enregistrement du produit. Vérifiez les champs requis.'
+  } finally {
+    isSaving.value = false
   }
-
-  isSaving.value = false
-  isModalOpen.value = false
 }
 
 const toggleFeatured = async (prod) => {
