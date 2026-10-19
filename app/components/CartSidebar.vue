@@ -155,11 +155,18 @@ const whatsappCheckoutUrl = computed(() => {
     .join('%0A')
   
   const text = `Bonjour AgroShop,%0AJesouhaite passer la commande suivante :%0A${itemList}%0A%0ATotal : ${cartStore.totalPrice.toLocaleString('fr-FR')} FCFA`
-  const phone = useRuntimeConfig().public.whatsappNumber || '22898706081'
+  const phone = useRuntimeConfig().public.whatsappNumber
+  if (!phone) return '#'
   return `https://wa.me/${phone}?text=${text}`
 })
 
-const trackWhatsappClick = () => {
+const trackWhatsappClick = (e) => {
+  if (whatsappCheckoutUrl.value === '#') {
+    if (e) e.preventDefault()
+    alert('Le service de commande WhatsApp est temporairement en maintenance. Veuillez valider votre commande directement en ligne.')
+    cartStore.openCheckout()
+    return
+  }
   try {
     if (typeof window === 'undefined') return
     const config = useRuntimeConfig()

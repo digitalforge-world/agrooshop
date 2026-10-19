@@ -398,12 +398,10 @@ const commitmentItems = [
   }
 ]
 
-const whatsappDirectUrl = `https://wa.me/22898706081?text=${encodeURIComponent("Bonjour AgroShop Togo, je souhaite demander une visite d'inspection terrain pour un traitement anti-nuisibles.")}`
+const whatsappDirectUrl = '#'
 
 const requestPestService = (pestName) => {
-  const msg = `Bonjour AgroShop Togo, je souhaite demander une intervention / diagnostic concernant les : ${pestName}.`
-  const url = `https://wa.me/22898706081?text=${encodeURIComponent(msg)}`
-  window.open(url, '_blank')
+  navigateTo('/contact')
 }
 
 // 8 Pest Interventions Grid with REAL NATURAL PHOTOS

@@ -162,14 +162,14 @@
             </div>
 
             <!-- WhatsApp Direct Order Button -->
-            <a 
-              :href="whatsappUrl" 
-              target="_blank"
+            <button 
+              type="button"
+              @click="handleWhatsappClick" 
               class="w-full py-2.5 px-5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
             >
               <MessageSquare class="w-3.5 h-3.5 text-emerald-400" />
-              <span>Commander par WhatsApp (+228 98 70 60 81)</span>
-            </a>
+              <span>Commander par WhatsApp</span>
+            </button>
           </div>
 
           <!-- 4. Refined Content Sections -->
@@ -442,10 +442,9 @@ const fetchAiRecommendations = async () => {
 const formatPrice = (val) => Number(val || 0).toLocaleString('fr-FR')
 const getImgUrl = (img) => getImageUrl(img, fallbackImage)
 
-const whatsappUrl = computed(() => {
-  const text = encodeURIComponent(`Bonjour AgroShop, je souhaite commander : ${product.value.nom_commercial} (${selectedQuantity.value} ${product.value.unite_mesure || 'unité'})`)
-  return `https://wa.me/22898706081?text=${text}`
-})
+const handleWhatsappClick = () => {
+  alert('Notre service de commande WhatsApp est temporairement en maintenance suite à un incident technique. Vous pouvez commander directement en ligne en ajoutant ce produit au panier, ou nous contacter par téléphone.')
+}
 
 const displayImages = computed(() => {
   const list = []

@@ -133,10 +133,7 @@ const isService = computed(() => {
   return catName.includes('service') || catName.includes('dératisation') || catName.includes('désinsectisation') || catName.includes('fumigation') || name.includes('dératisation') || name.includes('désinsectisation') || name.includes('fumigation') || name.includes('reptile')
 })
 
-const serviceWhatsappUrl = computed(() => {
-  const msg = `Bonjour AgroShop, je souhaite des informations et une visite de diagnostic terrain pour le service: "${props.product.nom_commercial}".`
-  return `https://wa.me/22898706081?text=${encodeURIComponent(msg)}`
-})
+const serviceWhatsappUrl = computed(() => '/contact')
 
 const openModal = () => {
   showModal.value = true

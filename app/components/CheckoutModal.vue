@@ -342,7 +342,8 @@ const calculatedGrandTotal = computed(() => {
 })
 
 const whatsappDirectUrl = computed(() => {
-  const phone = config.public.whatsappNumber || '22898706081'
+  const phone = config.public.whatsappNumber
+  if (!phone) return '#'
   const text = `Bonjour AgroShop,%0AJe viens de valider la commande N° ${orderRefCode.value} d'un montant de ${calculatedGrandTotal.value.toLocaleString('fr-FR')} FCFA.%0AMerci de me contacter.`
   return `https://wa.me/${phone}?text=${text}`
 })

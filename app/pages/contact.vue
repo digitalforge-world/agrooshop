@@ -63,10 +63,15 @@
           <div class="pt-4 space-y-3">
             <p class="text-xs font-bold text-slate-800 uppercase tracking-wider">Suivez-nous sur les réseaux :</p>
             <div class="flex items-center gap-3">
-              <a href="https://wa.me/22898706081?text=Bonjour%20AgroShop,%20j'aimerais%20avoir%20des%20informations" target="_blank" class="px-4 py-2 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-xs rounded-xl shadow-md transition-all inline-flex items-center gap-2">
+              <button 
+                type="button" 
+                @click="alert('Notre ligne WhatsApp est temporairement en maintenance. Veuillez nous contacter directement par appel ou par ce formulaire.')" 
+                class="px-4 py-2 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-xs rounded-xl shadow-md transition-all inline-flex items-center gap-2 cursor-pointer opacity-90"
+                title="Service WhatsApp temporairement indisponible"
+              >
                 <MessageSquare class="w-4 h-4" />
                 <span>Chat WhatsApp</span>
-              </a>
+              </button>
               <a href="https://www.facebook.com/profile.php?id=100081426776950" target="_blank" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-emerald-800 hover:text-white text-slate-700 flex items-center justify-center transition-colors">
                 <Facebook class="w-4 h-4" />
               </a>

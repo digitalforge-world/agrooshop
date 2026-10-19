@@ -114,15 +114,15 @@
             <h2 class="text-base sm:text-xl font-black text-slate-900">Produits populaires</h2>
             <p class="mt-0.5 text-xs sm:text-sm text-slate-500">Les produits les plus commandés par nos clients.</p>
           </div>
-          <NuxtLink to="/produits?category=semences" class="flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-700 transition-all duration-300">
-            <span>Voir toutes les semences</span>
+          <NuxtLink to="/produits" class="flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-700 transition-all duration-300">
+            <span>Voir tous les produits</span>
             <ArrowRight class="w-3.5 h-3.5" />
           </NuxtLink>
         </div>
 
         <!-- Loading -->
         <div v-if="isLoading" class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
-          <div v-for="i in 4" :key="i" class="animate-pulse bg-white rounded-xl p-3 sm:p-4 space-y-3 sm:space-y-4">
+          <div v-for="i in 8" :key="i" class="animate-pulse bg-white rounded-xl p-3 sm:p-4 space-y-3 sm:space-y-4">
             <div class="h-36 sm:h-48 bg-gray-200 rounded-lg"></div>
             <div class="h-3 w-20 bg-gray-200 rounded"></div>
             <div class="h-4 w-full bg-gray-200 rounded"></div>
@@ -319,57 +319,112 @@ const testimonials = [
   { text: "Qualité des outils de quincaillerie exceptionnelle. Bien meilleur que ce qu'on trouve au marché local.", name: 'Kofi D.', role: 'Entrepreneur BTP, Lomé', initials: 'KD' },
 ]
 
-// Featured Products (Seeds only as requested)
-const featuredProducts = ref([
+// Default Seeds (Row 1 - Matches live screenshot & catalogue)
+const defaultSeeds = [
   { 
-    id: 4, 
-    nom_commercial: 'Semence Maïs Hybride PAN 53', 
-    slug: 'semence-mais-hybride-pan-53', 
-    composition: 'Semence certifiée Zea mays. Haut rendement & résistant à la sécheresse.', 
-    prix_unitaire: 12000, 
-    unite_mesure: 'sac 5kg', 
-    stock_disponible: 500, 
+    id: 101, 
+    nom_commercial: 'PIMENT BLANC MURIA', 
+    slug: 'piment-blanc-muria', 
+    composition: 'Semences maraîchères certifiées de piment blanc.', 
+    prix_unitaire: 8000, 
+    unite_mesure: 'unité', 
+    stock_disponible: 250, 
     featured: true, 
-    url_image: 'storage/produits/mais_pan53.jpg', 
+    url_image: 'storage/produits/piment_blanc_muria.jpg', 
     categories: [{ nom: 'Semences', slug: 'semences' }] 
   },
   { 
-    id: 9, 
-    nom_commercial: 'Semences Tomate Hybride Cobra F1', 
-    slug: 'semences-tomate-hybride-cobra-f1', 
-    composition: 'Semence maraîchère certifiée. Fruits fermes et tolérance aux maladies.', 
-    prix_unitaire: 8500, 
-    unite_mesure: 'boîte 50g', 
-    stock_disponible: 350, 
+    id: 102, 
+    nom_commercial: 'CONCOMBRE KYOTO-SHI 100G', 
+    slug: 'concombre-kyoto-shi-100g', 
+    composition: 'Formulation adaptée aux sols tropicaux.', 
+    prix_unitaire: 7000, 
+    unite_mesure: 'unité', 
+    stock_disponible: 320, 
     featured: true, 
-    url_image: 'storage/produits/mais_pan53.jpg', 
+    url_image: 'storage/produits/concombre_kyoto_shi.jpg', 
     categories: [{ nom: 'Semences', slug: 'semences' }] 
   },
   { 
-    id: 10, 
-    nom_commercial: 'Semences Piment Hybride Demon F1', 
-    slug: 'semences-piment-hybride-demon-f1', 
-    composition: 'Piment fort très productif adapté au climat tropical.', 
-    prix_unitaire: 9500, 
-    unite_mesure: 'boîte 50g', 
-    stock_disponible: 280, 
+    id: 103, 
+    nom_commercial: 'CONCOMBRE SANCTA F1', 
+    slug: 'concombre-sancta-f1', 
+    composition: 'Variété hybride vigoureuse à très haut rendement.', 
+    prix_unitaire: 22000, 
+    unite_mesure: 'unité', 
+    stock_disponible: 180, 
     featured: true, 
-    url_image: 'storage/produits/mais_pan53.jpg', 
+    url_image: 'storage/produits/concombre_sancta_f1.jpg', 
     categories: [{ nom: 'Semences', slug: 'semences' }] 
   },
   { 
-    id: 11, 
-    nom_commercial: 'Semences Gombo Kropi F1', 
-    slug: 'semences-gombo-kropi-f1', 
-    composition: 'Variété précoce à forte ramification et gousses vertes.', 
-    prix_unitaire: 6000, 
-    unite_mesure: 'sachet 100g', 
-    stock_disponible: 420, 
+    id: 104, 
+    nom_commercial: 'PERSIL FRISÉE', 
+    slug: 'persil-frisee', 
+    composition: 'Graines potagères de persil frisé très aromatique.', 
+    prix_unitaire: 3500, 
+    unite_mesure: 'unité', 
+    stock_disponible: 400, 
     featured: true, 
-    url_image: 'storage/produits/mais_pan53.jpg', 
+    url_image: 'storage/produits/persil_frisee.jpg', 
     categories: [{ nom: 'Semences', slug: 'semences' }] 
   },
-])
+]
+
+// Default Intrants Agricoles (Row 2 - Exactly 4 agricultural inputs from catalogue)
+const defaultIntrants = [
+  { 
+    id: 1, 
+    nom_commercial: 'Urée YARA 46% N', 
+    slug: 'ur-e-yara', 
+    composition: 'Engrais azoté concentré 46 % de N (azote total).', 
+    prix_unitaire: 15000, 
+    unite_mesure: 'kg', 
+    stock_disponible: 1000, 
+    featured: true, 
+    url_image: 'storage/produits/img_68e45768479f2.jpg', 
+    categories: [{ nom: 'Intrants Agricoles', slug: 'intrants-agricoles' }] 
+  },
+  { 
+    id: 12, 
+    nom_commercial: 'Engrais YaraVita Croplift Bio', 
+    slug: 'engrais-yaravita-croplift-bio', 
+    composition: 'Engrais foliaire liquide à base de NPK enrichi en oligo-éléments.', 
+    prix_unitaire: 10000, 
+    unite_mesure: 'unité', 
+    stock_disponible: 997, 
+    featured: true, 
+    url_image: 'storage/produits/img_68e461603d754.jpg', 
+    categories: [{ nom: 'Intrants Agricoles', slug: 'intrants-agricoles' }] 
+  },
+  { 
+    id: 18, 
+    nom_commercial: 'YARA YARAVERA', 
+    slug: 'yara-yaravera', 
+    composition: 'Engrais azoté enrichi au zinc (46% N + Zn).', 
+    prix_unitaire: 28000, 
+    unite_mesure: 'kg', 
+    stock_disponible: 100000, 
+    featured: true, 
+    url_image: 'storage/produits/img_68e4f6fb58058.jpg', 
+    categories: [{ nom: 'Intrants Agricoles', slug: 'intrants-agricoles' }] 
+  },
+  { 
+    id: 22, 
+    nom_commercial: 'YARA YARALIVA™ NITRABOR', 
+    slug: 'yara-yaraliva-nitrabor', 
+    composition: 'Engrais soluble enrichi en calcium et bore.', 
+    prix_unitaire: 28000, 
+    unite_mesure: 'kg', 
+    stock_disponible: 9999, 
+    featured: true, 
+    url_image: 'storage/produits/img_68e4fb545de98.jpg', 
+    categories: [{ nom: 'Intrants Agricoles', slug: 'intrants-agricoles' }] 
+  },
+]
+
+// 8 Featured Products total (4 seeds + 4 intrants agricoles)
+const featuredProducts = ref([...defaultSeeds, ...defaultIntrants])
 
 // Blog Posts from DB
 const blogPosts = ref([])
@@ -407,21 +462,62 @@ const initScrollObserver = () => {
 
 onMounted(async () => {
   try {
-    const data = await $fetch(`${config.public.apiBaseUrl}/produits?category=semences&per_page=12`)
-    const prods = data?.data?.data || data?.data || []
-    if (prods.length > 0) {
-      const seedsOnly = prods.filter(p => {
-        const cats = p.categories || []
-        const catStr = cats.map(c => (c.nom || c.slug || '').toLowerCase()).join(' ')
-        const nameStr = (p.nom_commercial || '').toLowerCase()
-        return catStr.includes('semence') || catStr.includes('graine') || nameStr.includes('semence') || nameStr.includes('maïs') || nameStr.includes('tomate') || nameStr.includes('piment') || nameStr.includes('gombo')
-      })
-      if (seedsOnly.length > 0) {
-        featuredProducts.value = seedsOnly.slice(0, 4)
-      } else {
-        featuredProducts.value = prods.slice(0, 4)
+    const [seedsRes, intrantsRes] = await Promise.allSettled([
+      $fetch(`${config.public.apiBaseUrl}/produits?category=semences&per_page=12`),
+      $fetch(`${config.public.apiBaseUrl}/produits?category=intrants-agricoles&per_page=12`)
+    ])
+
+    let loadedSeeds = []
+    let loadedIntrants = []
+
+    if (seedsRes.status === 'fulfilled') {
+      const prods = seedsRes.value?.data?.data || seedsRes.value?.data || []
+      if (prods.length > 0) {
+        const seedsOnly = prods.filter(p => {
+          const cats = p.categories || []
+          const catStr = cats.map(c => (c.nom || c.slug || '').toLowerCase()).join(' ')
+          const nameStr = (p.nom_commercial || '').toLowerCase()
+          return catStr.includes('semence') || catStr.includes('graine') || nameStr.includes('semence') || nameStr.includes('maïs') || nameStr.includes('tomate') || nameStr.includes('piment') || nameStr.includes('gombo') || nameStr.includes('concombre') || nameStr.includes('persil')
+        })
+        loadedSeeds = seedsOnly.length > 0 ? seedsOnly.slice(0, 4) : prods.slice(0, 4)
       }
     }
+
+    if (intrantsRes.status === 'fulfilled') {
+      const prods = intrantsRes.value?.data?.data || intrantsRes.value?.data || []
+      if (prods.length > 0) {
+        const intrantsOnly = prods.filter(p => {
+          const cats = p.categories || []
+          const catStr = cats.map(c => (c.nom || c.slug || '').toLowerCase()).join(' ')
+          const nameStr = (p.nom_commercial || '').toLowerCase()
+          return catStr.includes('intrant') || catStr.includes('engrais') || catStr.includes('urée') || catStr.includes('uree') || catStr.includes('npk') || nameStr.includes('engrais') || nameStr.includes('urée') || nameStr.includes('uree') || nameStr.includes('yara') || nameStr.includes('fertilizaa')
+        })
+        loadedIntrants = intrantsOnly.length > 0 ? intrantsOnly.slice(0, 4) : prods.slice(0, 4)
+      }
+    }
+
+    // Garantir EXACTEMENT 4 semences : si l'API en renvoie moins de 4, on complète avec defaultSeeds
+    const seedsCombined = [...loadedSeeds]
+    for (const s of defaultSeeds) {
+      if (seedsCombined.length >= 4) break
+      if (!seedsCombined.some(p => p.id === s.id || (p.nom_commercial || '').toLowerCase() === (s.nom_commercial || '').toLowerCase())) {
+        seedsCombined.push(s)
+      }
+    }
+    const finalSeeds = seedsCombined.slice(0, 4)
+
+    // Garantir EXACTEMENT 4 intrants agricoles : si l'API en renvoie moins de 4, on complète avec defaultIntrants
+    const intrantsCombined = [...loadedIntrants]
+    for (const i of defaultIntrants) {
+      if (intrantsCombined.length >= 4) break
+      if (!intrantsCombined.some(p => p.id === i.id || (p.nom_commercial || '').toLowerCase() === (i.nom_commercial || '').toLowerCase())) {
+        intrantsCombined.push(i)
+      }
+    }
+    const finalIntrants = intrantsCombined.slice(0, 4)
+
+    // Le total est TOUJOURS garanti à exactement 8 produits (4 semences ligne 1 + 4 intrants ligne 2)
+    featuredProducts.value = [...finalSeeds, ...finalIntrants]
   } catch (e) {
     console.warn('API products offline', e)
   }

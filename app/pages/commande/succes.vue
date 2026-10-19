@@ -151,7 +151,8 @@ const refCode = computed(() => route.query.ref || '')
 const isCancelled = computed(() => route.query.cancelled === '1')
 
 const whatsappUrl = computed(() => {
-  const phone = '22898706081'
+  const phone = useRuntimeConfig().public.whatsappNumber
+  if (!phone) return '#'
   if (isCancelled.value) {
     const text = `Bonjour AgroShop,%0AJe souhaite finaliser ma commande N° ${refCode.value}. Mon paiement Mobile Money n'a pas abouti.`
     return `https://wa.me/${phone}?text=${text}`
