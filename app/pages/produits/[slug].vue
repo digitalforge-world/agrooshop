@@ -443,7 +443,9 @@ const formatPrice = (val) => Number(val || 0).toLocaleString('fr-FR')
 const getImgUrl = (img) => getImageUrl(img, fallbackImage)
 
 const handleWhatsappClick = () => {
-  alert('Notre service de commande WhatsApp est temporairement en maintenance suite à un incident technique. Vous pouvez commander directement en ligne en ajoutant ce produit au panier, ou nous contacter par téléphone.')
+  const productName = product.value?.nom || 'ce produit'
+  const msg = encodeURIComponent(`Bonjour AgroShop Togo, je suis intéressé par ${productName}. Pouvez-vous me donner plus d'informations ?`)
+  window.open(`https://wa.me/22878991616?text=${msg}`, '_blank')
 }
 
 const displayImages = computed(() => {
