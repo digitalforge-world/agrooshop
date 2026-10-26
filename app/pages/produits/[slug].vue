@@ -445,7 +445,7 @@ const getImgUrl = (img) => getImageUrl(img, fallbackImage)
 const handleWhatsappClick = () => {
   const productName = product.value?.nom || 'ce produit'
   const msg = encodeURIComponent(`Bonjour AgroShop Togo, je suis intéressé par ${productName}. Pouvez-vous me donner plus d'informations ?`)
-  window.open(`https://wa.me/22878991616?text=${msg}`, '_blank')
+  window.open(`https://wa.me/22879020000?text=${msg}`, '_blank')
 }
 
 const displayImages = computed(() => {

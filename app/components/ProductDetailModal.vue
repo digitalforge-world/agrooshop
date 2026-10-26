@@ -339,7 +339,7 @@ const whatsappOrderUrl = computed(() => {
   if (!props.product) return '#'
   const total = Number(props.product.prix_unitaire) * quantity.value
   const text = `Bonjour AgroShop,%0AJesouhaite commander le produit suivant :%0A- ${props.product.nom_commercial} (x${quantity.value}) : ${total.toLocaleString('fr-FR')} FCFA`
-  const phone = useRuntimeConfig().public.whatsappNumber || '22878991616'
+  const phone = useRuntimeConfig().public.whatsappNumber || '22879020000'
   return `https://wa.me/${phone}?text=${text}`
 })
 

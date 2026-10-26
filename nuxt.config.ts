@@ -91,7 +91,7 @@ export default defineNuxtConfig({
     public: {
       apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api',
       backendBaseUrl: process.env.NUXT_PUBLIC_BACKEND_BASE_URL || 'http://localhost:8000',
-      whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '22878991616'
+      whatsappNumber: process.env.NUXT_PUBLIC_WHATSAPP_NUMBER || '22879020000'
     }
   },
 

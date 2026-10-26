@@ -2,7 +2,7 @@
   <div class="fixed bottom-6 right-6 z-50 flex items-center">
     <!-- Main Floating Action Button -->
     <a
-      href="https://wa.me/22878991616?text=Bonjour%20AgroShop%20Togo%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20produits%20agricoles."
+      href="https://wa.me/22879020000?text=Bonjour%20AgroShop%20Togo%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20produits%20agricoles."
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contacter AgroShop sur WhatsApp"

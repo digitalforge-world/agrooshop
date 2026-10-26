@@ -64,7 +64,7 @@
             <p class="text-xs font-bold text-slate-800 uppercase tracking-wider">Suivez-nous sur les réseaux :</p>
             <div class="flex items-center gap-3">
               <a 
-                href="https://wa.me/22878991616?text=Bonjour%20AgroShop%20Togo%2C%20j%27ai%20une%20question." 
+                href="https://wa.me/22879020000?text=Bonjour%20AgroShop%20Togo%2C%20j%27ai%20une%20question." 
                 target="_blank"
                 rel="noopener noreferrer"
                 class="px-4 py-2 bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-xs rounded-xl shadow-md transition-all inline-flex items-center gap-2 cursor-pointer"
