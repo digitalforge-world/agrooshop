@@ -42,7 +42,7 @@
                 <span>Téléphones Officiels</span>
               </div>
               <p class="text-xs font-black text-slate-900">
-                <a href="tel:+22898706081" class="hover:text-emerald-700 transition-colors">+228 98 70 60 81</a><br />
+                <a href="tel:+22879020000" class="hover:text-emerald-700 transition-colors">+228 79 02 00 00</a><br />
                 <a href="tel:+22890933716" class="hover:text-emerald-700 transition-colors">+228 90 93 37 16</a>
               </p>
             </div>
@@ -108,7 +108,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1">
                 <label class="block text-xs font-bold text-slate-700 uppercase">Téléphone</label>
-                <input v-model="form.phone" type="tel" placeholder="+228 98 70 60 81" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white" />
+                <input v-model="form.phone" type="tel" placeholder="+228 79 02 00 00" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white" />
               </div>
               <div class="space-y-1">
                 <label class="block text-xs font-bold text-slate-700 uppercase">Sujet</label>
@@ -222,7 +222,7 @@
               <div>
                 <h3 class="font-bold text-lg mb-1">Lignes Téléphoniques & WhatsApp</h3>
                 <p class="text-slate-300 text-xs leading-relaxed font-semibold">
-                  Tél 1 : <a href="tel:+22898706081" class="hover:text-amber-400 transition-colors">+228 98 70 60 81</a><br />
+                  Tél 1 : <a href="tel:+22879020000" class="hover:text-amber-400 transition-colors">+228 79 02 00 00</a><br />
                   Tél 2 : <a href="tel:+22890933716" class="hover:text-amber-400 transition-colors">+228 90 93 37 16</a>
                 </p>
               </div>
@@ -256,7 +256,7 @@ useHead({
         '@type': 'AgriculturalStore',
         'name': 'AgroShop Togo',
         'image': 'https://agroshoptg.store/images/logo.png',
-        'telephone': ['+22898706081', '+22890933716'],
+        'telephone': ['+22879020000', '+22890933716'],
         'email': 'agroshop_int@yahoo.fr',
         'address': {
           '@type': 'PostalAddress',

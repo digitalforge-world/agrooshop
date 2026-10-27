@@ -61,7 +61,7 @@
           <!-- Phone Support -->
           <div class="hidden lg:flex flex-col items-end">
             <span class="text-[10px] text-gray-500 font-medium">Besoin d'aide ?</span>
-            <a href="tel:+22898706081" class="text-sm font-bold text-gray-900 hover:text-emerald-700 transition-colors">+228 98 70 60 81</a>
+            <a href="tel:+22879020000" class="text-sm font-bold text-gray-900 hover:text-emerald-700 transition-colors">+228 79 02 00 00</a>
           </div>
 
           <!-- Mobile Search Trigger Button (Left of Cart) -->

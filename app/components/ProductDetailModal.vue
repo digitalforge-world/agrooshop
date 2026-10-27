@@ -188,11 +188,11 @@
                 </a>
 
                 <a 
-                  href="tel:+22898706081"
+                  href="tel:+22879020000"
                   class="w-full py-3 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                 >
                   <Phone class="w-4 h-4 text-slate-950" />
-                  <span>Appeler le +228 98 70 60 81</span>
+                  <span>Appeler le +228 79 02 00 00</span>
                 </a>
               </template>
 
@@ -299,7 +299,7 @@ const isService = computed(() => {
 const serviceWhatsappUrl = computed(() => {
   if (!props.product) return '#'
   const msg = `Bonjour AgroShop, je souhaite demander une visite de diagnostic terrain pour le service: "${props.product.nom_commercial}".`
-  return `https://wa.me/22898706081?text=${encodeURIComponent(msg)}`
+  return `https://wa.me/22879020000?text=${encodeURIComponent(msg)}`
 })
 
 watch(() => props.product, () => {

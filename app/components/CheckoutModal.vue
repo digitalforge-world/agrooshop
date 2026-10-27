@@ -148,7 +148,7 @@
                       v-model="form.telephone" 
                       required 
                       type="tel" 
-                      placeholder="ex: +228 98 70 60 81" 
+                      placeholder="ex: +228 79 02 00 00" 
                       class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:bg-white focus:outline-none"
                     />
                   </div>
